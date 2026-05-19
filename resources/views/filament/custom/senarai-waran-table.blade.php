@@ -99,20 +99,22 @@
                         @endphp
 
                         @if ($total > 0 && $filled === $total)
-                            <span class="text-green-600 font-semibold">Seimbang</span>
+                            <span
+                                class="inline-flex items-center px-2 py-1 ring-1 ring-inset ring-success-subtle text-fg-success-strong text-sm font-medium rounded bg-success-soft">Seimbang</span>
+                        @elseif ($total > 0 && $filled > $total)
+                            <span
+                                class="inline-flex items-center px-2 py-1 ring-1 ring-inset ring-danger-subtle text-fg-danger-strong text-sm font-medium rounded bg-danger-soft">Lebih</span>
                         @else
-                            <span class="text-red-600 font-semibold">Kurang</span>
+                            <span
+                                class="inline-flex items-center px-2 py-1 ring-1 ring-inset ring-warning-subtle text-fg-warning text-sm font-medium rounded bg-warning-soft">Kurang</span>
                         @endif
                     </td>
 
                     <td class="px-6 py-4">
-                        <button
-    type="button"
-    onclick="Livewire.dispatch('setWaran', { id: {{ $waran->id }} })"
-    class="text-fg-brand hover:underline"
->
-    Edit
-</button>
+                        <button type="button" onclick="Livewire.dispatch('setWaran', { id: {{ $waran->id }} })"
+                            class="text-fg-brand hover:underline">
+                            Edit
+                        </button>
                     </td>
                 </tr>
 
@@ -166,19 +168,22 @@
                             @endphp
 
                             @if ($total > 0 && $filled === $total)
-                                <span class="text-green-600 font-semibold">Seimbang</span>
+                                <span
+                                    class="inline-flex items-center px-2 py-1 ring-1 ring-inset ring-success-subtle text-fg-success-strong text-sm font-medium rounded bg-success-soft">Seimbang</span>
+                            @elseif ($total > 0 && $filled > $total)
+                                <span
+                                    class="inline-flex items-center px-2 py-1 ring-1 ring-inset ring-danger-subtle text-fg-danger-strong text-sm font-medium rounded bg-danger-soft">Lebih</span>
                             @else
-                                <span class="text-red-600 font-semibold">Kurang</span>
+                                <span
+                                    class="inline-flex items-center px-2 py-1 ring-1 ring-inset ring-warning-subtle text-fg-warning text-sm font-medium rounded bg-warning-soft">Kurang</span>
                             @endif
 
                         <td class="px-6 py-4">
-<button
-    type="button"
-    onclick="Livewire.dispatch('setWaran', { id: {{ $child->id }} })"
-    class="text-fg-brand hover:underline"
->
-    Edit
-</button>                      </td>
+                            <button type="button" onclick="Livewire.dispatch('setWaran', { id: {{ $child->id }} })"
+                                class="text-fg-brand hover:underline">
+                                Edit
+                            </button>
+                        </td>
                     </tr>
                 @endforeach
             @endforeach

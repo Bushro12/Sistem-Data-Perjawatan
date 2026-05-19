@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bahagians', function (Blueprint $table) {
-            $table->id();
-            $table->integer('ptj_id');
-            $table->string('nama_bahagian',255);
+        Schema::create('subunits', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->integer('unit_id');
+            $table->integer('dun_id');
+            $table->string('nama_subunit')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bahagians');
+        Schema::dropIfExists('subunits');
     }
 };

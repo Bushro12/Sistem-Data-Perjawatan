@@ -12,18 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pegawai_kontraks', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->integer('pegawai_id');
             $table->date('tarikh_lantikan1');
             $table->date('tarikh_tamat1');
-            $table->date('tarikh_lantikan2');
-            $table->date('tarikh_tamat2');
-            $table->date('tarikh_lantikan3');
-            $table->date('tarikh_tamat3');
-            $table->date('tarikh_lantikan4');
-            $table->date('tarikh_tamat4');
-            $table->date('tarikh_lantikan5');
-            $table->date('tarikh_tamat5');
+            $table->date('tarikh_lantikan2')->nullable();
+            $table->date('tarikh_tamat2')->nullable();
+            $table->date('tarikh_lantikan3')->nullable();
+            $table->date('tarikh_tamat3')->nullable();
+            $table->date('tarikh_lantikan4')->nullable();
+            $table->date('tarikh_tamat4')->nullable();
+            $table->date('tarikh_lantikan5')->nullable();
+            $table->date('tarikh_tamat5')->nullable();
             $table->timestamps();
         });
     }

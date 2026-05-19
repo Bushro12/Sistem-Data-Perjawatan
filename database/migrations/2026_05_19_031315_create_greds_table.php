@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('units', function (Blueprint $table) {
-            $table->id();
-            $table->integer('bahagian_id');
-            $table->string('nama_unit');
+        Schema::create('greds', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('kod_gred');
+            $table->string('desc_gred');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('units');
+        Schema::dropIfExists('greds');
     }
 };

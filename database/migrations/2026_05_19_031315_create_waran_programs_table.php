@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jawatans', function (Blueprint $table) {
-            $table->id();
-            $table->string('kod_jawatan', 255);
-            $table->string('desc_jawatan', 255);
+        Schema::create('waran_programs', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->integer('waran_id');
+            $table->integer('program_id');
             $table->timestamps();
-            // $table->softDeletes();
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jawatans');
+        Schema::dropIfExists('waran_programs');
     }
 };

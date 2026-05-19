@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ptjs', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('nama_ptj');
             $table->integer('kod_ptj');
             $table->text('alamat');
-            $table->string('pengarah', 255);
-            $table->tinyInteger(('is_jkn'))->default(0);
+            $table->string('pengarah');
+            $table->tinyInteger('is_jkn')->default(0);
             $table->string('rujukan_surat', 35)->nullable();
             $table->timestamps();
         });

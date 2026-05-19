@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->integer('ptj_id') ->after('name');
-            $table->string('nokp');
-            $table->string('phone_number');
-            $table->boolean('status')->default(true);
-            $table->integer('role'); // 1 = superadmin, 2 = admin, 3 = user
+        Schema::table('waran_jawatans', function (Blueprint $table) {
+            $table->string('status')->default('active');
         });
     }
 
@@ -25,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('waran_jawatans', function (Blueprint $table) {
             //
         });
     }

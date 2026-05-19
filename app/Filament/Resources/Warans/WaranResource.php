@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\Warans;
 
 use App\Filament\Resources\Warans\Pages\CreateWaran;
+use App\Filament\Resources\Warans\Pages\CustomTable;
 use App\Filament\Resources\Warans\Pages\EditWaran;
 use App\Filament\Resources\Warans\Pages\ListWarans;
+use App\Filament\Resources\Warans\RelationManagers\WaranJawatansRelationManager;
 use App\Filament\Resources\Warans\Schemas\WaranForm;
 use App\Filament\Resources\Warans\Tables\WaransTable;
 use App\Models\Waran;
@@ -40,16 +42,17 @@ class WaranResource extends Resource
         return WaransTable::configure($table);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
+public static function getRelations(): array
+{
+    return [
+        WaranJawatansRelationManager::class,
+    ];
+}
 
     public static function getPages(): array
     {
         return [
+            'custom' =>CustomTable::route('/custom'),
             'index' => ListWarans::route('/'),
             'create' => CreateWaran::route('/create'),
             'edit' => EditWaran::route('/{record}/edit'),
@@ -57,17 +60,17 @@ class WaranResource extends Resource
     }
 
     protected function getListeners(): array
-{
-    return [
-        'setWaran' => 'setWaran',
-    ];
-}
+    {
+        return [
+            'setWaran' => 'setWaran',
+        ];
+    }
 
-public function setWaran($id): void
-{
-    $this->form()->fill([
-        'selected_waran_id' => $id,
-        'catatan' => Waran::find($id)?->catatan,
-    ]);
-}
+    public function setWaran($id): void
+    {
+        $this->form()->fill([
+            'selected_waran_id' => $id,
+            'catatan' => Waran::find($id)?->catatan,
+        ]);
+    }
 }

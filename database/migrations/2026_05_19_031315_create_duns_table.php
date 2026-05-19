@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('parlimens', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_parlimen');
+        Schema::create('duns', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->integer('parlimen_id');
+            $table->string('nama_dun');
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parlimens');
+        Schema::dropIfExists('duns');
     }
 };

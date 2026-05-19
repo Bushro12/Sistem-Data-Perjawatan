@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('butiran__jawatans', function (Blueprint $table) {
-            $table->id();
-            $table->integer('butiran_id');
-            $table->integer('jawatan_gred_id');
+        Schema::create('jawatan__greds', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->integer('jawatan_id');
+            $table->integer('gred_id');
+            $table->integer('kumpulan_id')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('butiran__jawatans');
+        Schema::dropIfExists('jawatan__greds');
     }
 };

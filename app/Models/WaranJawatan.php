@@ -3,17 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+
 
 class WaranJawatan extends Model
 {
+
+    use SoftDeletes;
     protected $fillable = [
         'waran_id',
         'ptj_id',
         'aktiviti_id',
         'pegawai_id',
         'jawatan_gred_id',
+        'jawatan_id',
+        'gred_ids',
         'butiran',
-        'catatan_jawatan'
+        'waran_tolak_id',
+        'catatan_jawatan',
+        'status'
     ];
 
     public function waran()
@@ -50,4 +59,18 @@ class WaranJawatan extends Model
     {
         return $this->belongsTo(Jawatan_Gred::class, 'jawatan_gred_id');
     }
+
+    protected $casts = [
+        'gred_ids' => 'array',
+    ];
+
+    public function getGredListAttribute()
+{
+    return Gred::whereIn('id', $this->gred_ids ?? [])
+        ->pluck('kod_gred')
+        ->implode(', ');
+}
+
+
+
 }

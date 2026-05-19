@@ -22,16 +22,16 @@ class EditWaran extends EditRecord
         ];
     }
 
-   public function setWaran($id): void
-{
-    $waran = Waran::with('waranJawatans')->find($id);
+    public function setWaran($id): void
+    {
+        $waran = Waran::with('waranJawatans')->find($id);
 
-    $this->form->fill([
-        'selected_waran_id' => $id,
-        'catatan' => $waran?->catatan,
-        'waranJawatans' => $waran?->waranJawatans->toArray(),
-    ]);
-}
+        $this->form->fill([
+            'selected_waran_id' => $id,
+            'catatan' => $waran?->catatan,
+            'waranJawatans' => $waran?->waranJawatans->toArray(),
+        ]);
+    }
     protected function getHeaderActions(): array
     {
 
@@ -68,36 +68,43 @@ class EditWaran extends EditRecord
             //         );
             //     }),
 
-            Action::make('tambahWaran')
-            ->label('Tambah Jawatan')
-            ->icon('heroicon-o-plus')
-            ->form([
-                TextInput::make('no_waran')
-                    ->label('No Waran')
-                    ->required(),
+            // Action::make('tambahWaran')
+            // ->label('Tambah Jawatan')
+            // ->icon('heroicon-o-plus')
+            // ->form([
+            //     TextInput::make('no_waran')
+            //         ->label('No Waran')
+            //         ->required(),
 
-                TextInput::make('jik')
-                    ->label('Jumlah Jawatan')
-                    ->numeric()
-                    ->required(),
-            ])
-            ->action(function (array $data) {
+            //     TextInput::make('jik')
+            //         ->label('Jumlah Jawatan')
+            //         ->numeric()
+            //         ->required(),
+            // ])
+            // ->action(function (array $data) {
 
-                $parent = $this->record;
+            //     $parent = $this->record;
 
-                Waran::create([
-                    'no_waran' => $data['no_waran'],
-                    'jik' => $data['jik'],
-                    'parent_id' => $parent->id,
-                ]);
+            //     Waran::create([
+            //         'no_waran' => $data['no_waran'],
+            //         'jik' => $data['jik'],
+            //         'parent_id' => $parent->id,
+            //     ]);
 
-                // refresh page so repeater/relations update
-                $this->dispatch('refresh');
-            }),
+            //     // refresh page so repeater/relations update
+            //     $this->dispatch('refresh');
+            // }),
 
-            DeleteAction::make(),
+            // DeleteAction::make(),
         ];
     }
+
+    protected function getSaveFormAction(): Action
+    {
+        return parent::getSaveFormAction()
+            ->label('Kemaskini Waran');
+    }
+
 
 
 }

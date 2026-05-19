@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('greds', function (Blueprint $table) {
-            $table->id();
-            $table->string('kod_gred');
-            $table->string('desc_gred');
+        Schema::create('aktivitis', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->integer('program_id');
+            $table->string('no_aktivit', 20);
+            $table->string('nama_aktiviti')->nullable();
+            $table->string('desc_aktiviti')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('greds');
+        Schema::dropIfExists('aktivitis');
     }
 };
