@@ -12,5 +12,12 @@
         "laravel-vite-plugin": "^3.0.0",
         "tailwindcss": "^4.0.0",
         "vite": "^8.0.0"
+<<<<<<< Updated upstream
+=======
+    },
+    "dependencies": {
+        "flowbite": "^4.0.2",
+        "simple-datatables": "^10.2.0"
+>>>>>>> Stashed changes
     }
 }
