@@ -7,7 +7,6 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 
 class AktivitisTable
@@ -15,44 +14,33 @@ class AktivitisTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->defaultGroup('program.nama_program')
-            ->groupingSettingsHidden()
-
             ->columns([
 
+                TextColumn::make('program.nama_program')
+                    ->label('Program')
+                    ->sortable()
+                    ->searchable()
+                    ->badge()
+                    ->color('primary'),
+
                 TextColumn::make('no_aktivit')
-                    ->label('Aktiviti')
-                    ->formatStateUsing(
-                        fn($state, $record) =>
-                        $record->no_aktivit . ' - ' . $record->nama_aktiviti
-                    )
+                    ->label('No. Aktiviti')
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('butiran')
-                    ->label('Butiran')
-                    ->getStateUsing(
-                        fn($record) =>
-                        $record->butiran
-                            ->pluck('butiran')
-                            ->toArray()
-                    )
-                    ->listWithLineBreaks()
-                // ->defaultGroup('')
-                ,
+                TextColumn::make('nama_aktiviti')
+                    ->label('Nama Aktiviti')
+                    ->sortable()
+                    ->searchable()
+                    ->wrap(),
 
             ])
 
-            ->groups([
-                Group::make('program.nama_program')
-                    ->label('Program')
-                    ->collapsible()
-            ])
+            ->defaultSort('program_id', 'asc')
 
             ->recordActions([
-                EditAction::make()
-                ->modal(),
-                DeleteAction::make()
+                EditAction::make()->modal(),
+                DeleteAction::make(),
             ])
 
             ->toolbarActions([

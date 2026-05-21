@@ -10,7 +10,8 @@ class Jawatan_Gred extends Model
 
     protected $fillable = [
         'jawatan_id',
-        'gred_id'
+        'gred_id',
+        'kumpulan_id'
     ];
 
     public function jawatan()
@@ -21,6 +22,11 @@ class Jawatan_Gred extends Model
     public function gred()
     {
         return $this->belongsTo(Gred::class, 'gred_id');
+    }
+
+    public function kumpulan()
+    {
+        return $this->belongsTo(Kumpulan::class, 'kumpulan_id');
     }
 
     public function butiran()

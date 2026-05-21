@@ -23,6 +23,14 @@ class ProgramResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nama_program';
 
+    protected static ?string $navigationLabel = 'Program & Aktiviti';
+
+    protected static ?string $modelLabel = 'Program & Aktiviti';
+
+    protected static ?string $pluralModelLabel = 'Program & Aktiviti';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Buku Waran';
+
     public static function form(Schema $schema): Schema
     {
         return ProgramForm::configure($schema);

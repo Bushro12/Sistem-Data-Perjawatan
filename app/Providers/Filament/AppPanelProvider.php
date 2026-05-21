@@ -27,9 +27,13 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->path('app')
+            ->brandName('e-SDaP')
+            ->viteTheme('resources/css/filament/app/theme.css')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
+                'secondary' => Color::Violet,
+                'tertiary' => Color::Lime,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

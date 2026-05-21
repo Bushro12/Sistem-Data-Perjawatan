@@ -15,6 +15,8 @@ class ProgramsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('nama_program', 'asc')
+
             ->columns([
                 // TextColumn::make('no')
                 //     ->label('Bil')
@@ -50,8 +52,32 @@ class ProgramsTable
                 //     })
                 //     ->listWithLineBreaks()
 
-                TextColumn::make('nama_program')
-                    ->label('Program'),
+                TextColumn::make('no')
+                    ->label("Bil")
+                    ->rowindex(),
+                TextColumn::make('desc_program')
+                    ->getStateUsing(
+                        fn($record) =>
+                        $record->aktiviti
+                            ->map(fn($a) => $a->program?->nama_program . ' - ' . $a->program?->desc_program)
+                            ->filter()
+                            ->unique()
+                            ->join(', ')
+                    )
+                    ->badge()
+                    ->wrap()
+                    // ->sortable()
+                    ->searchable(query: function ($query, $search) {
+                        $query->where('nama_program', 'like', "%{$search}%")
+                            ->orWhere('desc_program', 'like', "%{$search}%")
+                            ->orWhereHas('aktiviti', function ($q) use ($search) {
+                                $q->where('no_aktivit', 'like', "%{$search}%")
+                                    ->orWhere('nama_aktiviti', 'like', "%{$search}%");
+                            });
+                    })
+                        ,
+                // ->defaultSort('nama_program'),
+
 
                 TextColumn::make('aktiviti')
                     ->label('Aktiviti')
@@ -61,6 +87,7 @@ class ProgramsTable
                             ->map(fn($item) => $item->no_aktivit . ' - ' . $item->nama_aktiviti)
                             ->toArray()
                     )
+                    ->wrap()
                     ->listWithLineBreaks(),
 
                 // TextColumn::make('butiran')
@@ -79,16 +106,15 @@ class ProgramsTable
                 //
             ])
             ->recordActions([
-                ViewAction::make()
-                    ->label('')
-                    ->color('info')
-                    ->tooltip('View'),
+                // ViewAction::make()
+                //     ->label('View')
+                //     ->color('info')
+                //     ->tooltip('View'),
                 EditAction::make()
-                    ->label('')
-                    ->tooltip('Edit')
-                    ->modal(),
+                    ->label('Edit')
+                    ->tooltip('Edit'),
                 DeleteAction::make()
-                    ->label('')
+                    ->label('Delete')
                     ->tooltip('Delete'),
             ])
             ->toolbarActions([

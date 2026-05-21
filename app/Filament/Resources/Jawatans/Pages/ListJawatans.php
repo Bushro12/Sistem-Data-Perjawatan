@@ -13,11 +13,21 @@ class ListJawatans extends ListRecords
 
     protected function getHeaderActions(): array
     {
+
+
         return [
             CreateAction::make()
-            ->modal()
-            ->createAnother(false),
-           
+                ->label('Tambah Jawatan')
+                ->modal()
+                ->createAnother(false),
+
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\JawatanLegend::class,
         ];
     }
 }

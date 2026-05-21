@@ -21,6 +21,11 @@ class OpsyenPencenResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'opsyen';
+    protected static ?string $modelLabel = 'Opsyen Pencen';
+    protected static ?string $pluralModelLabel = 'Opsyen Pencen';
+    protected static ?string $navigationLabel = 'Opsyen Pencen';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Kawalan';
 
     public static function form(Schema $schema): Schema
     {
