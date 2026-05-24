@@ -23,14 +23,14 @@ class PegawaisTable
                     ->formatStateUsing(
                         fn($record) =>
                         '<strong>' . ($record->nama ?? '-') . '</strong><br>' .
-                            ($record->nokp ?? '-') . '<br>' .
+                        ($record->nokp ?? '-') . '<br>' .
                             // ($record->emel ?? '-') . '<br>' .
-                            (
-                                $record->jawatan_gred
-                                ? $record->jawatan_gred->jawatan->desc_jawatan .
-                                ' (' . $record->jawatan_gred->gred->kod_gred . ')'
-                                : '-'
-                            )
+                        (
+                            $record->jawatan_gred
+                            ? $record->jawatan_gred->jawatan->desc_jawatan .
+                            ' (' . $record->jawatan_gred->gred->kod_gred . ')'
+                            : '-'
+                        )
                     )
                     ->html(),
                 // TextColumn::make('nama')
@@ -67,26 +67,26 @@ class PegawaisTable
                     ->html(),
 
                 TextColumn::make('status')
-    ->label('Status')
-    ->badge()
-    ->getStateUsing(function ($record) {
+                    ->label('Status')
+                    ->badge()
+                    ->getStateUsing(function ($record) {
 
-        return match (true) {
-            $record->is_tetap == 1 => 'Tetap',
-            $record->is_kontrak == 1 => 'Kontrak',
-            $record->is_kontrak_interim == 1 => 'Kontrak Interim',
-            default => '-',
-        };
-    })
-    ->color(function ($state) {
+                        return match (true) {
+                            $record->is_tetap == 1 => 'Tetap',
+                            $record->is_kontrak == 1 => 'Kontrak',
+                            $record->is_kontrak_interim == 1 => 'Kontrak Interim',
+                            default => '-',
+                        };
+                    })
+                    ->color(function ($state) {
 
-        return match ($state) {
-            'Tetap' => 'success',
-            'Kontrak' => 'warning',
-            'Kontrak Interim' => 'info',
-            default => 'gray',
-        };
-    }),
+                        return match ($state) {
+                            'Tetap' => 'success',
+                            'Kontrak' => 'warning',
+                            'Kontrak Interim' => 'info',
+                            default => 'gray',
+                        };
+                    }),
 
             ])
             ->filters([
