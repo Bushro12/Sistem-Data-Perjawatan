@@ -31,7 +31,6 @@ class LetakJawatanResource extends Resource
 
     protected static ?int $navigationSort = 12;
 
-
     public static function form(Schema $schema): Schema
     {
         return LetakJawatanForm::configure($schema);

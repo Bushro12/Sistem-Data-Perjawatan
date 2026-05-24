@@ -305,16 +305,18 @@ class WaranJawatansRelationManager extends RelationManager
                         $record->status === 'removed' ? 'gray' : 'default'
                     )
                     ->wrap(),
-               TextColumn::make('jawatan_gred_display')
-    ->label('Jawatan / Gred')
-    ->state(function ($record) {
-        return $record->jawatan_list . '<br>' . $record->gred_list;
-    })
-    ->html()
-    ->wrap()
-    ->color(fn ($record) =>
-        $record->status === 'removed' ? 'gray' : 'default'
-    ),
+                TextColumn::make('jawatan_gred_display')
+                    ->label('Jawatan / Gred')
+                    ->state(function ($record) {
+                        return $record->jawatan_list . '<br>' . $record->gred_list;
+                    })
+                    ->html()
+                    ->wrap()
+                    ->color(
+                        fn($record) =>
+                        $record->status === 'removed' ? 'gray' : 'default'
+                    ),
+
                 TextColumn::make('ptj.nama_ptj')
                     ->searchable()
                     ->color(
