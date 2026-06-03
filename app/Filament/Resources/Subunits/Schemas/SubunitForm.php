@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\Subunits\Schemas;
 
+use App\Models\Dun;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 
@@ -13,23 +16,38 @@ class SubunitForm
     {
         return $schema
             ->components([
-                Select::make('dun_id')
-                    ->label('Dun')
-                    ->relationship('dun', 'nama_dun')
-                    ->searchable()
-                    ->preload(),
                 Select::make('unit_id')
                     ->label('Unit')
                     ->relationship('unit', 'nama_unit')
                     ->searchable()
                     ->preload(),
+
                 TextInput::make('nama_subunit')
                     ->label('Sub Unit')
-                    // ->required()
                     ->dehydrateStateUsing(fn(string $state): string => strtoupper($state))
                     ->extraInputAttributes(['style' => 'text-transform:uppercase'])
                     ->columnSpanFull(),
 
+                Select::make('parlimen_id')
+                    ->label('Parlimen')
+                    ->relationship('parlimen', 'nama_parlimen')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->afterStateUpdated(fn(Set $set) => $set('dun_id', null)),
+
+                Select::make('dun_id')
+                    ->label('DUN')
+                    ->searchable()
+                    ->options(function (Get $get): array {
+                        $parlimenId = $get('parlimen_id');
+                        if (blank($parlimenId)) return [];
+                        return Dun::where('parlimen_id', $parlimenId)
+                            ->pluck('nama_dun', 'id')
+                            ->toArray();
+                    })
+                    ->disabled(fn(Get $get) => blank($get('parlimen_id')))
+                    ->helperText('Sila pilih Parlimen dahulu'),
             ]);
     }
 }

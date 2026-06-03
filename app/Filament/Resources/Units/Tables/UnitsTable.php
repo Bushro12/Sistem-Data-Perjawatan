@@ -17,29 +17,37 @@ class UnitsTable
         return $table
             ->columns([
                 TextColumn::make('no')
-                ->label('Bil')
-                ->rowIndex(),
+                    ->label('Bil')
+                    ->rowIndex(),
                 TextColumn::make('bahagian.nama_bahagian')
-                ->label('Bahagian')
-                ->sortable()
-                ->searchable(),
+                    ->label('Bahagian')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('nama_unit')
-                ->label('Unit')
-                ->sortable()
-                ->searchable(),
+                    ->label('Unit')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('parlimen.nama_parlimen')
+                    ->label('Parlimen')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('dun.nama_dun')
+                    ->label('Dun')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
                 ViewAction::make()
-                ->label('')
-                ->color('info'),
+                    ->label('')
+                    ->color('info'),
                 EditAction::make()
-                ->label('')
-                ->modal(),
+                    ->label('')
+                    ->modal(),
                 DeleteAction::make()
-                ->label(''),
+                    ->label(''),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

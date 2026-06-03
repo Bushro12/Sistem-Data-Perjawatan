@@ -31,6 +31,18 @@ class PtjsTable
                     ->label('Pengarah')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('pengarah')
+                    ->label('Pengarah')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('parlimen.nama_parlimen')
+                    ->label('Parlimen')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('dun.nama_dun')
+                    ->label('Dun')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->defaultSort('nama_ptj', 'asc')
             ->filters([
