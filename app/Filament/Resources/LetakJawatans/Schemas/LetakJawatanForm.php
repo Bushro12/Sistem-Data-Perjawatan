@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LetakJawatans\Schemas;
 
+use App\Models\LetakJawatan;
 use App\Models\Pegawai;
 use Date;
 use Filament\Forms\Components\Checkbox;
@@ -23,7 +24,9 @@ class LetakJawatanForm
                 Section::make('Maklumat Pegawai')
                     ->schema([
                         Select::make('pegawai_id')
+                        ->required()
                             ->label('Nama Pegawai')
+                            ->visible(fn(string $operation) => $operation === 'create')
                             ->options(
                                 Pegawai::orderBy('nama')->pluck('nama', 'id')
                             )
@@ -104,47 +107,70 @@ class LetakJawatanForm
                         Hidden::make('nama')
                             ->dehydrated(),
 
+                        TextInput::make('nama_Pegawai')
+                            ->label('Nama Pegawai')
+                            ->visible(fn(string $operation) => $operation === 'edit')
+                            ->columnSpanFull()
+                            ->readOnly()
+                            ->formatStateUsing(
+                                fn($get) =>
+                                LetakJawatan::find($get('id'))?->nama
+                            ),
+
                         TextInput::make('nokp')
                             ->label('No KP')
-                            ->disabled()
+                            ->required()
+                            ->readonly()
                             ->dehydrated(),
 
                         TextInput::make('jawatan_display')
                             ->label('Jawatan / Gred')
-                            ->disabled()
-                            ->dehydrated(),
-
+                            ->required()
+                            ->readonly()
+                            ->dehydrated()
+                            ->formatStateUsing(
+                                fn($get) =>
+                                ($record = LetakJawatan::with(['jawatan_gred.jawatan', 'jawatan_gred.gred'])
+                                    ->find($get('id')))
+                                    ?->jawatan_gred?->jawatan?->desc_jawatan
+                                . ' (' .
+                                $record?->jawatan_gred?->gred?->kod_gred
+                                . ')'
+                            ),
                         Hidden::make('jawatan_gred_id')
                             ->dehydrated(),
 
                         TextInput::make('ptj_display')
                             ->label('Tempat Bertugas')
-                            ->disabled()
+                            ->required()
+                            ->readonly()
                             ->dehydrated(false)
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                             ->formatStateUsing(
+                                fn($get) =>
+                                LetakJawatan::find($get('id'))?->ptj?->nama_ptj
+                            ),
 
                         Hidden::make('ptj_id')
                             ->dehydrated(),
 
-                        // TextInput::make('tempat_bertugas')
-                        // ->label('Temoat Bertugas')
-                        // ->disabled()
-                        // ->dehydrated(),
-
                         TextInput::make('lantikan')
                             ->label('Lantikan')
-                            ->disabled()
+                            ->required()
+                            ->readonly()
                             ->dehydrated(),
 
                         DatePicker::make('tarikh_lantik')
                             ->label('Tarikh Lantikan')
-                            ->disabled()
+                            ->required()
+                            ->readonly()
                             ->dehydrated()
                             ->native(false)
                             ->displayFormat('d F Y'),
 
                         Select::make('jenis_notis')
                             ->label('Notis (30 Hari @ 24 Jam)')
+                            ->required()
                             ->options([
                                 '30 Hari' => '30 Hari',
                                 '24 Jam' => '24 Jam',
@@ -170,6 +196,7 @@ class LetakJawatanForm
 
                         DatePicker::make('tarikh_notis')
                             ->label('Tarikh Mula Notis')
+                            ->required()
                             ->live()
                             ->native(false)
                             ->displayFormat('d F Y')
@@ -191,7 +218,8 @@ class LetakJawatanForm
                             }),
                         DatePicker::make('tarikh_kuatkuasa')
                             ->label('Tarikh Kuatkuasa')
-                            ->disabled()
+                            ->required()
+                            ->readonly()
                             ->dehydrated()
                             ->native(false)
                             ->displayFormat('d F Y')
@@ -211,10 +239,8 @@ class LetakJawatanForm
 
                         Textarea::make('alasan')
                             ->label('Alasan')
+                            ->required()
                             ->columnSpanFull()
-
-
-
 
                     ])
                     ->columnSpanFull()

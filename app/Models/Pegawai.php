@@ -65,4 +65,9 @@ class Pegawai extends Model
         return $this->hasOne(PegawaiKontrak::class);
     }
 
+    public function waranJawatan()
+    {
+        return $this->hasMany(WaranJawatan::class, 'pegawai_id');
+    }
+
 }

@@ -13,6 +13,7 @@ use App\Models\Subunit;
 use App\Models\Unit;
 use App\Models\WaranJawatan;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -436,18 +437,17 @@ class WaranJawatansRelationManager extends RelationManager
                 ]),
             ])
             ->actions([
+                ActionGroup::make([
 
                 ViewAction::make('view')
                     ->color('info'),
-
-                EditAction::make()
+     EditAction::make()
                     ->visible(
                         fn($record) =>
                         $this->getOwnerRecord()->jenis === 'tambah'
                         && $record->status === 'active'
                     ),
-
-                Action::make('delete')
+     Action::make('delete')
                     ->label('Delete')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
@@ -464,9 +464,7 @@ class WaranJawatansRelationManager extends RelationManager
                         ]);
                         $record->delete();
                     }),
-
-
-                Action::make('remove')
+                    Action::make('remove')
                     ->label('Buang Jawatan')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
@@ -487,8 +485,7 @@ class WaranJawatansRelationManager extends RelationManager
 
                         $record->delete();
                     }),
-
-                Action::make('restore')
+                    Action::make('restore')
                     ->label('Undo Buang')
                     ->icon('heroicon-o-arrow-uturn-left')
                     ->color('success')
@@ -507,6 +504,78 @@ class WaranJawatansRelationManager extends RelationManager
                             'status' => 'active',
                         ]);
                     }),
+]),
+
+                // ViewAction::make('view')
+                //     ->color('info'),
+
+                // EditAction::make()
+                //     ->visible(
+                //         fn($record) =>
+                //         $this->getOwnerRecord()->jenis === 'tambah'
+                //         && $record->status === 'active'
+                //     ),
+
+                // Action::make('delete')
+                //     ->label('Delete')
+                //     ->icon('heroicon-o-trash')
+                //     ->color('danger')
+                //     ->requiresConfirmation()
+                //     ->visible(
+                //         fn($record) =>
+                //         $this->getOwnerRecord()->jenis === 'tambah'
+                //         && $record->status === 'active'
+                //     )
+                //     ->action(function ($record) {
+
+                //         $record->update([
+                //             'status' => 'deleted',
+                //         ]);
+                //         $record->delete();
+                //     }),
+
+
+                // Action::make('remove')
+                //     ->label('Buang Jawatan')
+                //     ->icon('heroicon-o-trash')
+                //     ->color('danger')
+                //     ->requiresConfirmation()
+                //     ->visible(
+                //         fn($record) =>
+                //         $this->getOwnerRecord()->jenis === 'tolak'
+                //         && $record->status === 'active'
+                //     )
+                //     ->action(function ($record) {
+
+                //         $waran = $this->getOwnerRecord();
+
+                //         $record->update([
+                //             'waran_tolak_id' => $waran->id,
+                //             'status' => 'removed',
+                //         ]);
+
+                //         $record->delete();
+                //     }),
+
+                // Action::make('restore')
+                //     ->label('Undo Buang')
+                //     ->icon('heroicon-o-arrow-uturn-left')
+                //     ->color('success')
+                //     ->requiresConfirmation()
+                //     ->visible(
+                //         fn($record) =>
+                //         $this->getOwnerRecord()->jenis === 'tolak'
+                //         && $record->status === 'removed'
+                //     )
+                //     ->action(function ($record) {
+
+                //         $record->restore();
+
+                //         $record->update([
+                //             'waran_tolak_id' => null,
+                //             'status' => 'active',
+                //         ]);
+                //     }),
             ]);
     }
 }

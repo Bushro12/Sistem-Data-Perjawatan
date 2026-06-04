@@ -4,10 +4,12 @@ namespace App\Filament\Resources\Warans\Tables;
 
 use App\Models\Program;
 use App\Models\WaranJawatan;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -82,10 +84,11 @@ class WaransTable
                 TextColumn::make('butiran_list')
                     ->label('Butiran')
                     ->html()
-                    ->searchable(query: function ($query, $search) {
+                   ->searchable(query: function ($query, $search) {
                         $query->whereHas('waranJawatan', function ($q) use ($search) {
                             $q->where('butiran', 'like', "%{$search}%");
                         });
+
                     }),
                 // Aktiviti (unique, no repeat)
                 TextColumn::make('aktiviti_list')
@@ -238,8 +241,10 @@ class WaransTable
 
             ])
             ->recordActions([
+                ActionGroup::make([
                 EditAction::make(),
-                DeleteAction::make(),
+                ])
+                // DeleteAction::make(),
             ])
 
             ->toolbarActions([

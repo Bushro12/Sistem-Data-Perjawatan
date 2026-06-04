@@ -63,14 +63,7 @@ class PegawaiForm
                                     // invalid IC → ignore
                                 }
                             }),
-                        // DatePicker::make('tarikh_lahir')
-                        //     ->label('Tarikh Lahir')
-                        //     ->native(false)
-                        //     ->displayFormat('d F Y')
-                        //     ->dehydrated(false),
-                        //     TextInput::make('emel')
-                        //     ->label('E-mel')
-                        //     ->email(),
+
                         Select::make('jantina')
                             ->label('Jantina')
                             ->required()
@@ -132,41 +125,6 @@ class PegawaiForm
                             })
                             ->searchable()
                             ->preload(),
-
-                        // Select::make('jawatan_gred_id')
-                        //     ->label('Jawatan')
-                        //     // ->multiple()
-                        //     ->relationship(
-                        //         'jawatan_gred',
-                        //         'id',
-                        //         fn($query) => $query
-                        //             ->join('jawatans', 'jawatan__greds.jawatan_id', '=', 'jawatans.id')
-                        //             ->join('greds', 'jawatan__greds.gred_id', '=', 'greds.id')
-                        //             ->select('jawatan__greds.*')
-                        //     )
-                        //     ->getOptionLabelFromRecordUsing(
-                        //         fn($record) =>
-                        //         $record->jawatan->desc_jawatan . ' (' . $record->gred->kod_gred . ')'
-                        //     )
-                        //     ->searchable([
-                        //         'jawatans.desc_jawatan',
-                        //         'greds.kod_gred'
-                        //     ])
-                        //     ->preload(),
-
-                        // Select::make('jawatan_id')
-                        //     ->label('Jawatan')
-                        //     // ->multiple()
-                        //     ->options(
-                        //         Jawatan::orderBy('desc_jawatan')
-                        //             ->pluck('desc_jawatan', 'id')
-                        //             ->toArray()
-                        //     )
-                        //     ->searchable()
-                        //     ->preload()
-                        //     ->live(),
-
-
 
                         Select::make('jawatan_id')
                             ->label('Jawatan')
@@ -305,30 +263,66 @@ class PegawaiForm
                             ->label('Tarikh Sah Jawatan')
                             ->native(false)
                             ->displayFormat('d F Y'),
-                        Select::make('opsyen_pencen')
+                        Select::make('opsyen_pencen_id')
                             ->label('Opsyen Pencen')
                             ->relationship('opsyenPencen', 'opsyen')
                             ->searchable()
                             ->preload()
+                            ->live()
                             ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set, Get $get) {
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
 
-                                $dob = $get('tarikh_lahir');
+                                $nokp = $get('nokp');
 
-                                if (!$dob || !$state)
+                                if (blank($nokp) || blank($state)) {
                                     return;
+                                }
 
-                                // 🔥 get actual value from DB
-                                $opsyen = OpsyenPencen::find($state);
+                                // buang dash kalau ada
+                                $nokp = str_replace('-', '', $nokp);
 
-                                if (!$opsyen)
+                                if (strlen($nokp) < 6) {
                                     return;
+                                }
 
-                                $umur = $opsyen->opsyen; // 56
+                                // extract DOB from IC
+                                $year = substr($nokp, 0, 2);
+                                $month = substr($nokp, 2, 2);
+                                $day = substr($nokp, 4, 2);
 
-                                $tarikhPencen = Carbon::parse($dob)->addYears((int) $umur);
+                                // determine century
+                                $fullYear = $year > date('y')
+                                    ? '19' . $year
+                                    : '20' . $year;
 
-                                $set('tarikh_pencen', $tarikhPencen->format('Y-m-d'));
+                                try {
+
+                                    $tarikhLahir = Carbon::createFromFormat(
+                                        'Y-m-d',
+                                        "$fullYear-$month-$day"
+                                    );
+
+                                    $opsyen = OpsyenPencen::find($state);
+
+                                    if (!$opsyen) {
+                                        return;
+                                    }
+
+                                    $umurPersaraan = (int) $opsyen->opsyen;
+
+                                    // tambah umur persaraan
+                                    $tarikhPencen = $tarikhLahir
+                                        ->copy()
+                                        ->addYears($umurPersaraan);
+
+                                    $set(
+                                        'tarikh_pencen',
+                                        $tarikhPencen->format('Y-m-d')
+                                    );
+
+                                } catch (\Exception $e) {
+                                    return;
+                                }
                             }),
                         DatePicker::make('tarikh_pencen')
                             ->label('Tarikh Pencen')

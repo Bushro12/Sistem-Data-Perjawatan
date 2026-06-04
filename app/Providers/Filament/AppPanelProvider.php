@@ -28,6 +28,7 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->path('app')
+            // ->homeUrl('/app/dashboard')
             ->brandName('e-SDaP')
             ->viteTheme('resources/css/filament/app/theme.css')
             ->login()
@@ -46,7 +47,7 @@ class AppPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
-           
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

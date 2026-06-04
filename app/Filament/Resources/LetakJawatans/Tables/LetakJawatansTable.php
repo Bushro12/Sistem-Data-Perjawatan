@@ -24,7 +24,7 @@ class LetakJawatansTable
                     ->formatStateUsing(
                         fn($record) =>
                         '<strong>' . ($record->nama ?? '-') . '</strong><br>' .
-                        ($record->nokp ?? '-') . '<br>' .
+                        // ($record->nokp ?? '-') . '<br>' .
                             // ($record->emel ?? '-') . '<br>' .
                         (
                             $record->jawatan_gred
@@ -42,9 +42,9 @@ class LetakJawatansTable
                     ->label('Notis')
                     ->formatStateUsing(
                         fn($record) =>
-                        '<strong>' . ($record->jenis_notis ?? '-') . '</strong><br>Tarikh Mula Notis: ' .
-                        Carbon::parse($record->tarikh_notis)->format('d F Y') . '<br>Tarikh Kuatkuasa: ' .
-                        Carbon::parse($record->tarikh_kuatkuasa)->format('d F Y')
+                        '<strong>' . ($record->jenis_notis ?? '-') . '</strong><br>' .
+                        // 'Tarikh Mula Notis: ' . Carbon::parse($record->tarikh_notis)->format('d F Y') . '<br>' .
+                        'Tarikh Kuatkuasa: ' . Carbon::parse($record->tarikh_kuatkuasa)->format('d F Y')
 
                     )
                     ->html()
@@ -55,9 +55,9 @@ class LetakJawatansTable
                     ->label('Lantikan')
                     ->formatStateUsing(
                         fn($record) =>
-                        '<strong>' . ($record->ptj->nama_ptj) . '</strong><br>Tarikh Lantikan: ' .
-                        Carbon::parse($record->tarikh_lantik)->format('d F Y') . '<br>Jenis Lantikan: ' .
-                        ($record->lantikan)
+                        '<strong>' . ($record->ptj->nama_ptj) . '</strong><br>' .
+                        // 'Tarikh Lantikan: ' . Carbon::parse($record->tarikh_lantik)->format('d F Y') . '<br>' .
+                        'Jenis Lantikan: ' . ($record->lantikan)
                     )
                     ->html()
             ])

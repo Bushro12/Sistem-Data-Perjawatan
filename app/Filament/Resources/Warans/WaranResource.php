@@ -36,6 +36,32 @@ class WaranResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getModel()
+            ::all()
+            ->filter(
+                fn($record) =>
+                in_array($record->status_jik, ['Kurang', 'Lebih'])
+            )
+            ->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $count = static::getModel()
+            ::all()
+            ->filter(
+                fn($record) =>
+                in_array($record->status_jik, ['Kurang', 'Lebih'])
+            )
+            ->count();
+
+        return $count > 0 ? 'danger': null;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return WaranForm::configure($schema);
@@ -46,17 +72,17 @@ class WaranResource extends Resource
         return WaransTable::configure($table);
     }
 
-public static function getRelations(): array
-{
-    return [
-        WaranJawatansRelationManager::class,
-    ];
-}
+    public static function getRelations(): array
+    {
+        return [
+            WaranJawatansRelationManager::class,
+        ];
+    }
 
     public static function getPages(): array
     {
         return [
-            'custom' =>CustomTable::route('/custom'),
+            'custom' => CustomTable::route('/custom'),
             'index' => ListWarans::route('/'),
             'create' => CreateWaran::route('/create'),
             'edit' => EditWaran::route('/{record}/edit'),
@@ -78,15 +104,15 @@ public static function getRelations(): array
         ]);
     }
 
- public static function getWidgets(): array
-{
-    return [
-        WaranStats::class,
-    ];
-}
+    public static function getWidgets(): array
+    {
+        return [
+            WaranStats::class,
+        ];
+    }
 
-public static function getHeaderWidgets(): array
-{
-    return [];
-}
+    public static function getHeaderWidgets(): array
+    {
+        return [];
+    }
 }
