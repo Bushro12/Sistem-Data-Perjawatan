@@ -59,7 +59,6 @@ class WaranJawatansRelationManager extends RelationManager
         return $schema
             ->components([
                 Select::make('aktiviti_id')
-                    // ->relationship('aktiviti', 'nama_aktiviti')
                     ->required()
                     ->options(function () {
 
@@ -77,17 +76,26 @@ class WaranJawatansRelationManager extends RelationManager
                                         })
                                         ->toArray(),
                                 ];
-
                             })
                             ->toArray();
                     })
                     ->searchable()
                     ->preload()
-                    ->columns(1),
+                    ->columns(1)
+                    ->disabled(
+                        fn() =>
+                        ! auth()->user()?->isSuperadmin()
+                            && ! auth()->user()?->isAdmin()
+                    ),
 
                 TextInput::make('butiran')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->readonly(
+                                fn() =>
+                                ! auth()->user()?->isSuperadmin()
+                                    && ! auth()->user()?->isAdmin()
+                            ),
 
                 Select::make('jawatan_ids')
                     ->label('Jawatan')
@@ -99,7 +107,12 @@ class WaranJawatansRelationManager extends RelationManager
                     )
                     ->searchable()
                     ->preload()
-                    ->live(),
+                    ->live()
+                    ->disabled(
+                                fn() =>
+                                ! auth()->user()?->isSuperadmin()
+                                    && ! auth()->user()?->isAdmin()
+                            ),
                 Select::make('gred_ids')
                     ->label('Gred')
                     ->multiple()
@@ -133,7 +146,12 @@ class WaranJawatansRelationManager extends RelationManager
                     ->preload()
                     ->live()
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->disabled(
+                                fn() =>
+                                ! auth()->user()?->isSuperadmin()
+                                    && ! auth()->user()?->isAdmin()
+                            ),
 
                 Select::make('bahagian_id')
                     ->label('Bahagian')
@@ -174,7 +192,12 @@ class WaranJawatansRelationManager extends RelationManager
                     })
                     ->searchable()
                     ->live()
-                    ->preload(),
+                    ->preload()
+                    ->disabled(
+                                fn() =>
+                                ! auth()->user()?->isSuperadmin()
+                                    && ! auth()->user()?->isAdmin()
+                            ),
 
                 Select::make('subunit_id')
                     ->label('Subunit')
@@ -192,7 +215,12 @@ class WaranJawatansRelationManager extends RelationManager
                             ->toArray();
                     })
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->disabled(
+                                fn() =>
+                                ! auth()->user()?->isSuperadmin()
+                                    && ! auth()->user()?->isAdmin()
+                            ),
 
                 Select::make('pegawai_id')
                     ->label('Pegawai')
@@ -225,10 +253,13 @@ class WaranJawatansRelationManager extends RelationManager
                     ->live()
                     ->preload()
                     ->columnSpanFull()
-                    ->disabled(function (Get $get) {
-                        return blank($get('jawatan_ids'))
-                            || blank($get('gred_ids'));
-                    }),
+                    ->formatStateUsing(
+                                    fn($get) =>
+                                    WaranJawatan::with('pegawai')
+                                        ->find($get('id'))
+                                        ?->ptj?->nama
+                                ),
+                    
 
                 Checkbox::make('is_kup')
                     ->label('Khas Untuk Penyandang (KUP)'),
@@ -275,7 +306,6 @@ class WaranJawatansRelationManager extends RelationManager
                 }
 
                 return $query;
-
             })
 
 
@@ -362,12 +392,11 @@ class WaranJawatansRelationManager extends RelationManager
                                         ->mapWithKeys(function ($aktiviti) {
                                             return [
                                                 $aktiviti->id =>
-                                                    $aktiviti->no_aktivit . ' - ' . $aktiviti->nama_aktiviti
+                                                $aktiviti->no_aktivit . ' - ' . $aktiviti->nama_aktiviti
                                             ];
                                         })
                                         ->toArray(),
                                 ];
-
                             })
                             ->toArray();
                     })
@@ -393,8 +422,15 @@ class WaranJawatansRelationManager extends RelationManager
 
             ->headerActions([
                 CreateAction::make()
-                    ->label('Tambah jawatan')
-                    ->visible(fn() => $this->getOwnerRecord()->jenis === 'tambah'),
+                    ->label('Tambah Jawatan')
+                    ->visible(
+                        fn() =>
+                        $this->getOwnerRecord()->jenis === 'tambah'
+                            && (
+                                auth()->user()?->isSuperadmin()
+                                || auth()->user()?->isAdmin()
+                            )
+                    ),
 
                 // Action::make('active')
                 //     ->label('Aktif')
@@ -439,72 +475,72 @@ class WaranJawatansRelationManager extends RelationManager
             ->actions([
                 ActionGroup::make([
 
-                ViewAction::make('view')
-                    ->color('info'),
-     EditAction::make()
-                    ->visible(
-                        fn($record) =>
-                        $this->getOwnerRecord()->jenis === 'tambah'
-                        && $record->status === 'active'
-                    ),
-     Action::make('delete')
-                    ->label('Delete')
-                    ->icon('heroicon-o-trash')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->visible(
-                        fn($record) =>
-                        $this->getOwnerRecord()->jenis === 'tambah'
-                        && $record->status === 'active'
-                    )
-                    ->action(function ($record) {
+                    ViewAction::make('view')
+                        ->color('info'),
+                    EditAction::make()
+                        ->visible(
+                            fn($record) =>
+                            $this->getOwnerRecord()->jenis === 'tambah'
+                                && $record->status === 'active'
+                        ),
+                    Action::make('delete')
+                        ->label('Delete')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->visible(
+                            fn($record) =>
+                            $this->getOwnerRecord()->jenis === 'tambah'
+                                && $record->status === 'active'
+                        )
+                        ->action(function ($record) {
 
-                        $record->update([
-                            'status' => 'deleted',
-                        ]);
-                        $record->delete();
-                    }),
+                            $record->update([
+                                'status' => 'deleted',
+                            ]);
+                            $record->delete();
+                        }),
                     Action::make('remove')
-                    ->label('Buang Jawatan')
-                    ->icon('heroicon-o-trash')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->visible(
-                        fn($record) =>
-                        $this->getOwnerRecord()->jenis === 'tolak'
-                        && $record->status === 'active'
-                    )
-                    ->action(function ($record) {
+                        ->label('Buang Jawatan')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->visible(
+                            fn($record) =>
+                            $this->getOwnerRecord()->jenis === 'tolak'
+                                && $record->status === 'active'
+                        )
+                        ->action(function ($record) {
 
-                        $waran = $this->getOwnerRecord();
+                            $waran = $this->getOwnerRecord();
 
-                        $record->update([
-                            'waran_tolak_id' => $waran->id,
-                            'status' => 'removed',
-                        ]);
+                            $record->update([
+                                'waran_tolak_id' => $waran->id,
+                                'status' => 'removed',
+                            ]);
 
-                        $record->delete();
-                    }),
+                            $record->delete();
+                        }),
                     Action::make('restore')
-                    ->label('Undo Buang')
-                    ->icon('heroicon-o-arrow-uturn-left')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->visible(
-                        fn($record) =>
-                        $this->getOwnerRecord()->jenis === 'tolak'
-                        && $record->status === 'removed'
-                    )
-                    ->action(function ($record) {
+                        ->label('Undo Buang')
+                        ->icon('heroicon-o-arrow-uturn-left')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->visible(
+                            fn($record) =>
+                            $this->getOwnerRecord()->jenis === 'tolak'
+                                && $record->status === 'removed'
+                        )
+                        ->action(function ($record) {
 
-                        $record->restore();
+                            $record->restore();
 
-                        $record->update([
-                            'waran_tolak_id' => null,
-                            'status' => 'active',
-                        ]);
-                    }),
-]),
+                            $record->update([
+                                'waran_tolak_id' => null,
+                                'status' => 'active',
+                            ]);
+                        }),
+                ]),
 
                 // ViewAction::make('view')
                 //     ->color('info'),
