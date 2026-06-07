@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Waran extends Model
@@ -145,6 +146,20 @@ class Waran extends Model
         //     }
 
         // });
+        static::addGlobalScope('ptj_access', function (Builder $query) {
+
+        $user = auth()->user();
+
+        // superadmin & admin can see all
+        if (in_array($user->role, [1, 2])) {
+            return;
+        }
+
+        // normal user → filter by PTJ
+       $query->whereHas('waranJawatan', function ($q) use ($user) {
+            $q->where('ptj_id', $user->ptj_id);
+        });
+        });
     }
 
     public function parent()

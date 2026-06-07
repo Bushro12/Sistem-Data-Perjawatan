@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\LetakJawatans\Tables;
 
 use Carbon\Carbon;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -24,7 +25,7 @@ class LetakJawatansTable
                     ->formatStateUsing(
                         fn($record) =>
                         '<strong>' . ($record->nama ?? '-') . '</strong><br>' .
-                        // ($record->nokp ?? '-') . '<br>' .
+                            // ($record->nokp ?? '-') . '<br>' .
                             // ($record->emel ?? '-') . '<br>' .
                         (
                             $record->jawatan_gred
@@ -65,8 +66,11 @@ class LetakJawatansTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make()
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make()
+                ])
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

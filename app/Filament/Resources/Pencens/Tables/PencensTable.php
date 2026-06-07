@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Pencens\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -97,9 +98,12 @@ class PencensTable
                 //
             ])
             ->recordActions([
-                // ViewAction::make(),
+                ActionGroup::make([
+                    //  ViewAction::make(),
                 EditAction::make(),
-                // DeleteAction::make()
+                DeleteAction::make()
+                ])
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
