@@ -4,11 +4,15 @@ namespace App\Filament\Resources\Pegawais\Tables;
 
 use App\Models\Pegawai;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ActionGroup;
+
 use Filament\Support\View\Components\BadgeComponent;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Pest\Arch\GroupArchExpectation;
 
 class PegawaisTable
 {
@@ -190,7 +194,11 @@ class PegawaisTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make()
+                ])
+                // EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -2,26 +2,26 @@
 
 namespace App\Policies;
 
+use App\Models\Pegawai;
 use App\Models\User;
-use App\Models\Waran;
 use Illuminate\Auth\Access\Response;
 
-class WaranPolicy
+class PegawaiPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isUser();
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Waran $waran): bool
+    public function view(User $user, Pegawai $pegawai): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isUser();
+        return true;
     }
 
     /**
@@ -35,7 +35,7 @@ class WaranPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Waran $waran): bool
+    public function update(User $user, Pegawai $pegawai): bool
     {
         return $user->isSuperAdmin() || $user->isAdmin() || $user->isUser();
     }
@@ -43,27 +43,26 @@ class WaranPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Waran $waran): bool
+    public function delete(User $user, Pegawai $pegawai): bool
     {
-        return $user->isSuperAdmin();
+        return $user->isSuperadmin();
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Waran $waran): bool
+    public function restore(User $user, Pegawai $pegawai): bool
     {
-        return $user->isSuperAdmin();
+        return false;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Waran $waran): bool
+    public function forceDelete(User $user, Pegawai $pegawai): bool
     {
-        return $user->isSuperAdmin();
+        return false;
     }
-
 
     public function deleteAny(User $user): bool
     {

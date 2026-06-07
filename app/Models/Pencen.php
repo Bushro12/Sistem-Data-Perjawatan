@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Pencen extends Model
@@ -23,6 +24,18 @@ class Pencen extends Model
         'catatan'
     ];
 
+    protected static function booted()
+    {
+        static::addGlobalScope('ptj_access', function (Builder $query) {
+            $user = auth()->user();
+
+             if (in_array($user->role, [1, 2])) {
+            return;
+        }
+
+        $query->where('ptj_id', $user->ptj_id);
+        });
+    }
     public function ptj()
     {
         return $this->belongsTo(Ptj::class, 'ptj_id');

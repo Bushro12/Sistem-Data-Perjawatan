@@ -243,6 +243,7 @@ class WaransTable
             ->recordActions([
                 ActionGroup::make([
                 EditAction::make(),
+                DeleteAction::make()
                 ])
                 // DeleteAction::make(),
             ])
