@@ -20,7 +20,6 @@ class GredForm
                 ->label('Kod')
                 ->required()
                 ->columnSpan(2),
-
             ]);
     }
 }

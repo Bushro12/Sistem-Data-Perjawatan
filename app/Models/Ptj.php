@@ -14,7 +14,20 @@ class Ptj extends Model
         'pengarah',
         'is_jkn',
         'rujukan_surat',
+        'parlimen_id',
+        'dun_id',
     ];
+
+
+    public function parlimen()
+    {
+        return $this->belongsTo(Parlimen::class);
+    }
+
+    public function dun()
+    {
+        return $this->belongsTo(Dun::class);
+    }
 
 
 }

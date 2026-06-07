@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pegawai extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'ptj_id',
         'bahagian_id',
@@ -19,12 +22,26 @@ class Pegawai extends Model
         'tarikh_lantikan',
         'tarikh_sah_jawatan',
         'tarikh_pencen',
+        'is_tetap',
+        'is_kontrak_interim',
         'is_kontrak',
         'is_kup',
         'is_kupj',
         'is_jtw',
         'emel'
     ];
+
+    protected static function booted(){
+        static::addGlobalScope('ptj_access', function (Builder $query) {
+            $user = auth()->user();
+
+             if (in_array($user->role, [1, 2])) {
+            return;
+        }
+
+        $query->where('ptj_id', $user->ptj_id);
+        });
+    }
 
     public function ptj()
     {
@@ -61,5 +78,10 @@ class Pegawai extends Model
         return $this->hasOne(PegawaiKontrak::class);
     }
 
-    
+    public function waranJawatan()
+    {
+        return $this->hasMany(WaranJawatan::class, 'pegawai_id');
+    }
+
+
 }

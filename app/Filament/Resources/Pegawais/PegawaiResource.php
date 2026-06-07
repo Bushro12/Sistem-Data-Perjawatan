@@ -23,10 +23,48 @@ class PegawaiResource extends Resource
     protected static ?string $recordTitleAttribute = 'nama';
 
     protected static ?string $modelLabel = 'Pegawai';
-    protected static ?string $pluralModelLabel = 'Pegawai';
-    protected static ?string $navigationLabel = 'Pegawai';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Buku Waran';
+    protected static ?string $pluralModelLabel = 'Pegawai';
+
+    protected static ?string $navigationLabel = 'Senarai Pegawai';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Pegawai';
+
+    protected static ?int $navigationSort = 11;
+    public static function getNavigationBadge(): ?string
+    {
+        $tidakLengkap = static::getModel()
+            ::where(function ($q) {
+                $q->whereNull('ptj_id')
+                    ->orWhereNull('bahagian_id')
+                    ->orWhereNull('unit_id')
+                    ->orWhereNull('subunit_id');
+            })
+            ->orWhere(function ($q) {
+                $q->where('is_jtw', 0)
+                    ->whereDoesntHave('waranJawatan.waran');
+            })
+            ->count();
+
+        return $tidakLengkap > 0 ? (string) $tidakLengkap : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $tidakLengkap = static::getModel()
+            ::where(function ($q) {
+                $q->whereNull('ptj_id')
+                    ->orWhereNull('bahagian_id')
+                    ->orWhereNull('unit_id')
+                    ->orWhereNull('subunit_id');
+            })
+            ->orWhere(function ($q) {
+                $q->where('is_jtw', 0)
+                    ->whereDoesntHave('waranJawatan.waran');
+            })
+            ->count();
+        return $tidakLengkap > 0 ? 'danger' : null;
+    }
 
     public static function form(Schema $schema): Schema
     {

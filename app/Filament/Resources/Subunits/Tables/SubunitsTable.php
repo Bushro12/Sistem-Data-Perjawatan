@@ -23,6 +23,8 @@ class SubunitsTable
                 ->label('Unit'),
                 TextColumn::make('nama_subunit')
                 ->label('Sub Unit'),
+                TextColumn::make('parlimen.nama_parlimen')
+                ->label('Parlimen'),
                 TextColumn::make('dun.nama_dun')
                 ->label('Dun')
             ])

@@ -14,12 +14,16 @@ class WaranJawatan extends Model
     protected $fillable = [
         'waran_id',
         'ptj_id',
+        'bahagian_id',
+        'unit_id',
+        'subunit_id',
         'aktiviti_id',
         'pegawai_id',
         'jawatan_gred_id',
-        'jawatan_id',
+        'jawatan_ids',
         'gred_ids',
         'butiran',
+        'is_kup',
         'waran_tolak_id',
         'catatan_jawatan',
         'status'
@@ -62,15 +66,21 @@ class WaranJawatan extends Model
 
     protected $casts = [
         'gred_ids' => 'array',
+        'jawatan_ids' => 'array',
     ];
 
     public function getGredListAttribute()
-{
-    return Gred::whereIn('id', $this->gred_ids ?? [])
-        ->pluck('kod_gred')
-        ->implode(', ');
-}
+    {
+        return Gred::whereIn('id', $this->gred_ids ?? [])
+            ->pluck('kod_gred')
+            ->implode(', ');
+    }
 
-
+    public function getJawatanListAttribute()
+    {
+        return Jawatan::whereIn('id', $this->jawatan_ids ?? [])
+            ->pluck('desc_jawatan')
+            ->implode(', ');
+    }
 
 }

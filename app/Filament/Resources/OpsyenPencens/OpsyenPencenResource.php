@@ -26,6 +26,8 @@ class OpsyenPencenResource extends Resource
     protected static ?string $navigationLabel = 'Opsyen Pencen';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Kawalan';
+        protected static ?int $navigationSort = 28;
+
 
     public static function form(Schema $schema): Schema
     {

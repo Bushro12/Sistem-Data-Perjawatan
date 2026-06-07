@@ -2,16 +2,20 @@
 
 namespace App\Filament\Resources\Pegawais\Schemas;
 
+use App\Models\Jawatan;
+use App\Models\Jawatan_Gred;
 use App\Models\OpsyenPencen;
 use Carbon\Carbon;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class PegawaiForm
@@ -29,7 +33,7 @@ class PegawaiForm
                             ->label('Nama')
                             ->columnSpanFull()
                             ->required()
-                             ->dehydrateStateUsing(fn(string $state): string => strtoupper($state))
+                            ->dehydrateStateUsing(fn(string $state): string => strtoupper($state))
                             ->extraInputAttributes(['style' => 'text-transform:uppercase']),
                         TextInput::make('nokp')
                             ->label('No Kad Pengenalan')
@@ -59,14 +63,7 @@ class PegawaiForm
                                     // invalid IC → ignore
                                 }
                             }),
-                        // DatePicker::make('tarikh_lahir')
-                        //     ->label('Tarikh Lahir')
-                        //     ->native(false)
-                        //     ->displayFormat('d F Y')
-                        //     ->dehydrated(false),
-                        //     TextInput::make('emel')
-                        //     ->label('E-mel')
-                        //     ->email(),
+
                         Select::make('jantina')
                             ->label('Jantina')
                             ->required()
@@ -129,32 +126,91 @@ class PegawaiForm
                             ->searchable()
                             ->preload(),
 
-                        Select::make('jawatan_gred_id')
+                        Select::make('jawatan_id')
                             ->label('Jawatan')
-                            // ->multiple()
-                            ->relationship(
-                                'jawatan_gred',
-                                'id',
-                                fn($query) => $query
-                                    ->join('jawatans', 'jawatan__greds.jawatan_id', '=', 'jawatans.id')
-                                    ->join('greds', 'jawatan__greds.gred_id', '=', 'greds.id')
-                                    ->select('jawatan__greds.*')
+                            ->options(
+                                Jawatan::query()
+                                    ->orderBy('desc_jawatan')
+                                    ->pluck('desc_jawatan', 'id')
                             )
-                            ->getOptionLabelFromRecordUsing(
-                                fn($record) =>
-                                $record->jawatan->desc_jawatan . ' (' . $record->gred->kod_gred . ')'
-                            )
-                            ->searchable([
-                                'jawatans.desc_jawatan',
-                                'greds.kod_gred'
-                            ])
-                            ->preload(),
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->reactive()
+                            ->dehydrated(false)
+                            ->afterStateHydrated(function ($state, Get $get, Set $set) {
+
+                                $jawatanGredId = $get('jawatan_gred_id');
+
+                                if (!$jawatanGredId) {
+                                    return;
+                                }
+
+                                $jawatanGred = Jawatan_Gred::find($jawatanGredId);
+
+                                if (!$jawatanGred) {
+                                    return;
+                                }
+
+                                $set('jawatan_id', $jawatanGred->jawatan_id);
+                            }),
 
                         Select::make('gred_id')
                             ->label('Gred')
-                            ->searchable()
-                            ->preload(),
+                            ->options(function (Get $get) {
 
+                                $jawatanId = $get('jawatan_id');
+
+                                if (blank($jawatanId)) {
+                                    return [];
+                                }
+
+                                return Jawatan_Gred::query()
+                                    ->where('jawatan_id', $jawatanId)
+                                    ->join('greds', 'jawatan__greds.gred_id', '=', 'greds.id')
+                                    ->pluck('greds.kod_gred', 'greds.id')
+                                    ->toArray();
+                            })
+                            ->live()
+                            ->searchable()
+                            ->preload()
+                            ->dehydrated(false)
+                            // ->multiple()
+                            ->disabled(fn(Get $get) => blank($get('jawatan_id')))
+                            ->afterStateHydrated(function ($state, Get $get, Set $set) {
+
+                                $jawatanGredId = $get('jawatan_gred_id');
+
+                                if (!$jawatanGredId) {
+                                    return;
+                                }
+
+                                $jawatanGred = Jawatan_Gred::find($jawatanGredId);
+
+                                if (!$jawatanGred) {
+                                    return;
+                                }
+
+                                $set('gred_id', $jawatanGred->gred_id);
+                            })
+                            ->afterStateUpdated(function ($state, Get $get, Set $set) {
+
+                                if (blank($state)) {
+                                    return;
+                                }
+
+                                $jawatanGred = Jawatan_Gred::query()
+                                    ->where('jawatan_id', $get('jawatan_id'))
+                                    ->where('gred_id', $state)
+                                    ->first();
+
+                                $set('jawatan_gred_id', $jawatanGred?->id);
+
+                                // 🔥 reset dependent fields
+                                $set('pegawai_id', null);
+                                $set('butiran', null);
+                            }),
+                        Hidden::make('jawatan_gred_id'),
                         Checkbox::make('is_kontrak')
                             ->label('KONTRAK')
                             ->reactive()
@@ -176,7 +232,6 @@ class PegawaiForm
                                     $set('is_kontrak_interim', false);
                                 }
                             }),
-
 
                         Checkbox::make('is_kupj')
                             ->label('KUPJ'),
@@ -208,30 +263,66 @@ class PegawaiForm
                             ->label('Tarikh Sah Jawatan')
                             ->native(false)
                             ->displayFormat('d F Y'),
-                        Select::make('opsyen_pencen')
+                        Select::make('opsyen_pencen_id')
                             ->label('Opsyen Pencen')
                             ->relationship('opsyenPencen', 'opsyen')
                             ->searchable()
                             ->preload()
+                            ->live()
                             ->reactive()
-                            ->afterStateUpdated(function ($state, callable $set, Get $get) {
+                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
 
-                                $dob = $get('tarikh_lahir');
+                                $nokp = $get('nokp');
 
-                                if (!$dob || !$state)
+                                if (blank($nokp) || blank($state)) {
                                     return;
+                                }
 
-                                // 🔥 get actual value from DB
-                                $opsyen = OpsyenPencen::find($state);
+                                // buang dash kalau ada
+                                $nokp = str_replace('-', '', $nokp);
 
-                                if (!$opsyen)
+                                if (strlen($nokp) < 6) {
                                     return;
+                                }
 
-                                $umur = $opsyen->opsyen; // 56
+                                // extract DOB from IC
+                                $year = substr($nokp, 0, 2);
+                                $month = substr($nokp, 2, 2);
+                                $day = substr($nokp, 4, 2);
 
-                                $tarikhPencen = Carbon::parse($dob)->addYears((int) $umur);
+                                // determine century
+                                $fullYear = $year > date('y')
+                                    ? '19' . $year
+                                    : '20' . $year;
 
-                                $set('tarikh_pencen', $tarikhPencen->format('Y-m-d'));
+                                try {
+
+                                    $tarikhLahir = Carbon::createFromFormat(
+                                        'Y-m-d',
+                                        "$fullYear-$month-$day"
+                                    );
+
+                                    $opsyen = OpsyenPencen::find($state);
+
+                                    if (!$opsyen) {
+                                        return;
+                                    }
+
+                                    $umurPersaraan = (int) $opsyen->opsyen;
+
+                                    // tambah umur persaraan
+                                    $tarikhPencen = $tarikhLahir
+                                        ->copy()
+                                        ->addYears($umurPersaraan);
+
+                                    $set(
+                                        'tarikh_pencen',
+                                        $tarikhPencen->format('Y-m-d')
+                                    );
+
+                                } catch (\Exception $e) {
+                                    return;
+                                }
                             }),
                         DatePicker::make('tarikh_pencen')
                             ->label('Tarikh Pencen')

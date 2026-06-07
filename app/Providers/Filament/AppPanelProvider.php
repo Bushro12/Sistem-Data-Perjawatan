@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -27,6 +28,7 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->path('app')
+            // ->homeUrl('/app/dashboard')
             ->brandName('e-SDaP')
             ->viteTheme('resources/css/filament/app/theme.css')
             ->login()
@@ -45,6 +47,7 @@ class AppPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -59,5 +62,6 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+
     }
 }

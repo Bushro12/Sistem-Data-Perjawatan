@@ -23,6 +23,7 @@ class PtjResource extends Resource
     protected static ?string $recordTitleAttribute = 'nama_ptj';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Kawalan';
+    protected static ?int $navigationSort = 21;
 
     protected static ?string $navigationLabel = 'PTJ';
     protected static ?string $pluralModelLabel = 'PTJ';

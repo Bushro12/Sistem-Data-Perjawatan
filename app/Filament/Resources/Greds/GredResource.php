@@ -29,6 +29,7 @@ class GredResource extends Resource
     protected static ?string $pluralModelLabel ='Gred';
 
     protected static string |\UnitEnum|null $navigationGroup = 'Kawalan';
+    protected static ?int $navigationSort = 26;
 
     public static function form(Schema $schema): Schema
     {

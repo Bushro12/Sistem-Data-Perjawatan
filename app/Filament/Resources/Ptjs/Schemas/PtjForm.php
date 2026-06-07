@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\Ptjs\Schemas;
 
+use App\Models\Dun;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class PtjForm
@@ -12,7 +16,6 @@ class PtjForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-
             ->components([
                 TextInput::make('nama_ptj')
                     ->label('Nama PTJ')
@@ -39,9 +42,29 @@ class PtjForm
                     ->rows(5)
                     ->columnSpanFull(),
                 Checkbox::make('is_jkn')
-                    ->label('Is JKN'),
+                    ->label('Is JKN')
+                    ->columnSpanFull(),
 
+                Select::make('parlimen_id')
+                    ->label('Parlimen')
+                    ->relationship('parlimen', 'nama_parlimen')
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->afterStateUpdated(fn(Set $set) => $set('dun_id', null)),
 
+                Select::make('dun_id')
+                    ->label('DUN')
+                    ->searchable()
+                    ->options(function (Get $get): array {
+                        $parlimenId = $get('parlimen_id');
+                        if (blank($parlimenId)) return [];
+                        return Dun::where('parlimen_id', $parlimenId)
+                            ->pluck('nama_dun', 'id')
+                            ->toArray();
+                    })
+                    ->disabled(fn(Get $get) => blank($get('parlimen_id')))
+                    ->helperText('Sila pilih Parlimen dahulu'),
             ]);
     }
 }
