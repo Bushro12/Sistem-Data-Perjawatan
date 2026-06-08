@@ -21,11 +21,11 @@ class JenisPencenResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'jenis';
-    protected static ?string $modelLabel = 'Jenis Pencen';
+    protected static ?string $modelLabel = 'Jenis Penamatan Perkhidmatan';
 
-    protected static ?string $pluralModelLabel = 'Jenis Pencen';
+    protected static ?string $pluralModelLabel = 'Jenis Penamatan Perkhidmatan';
 
-    protected static ?string $navigationLabel = 'Jenis Pencen';
+    protected static ?string $navigationLabel = 'Jenis Penamatan Perkhidmatan';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Kawalan';
 

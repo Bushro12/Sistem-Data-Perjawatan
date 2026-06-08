@@ -15,7 +15,7 @@ class JenisPencenForm
         return $schema
             ->components([
                 TextInput::make('jenis')
-                    ->label('Jenis Pencen')
+                    ->label('Jenis Penamatan Perkhidmatan')
                     ->required()
                     ->columnSpanFull(),
 

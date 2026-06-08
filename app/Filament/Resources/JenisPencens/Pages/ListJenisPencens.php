@@ -14,10 +14,10 @@ class ListJenisPencens extends ListRecords
     {
         return [
             CreateAction::make()
-                ->label('Tambah Jenis Pencen')
+                ->label('Tambah Jenis Penamatan Perkhidmatan')
                 ->modal()
                 ->createAnother(false)
-                ->modalHeading('Tambah Jenis Pencen')
+                ->modalHeading('Tambah Jenis Penamatan Perkhidmatan')
                 ->modalSubmitActionLabel('Tambah')
                 ->modalCancelActionLabel('Batal'),
         ];
