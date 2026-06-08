@@ -20,7 +20,7 @@ class JenisPencensTable
                 ->label('Bil')
                 ->rowIndex(),
                 TextColumn::make('jenis')
-                ->label('Jenis Pencen')
+                ->label('Jenis Penamatan Perkhidmatan')
                 ->sortable()
                 ->searchable(),
                 TextColumn::make('kategori')
