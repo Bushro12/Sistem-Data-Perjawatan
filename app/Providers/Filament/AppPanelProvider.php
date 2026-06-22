@@ -29,7 +29,7 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->path('app')
-            // ->homeUrl('/app/dashboard')
+            ->homeUrl('/app/dashboard')
             // ->brandLogo(asset('images/logo2.png'))
             ->brandName('MySTAFF')
             ->viteTheme('resources/css/filament/app/theme.css')
@@ -50,7 +50,7 @@ class AppPanelProvider extends PanelProvider
             ->widgets([
                 // AccountWidget::class,
                 // FilamentInfoWidget::class,
-                StatsOverviewWidget::class
+                // StatsOverviewWidget::class
 
             ])
 
@@ -68,7 +68,8 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->databaseNotifications();
+            ->databaseNotifications()
+             ->databaseNotificationsPolling('30s');
 
     }
 }

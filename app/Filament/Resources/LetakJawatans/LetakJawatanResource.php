@@ -9,6 +9,7 @@ use App\Filament\Resources\LetakJawatans\Schemas\LetakJawatanForm;
 use App\Filament\Resources\LetakJawatans\Tables\LetakJawatansTable;
 use App\Models\LetakJawatan;
 use BackedEnum;
+use Filament\Forms\Components\Builder;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -24,7 +25,7 @@ class LetakJawatanResource extends Resource
 
     protected static ?string $modelLabel = 'Letak Jawatan';
 
-        protected static ?string $navigationLabel = 'Letak Jawatan';
+    protected static ?string $navigationLabel = 'Letak Jawatan';
     protected static ?string $pluralModelLabel = 'Letak Jawatan';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Pegawai';
