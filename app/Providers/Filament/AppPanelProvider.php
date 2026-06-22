@@ -13,6 +13,7 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Filament\Widgets\StatsOverviewWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -28,14 +29,17 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->path('app')
-            // ->homeUrl('/app/dashboard')
-            ->brandName('Sistem Perjawatan')
+            ->homeUrl('/app/dashboard')
+            // ->brandLogo(asset('images/logo2.png'))
+            ->brandName('MySTAFF')
             ->viteTheme('resources/css/filament/app/theme.css')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
                 'secondary' => Color::Violet,
                 'tertiary' => Color::Lime,
+                'quartenary' => Color::Slate,
+                'neutral' => Color::Neutral
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -44,8 +48,10 @@ class AppPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                // AccountWidget::class,
+                // FilamentInfoWidget::class,
+                // StatsOverviewWidget::class
+
             ])
 
             ->middleware([
@@ -61,7 +67,9 @@ class AppPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->databaseNotifications()
+             ->databaseNotificationsPolling('30s');
 
     }
 }

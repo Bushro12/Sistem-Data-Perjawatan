@@ -109,6 +109,10 @@ class EditWaran extends EditRecord
             ->label('Kemaskini Waran');
     }
 
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+{
+    return true;
+}
 
 
 }

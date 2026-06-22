@@ -28,7 +28,9 @@ class Pegawai extends Model
         'is_kup',
         'is_kupj',
         'is_jtw',
-        'emel'
+        'emel',
+        'ada_unit',
+        'ada_subunit'
     ];
 
     protected static function booted(){

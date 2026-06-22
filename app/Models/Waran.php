@@ -46,22 +46,27 @@ class Waran extends Model
             ->join('<br>');
     }
 
-    public function getPenempatanListAttribute()
-    {
-        $query = WaranJawatan::withTrashed();
+   public function getPenempatanListAttribute()
+{
+    $user = auth()->user();
 
-        $items = $this->jenis === 'tolak'
-            ? $query->where('waran_tolak_id', $this->id)->get()
-            : $query->where('waran_id', $this->id)->get();
+    $query = WaranJawatan::withTrashed();
 
-        return $items
-            ->groupBy(fn($wj) => $wj->ptj?->nama_ptj)
-            ->map(function ($items, $ptjName) {
-                return $ptjName . ' (' . $items->count() . ')';
-            })
-            ->filter()
-            ->join('<br>');
+    // User only sees their own PTJ
+    if (! $user->isSuperadmin() && ! $user->isAdmin()) {
+        $query->where('ptj_id', $user->ptj_id);
     }
+
+    $items = $this->jenis === 'tolak'
+        ? $query->where('waran_tolak_id', $this->id)->get()
+        : $query->where('waran_id', $this->id)->get();
+
+    return $items
+        ->groupBy(fn ($wj) => $wj->ptj?->nama_ptj)
+        ->map(fn ($items, $ptjName) => $ptjName . ' (' . $items->count() . ')')
+        ->filter()
+        ->join('<br>');
+}
 
     // public function getButiranListAttribute()
 // {

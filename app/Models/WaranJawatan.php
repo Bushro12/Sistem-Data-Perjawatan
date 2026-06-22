@@ -73,7 +73,7 @@ class WaranJawatan extends Model
     {
         return Gred::whereIn('id', $this->gred_ids ?? [])
             ->pluck('kod_gred')
-            ->implode(', ');
+            ->implode('/');
     }
 
     public function getJawatanListAttribute()

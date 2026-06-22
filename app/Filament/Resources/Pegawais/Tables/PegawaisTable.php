@@ -126,12 +126,20 @@ class PegawaisTable
                         $tidakLengkap =
                             is_null($record->ptj_id) ||
                             is_null($record->bahagian_id) ||
-                            is_null($record->subunit_id) ||
-                            is_null($record->unit_id) ||
+                            (
+                                is_null($record->subunit_id) &&
+                                $record->ada_unit == 0
+                            ) ||
+                            (
+                                is_null($record->unit_id) &&
+                                $record->ada_subunit == 0
+                            ) ||
                             (
                                 $record->is_jtw == 0 &&
                                 is_null($noWaran)
                             );
+
+
 
                         return $tidakLengkap ? 'Tidak Lengkap' : 'Lengkap';
                     })
@@ -143,8 +151,14 @@ class PegawaisTable
                         $tidakLengkap =
                             is_null($record->ptj_id) ||
                             is_null($record->bahagian_id) ||
-                            is_null($record->subunit_id) ||
-                            is_null($record->unit_id) ||
+                            (
+                                is_null($record->subunit_id) &&
+                                $record->ada_unit == 0
+                            ) ||
+                            (
+                                is_null($record->unit_id) &&
+                                $record->ada_subunit == 0
+                            ) ||
                             (
                                 $record->is_jtw == 0 &&
                                 is_null($noWaran)
@@ -157,20 +171,35 @@ class PegawaisTable
 
                             $search = strtolower($search);
 
-                            if (str_contains('tidak lengkap', $search)) {
+                            if (str_contains($search, 'tidak lengkap')) {
                                 $query->where(function ($q) {
                                     $q->whereNull('ptj_id')
                                         ->orWhereNull('bahagian_id')
-                                        ->orWhereNull('subunit_id')
-                                        ->orWhereNull('unit_id');
+
+                                        ->orWhere(function ($q) {
+                                            $q->whereNull('subunit_id')
+                                                ->where('ada_unit', 0);
+                                        })
+
+                                        ->orWhere(function ($q) {
+                                            $q->whereNull('unit_id')
+                                                ->where('ada_subunit', 0);
+                                        });
                                 });
                             }
-
-                            if (str_contains('lengkap', $search) && !str_contains('tidak lengkap', $search)) {
+                            if (str_contains($search, 'lengkap') && !str_contains($search, 'tidak lengkap')) {
                                 $query->whereNotNull('ptj_id')
                                     ->whereNotNull('bahagian_id')
-                                    ->whereNotNull('subunit_id')
-                                    ->whereNotNull('unit_id');
+
+                                    ->where(function ($q) {
+                                        $q->whereNotNull('subunit_id')
+                                            ->orWhere('ada_unit', 1);
+                                    })
+
+                                    ->where(function ($q) {
+                                        $q->whereNotNull('unit_id')
+                                            ->orWhere('ada_subunit', 1);
+                                    });
                             }
                         }
                     )
@@ -196,7 +225,7 @@ class PegawaisTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make(),
-                   DeleteAction::make()
+                    DeleteAction::make()
                         ->label('Padam')
                         ->modalHeading(fn($record) => "Padam {$record->nama}")
                         ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
