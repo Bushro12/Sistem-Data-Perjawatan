@@ -27,6 +27,9 @@ class ListLetakJawatans extends ListRecords
                 ->label('Export Excel')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('export')
+                ->modalHeading('Export Laporan Letak Jawatan')
+                ->modalSubmitActionLabel('Export')
+                ->modalCancelActionLabel('Batal')
                 ->form([
                     Grid::make(2)
                         ->schema([
@@ -88,7 +91,7 @@ class ListLetakJawatans extends ListRecords
                             Select::make('to_year')
                                 ->label('Hingga Tahun')
                                 ->options(
-                                    collect(range(now()->year - 5, now()->year + 5))
+                                    collect(range(now()->year - 2, now()->year + 2))
                                         ->mapWithKeys(fn($year) => [$year => $year])
                                         ->toArray()
                                 )
