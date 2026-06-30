@@ -33,18 +33,23 @@ class Pegawai extends Model
         'ada_subunit'
     ];
 
-    protected static function booted(){
-        static::addGlobalScope('ptj_access', function (Builder $query) {
-            $user = auth()->user();
+    protected static function booted()
+{
+    static::addGlobalScope('ptj_access', function (Builder $query) {
+        $user = auth()->user();
 
-             if (in_array($user->role, [1, 2])) {
+        // No authenticated user (Artisan, Queue, etc.)
+        if (!$user) {
+            return;
+        }
+
+        if (in_array($user->role, [1, 2])) {
             return;
         }
 
         $query->where('ptj_id', $user->ptj_id);
-        });
-    }
-
+    });
+}
     public function ptj()
     {
         return $this->belongsTo(Ptj::class, 'ptj_id');

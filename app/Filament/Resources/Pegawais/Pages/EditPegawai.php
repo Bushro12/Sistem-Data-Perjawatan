@@ -14,8 +14,13 @@ class EditPegawai extends EditRecord
 
     protected function getSaveFormAction(): Action
     {
-        return parent::getSaveFormAction()
-            ->label('Simpan');
+        return Action::make('save')
+            ->label('Simpan')
+            ->color('primary')
+            ->requiresConfirmation()
+            ->modalHeading('Pengesahan')
+            ->modalDescription('Adakah anda pasti mahu simpan perubahan ini?')
+            ->action(fn() => $this->save());
     }
 
     protected function getCancelFormAction(): Action

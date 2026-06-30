@@ -40,6 +40,20 @@ class WaranJawatan extends Model
         return $this->belongsTo(Ptj::class, 'ptj_id');
     }
 
+    public function bahagian()
+    {
+        return $this->belongsTo(Bahagian::class, 'bahagian_id');
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class, 'unit_id');
+    }
+
+    public function subunit()
+    {
+        return $this->belongsTo(Subunit::class, 'subunit_id');
+    }
     public function aktiviti()
     {
         return $this->belongsTo(Aktiviti::class, 'aktiviti_id');

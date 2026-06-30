@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Warans;
 
+use App\Filament\Resources\WaranJawatans\Pages\CreateWaranJawatan;
 use App\Filament\Resources\Warans\Pages\CreateWaran;
 use App\Filament\Resources\Warans\Pages\CustomTable;
 use App\Filament\Resources\Warans\Pages\EditWaran;
@@ -92,9 +93,10 @@ class WaranResource extends Resource
             'custom' => CustomTable::route('/custom'),
             'index' => ListWarans::route('/'),
             'create' => CreateWaran::route('/create'),
-            // 'view' => ViewWaran::route('/{record}'),
+            'view' => ViewWaran::route('/{record}'),
 
             'edit' => EditWaran::route('/{record}/edit'),
+            // 'penempatan' => WaranJawatan
         ];
     }
 

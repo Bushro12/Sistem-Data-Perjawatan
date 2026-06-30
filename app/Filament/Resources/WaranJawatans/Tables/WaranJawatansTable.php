@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\WaranJawatans\Tables;
 
+use App\Filament\Resources\WaranJawatans\WaranJawatanResource;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -17,10 +19,12 @@ class WaranJawatansTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
                     ->rowindex(),
+
                 TextColumn::make('pegawai_id')
                     ->label('Pegawai')
                     ->getStateUsing(function ($record) {
@@ -31,7 +35,6 @@ class WaranJawatansTable
                         return '<strong>' . e($record->pegawai->nama) . '</strong><br>
                         <span class="text-sm text-gray-600">' . e($record->pegawai->nokp) . '</span>';
                     })
-
                     ->html()
                     ->wrap()
                     ->sortable()
@@ -47,6 +50,7 @@ class WaranJawatansTable
                     ->label('No Waran')
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('butiran')
                     ->label('Butiran')
                     ->html()
@@ -91,8 +95,8 @@ class WaranJawatansTable
                     ->color(
                         fn($state) => match ($state) {
                             'removed' => 'danger',
-                            'pindaan nama' => 'neutral',
-                            'batal nama' => 'quartenary',
+                            'pindaan nama' => 'info',
+                            'batal nama' => 'primary',
                             default => 'success',
                         }
                     )
@@ -118,14 +122,28 @@ class WaranJawatansTable
                 // TextColumn::make('status')
                 // ->label('Status')
 
-
             ])
             ->filters([
                 TrashedFilter::make(),
             ])
             ->recordActions([
                 ViewAction::make()
-                    ->modal(),
+                    ->label('Papar')
+                    ->modal()
+                    ->modalHeading(function ($record) {
+                        if ($record->pegawai_id == null) {
+                            return 'Tiada Penyandang';
+                        } else {
+                            return $record->pegawai?->nama;
+                        }
+                    })
+                    ->extraModalFooterActions([
+                        Action::make('edit')
+                        ->label('Edit')
+                        ->url(fn($record) => WaranJawatanResource::getUrl('edit', [
+                            'record' => $record,
+                        ]))
+                    ]),
                 EditAction::make(),
             ])
             ->toolbarActions([

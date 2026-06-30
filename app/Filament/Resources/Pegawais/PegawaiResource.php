@@ -39,8 +39,8 @@ class PegawaiResource extends Resource
             ::where(function ($q) {
                 $q->whereNull('ptj_id')
                     ->orWhereNull('bahagian_id')
-                    ->orWhereNull('unit_id')
-                    ->orWhereNull('subunit_id');
+                    ->orWhere('ada_unit', 0)
+                    ->orWhere('ada_subunit', 0);
             })
             ->orWhere(function ($q) {
                 $q->where('is_jtw', 0)
@@ -57,8 +57,8 @@ class PegawaiResource extends Resource
             ::where(function ($q) {
                 $q->whereNull('ptj_id')
                     ->orWhereNull('bahagian_id')
-                    ->orWhereNull('unit_id')
-                    ->orWhereNull('subunit_id');
+                    ->orWhere('ada_unit', 0)
+                    ->orWhere('ada_subunit', 0);
             })
             ->orWhere(function ($q) {
                 $q->where('is_jtw', 0)
@@ -73,7 +73,7 @@ class PegawaiResource extends Resource
         return PegawaiForm::configure($schema);
     }
 
-     public static function infolist(Schema $schema): Schema
+    public static function infolist(Schema $schema): Schema
     {
         return PegawaiInfolist::configure($schema);
     }

@@ -13,6 +13,7 @@
         "maatwebsite/excel": "^3.1"
     },
     "require-dev": {
+        "beyondcode/laravel-er-diagram-generator": "^6.0",
         "fakerphp/faker": "^1.23",
         "kitloong/laravel-migrations-generator": "^7.4",
         "laravel/pail": "^1.2.5",

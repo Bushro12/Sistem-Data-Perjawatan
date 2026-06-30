@@ -9,7 +9,8 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule): void
     {
-       $schedule->command('pegawai:delete-letak-jawatan')->everyMinute();
+       $schedule->command('pegawai:delete-letak-jawatan')->everyOddHour();
+       $schedule->command('pegawai:delete-tamat-perkhidmatan')->everySecond();
     }
 
     protected function commands(): void

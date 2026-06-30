@@ -11,10 +11,16 @@ class EditLetakJawatan extends EditRecord
 {
     protected static string $resource = LetakJawatanResource::class;
 
+
     protected function getSaveFormAction(): Action
     {
-        return parent::getSaveFormAction()
-            ->label('Simpan');
+        return Action::make('save')
+            ->label('Simpan')
+            ->color('primary')
+            ->requiresConfirmation()
+            ->modalHeading('Pengesahan')
+            ->modalDescription('Adakah anda pasti mahu simpan perubahan ini?')
+            ->action(fn() => $this->save());
     }
 
     protected function getCancelFormAction(): Action
@@ -28,4 +34,6 @@ class EditLetakJawatan extends EditRecord
             // DeleteAction::make(),
         ];
     }
+
+
 }

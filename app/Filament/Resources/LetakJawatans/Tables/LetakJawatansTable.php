@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\LetakJawatans\Tables;
 
+use App\Filament\Resources\LetakJawatans\LetakJawatanResource;
 use Carbon\Carbon;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -16,6 +19,7 @@ class LetakJawatansTable
     public static function configure(Table $table): Table
     {
         return $table
+        ->recordUrl(null)
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
@@ -67,6 +71,16 @@ class LetakJawatansTable
             ])
             ->recordActions([
                 ActionGroup::make([
+                    ViewAction::make()
+                    ->modal()
+                    ->modalHeading(fn($record) => $record->nama)
+                     ->extraModalFooterActions([
+                            Action::make('edit')
+                                ->label('Edit')
+                                ->url(fn($record) => LetakJawatanResource::getUrl('edit', [
+                                    'record' => $record,
+                                ])),
+                        ]),
                     EditAction::make(),
                     DeleteAction::make()
                         ->label('Padam')

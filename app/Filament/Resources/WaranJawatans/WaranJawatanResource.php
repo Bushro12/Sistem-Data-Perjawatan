@@ -9,6 +9,8 @@ use App\Filament\Resources\WaranJawatans\Pages\ViewWaranJawatan;
 use App\Filament\Resources\WaranJawatans\Schemas\WaranJawatanForm;
 use App\Filament\Resources\WaranJawatans\Schemas\WaranJawatanInfolist;
 use App\Filament\Resources\WaranJawatans\Tables\WaranJawatansTable;
+use App\Filament\Resources\WaranJawatans\Widgets\NamaPenyandang;
+use App\Filament\Resources\WaranJawatans\Widgets\WaranJawatanStats;
 use App\Models\WaranJawatan;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -68,6 +70,13 @@ class WaranJawatanResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            WaranJawatanStats::class,
+        ];
+    }
+
     public static function getRecordRouteBindingEloquentQuery(): Builder
     {
         return parent::getRecordRouteBindingEloquentQuery()
@@ -75,4 +84,5 @@ class WaranJawatanResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
 }

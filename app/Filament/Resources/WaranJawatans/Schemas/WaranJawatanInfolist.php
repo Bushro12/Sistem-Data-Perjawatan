@@ -14,27 +14,7 @@ class WaranJawatanInfolist
     {
         return $schema
             ->components([
-                // Section::make('Maklumat Waran')
-                //     ->schema([
-                //         TextEntry::make('waran.no_waran')
-                //             ->hiddenLabel()
-                //             ->formatStateUsing(fn($state) => "No Waran: {$state}"),
-                //         TextEntry::make('butiran')
-                //             ->hiddenLabel()
-                //             ->formatStateUsing(fn($state) => "Butiran: {$state}"),
-                //             TextEntry::make('aktiviti')
-                //             ->hiddenLabel()
-                //             ->formatStateUsing(fn($record) =>
-                //             'Aktiviti: ' . ($record->aktiviti?->no_aktivit) . ' - ' . ($record->aktiviti->nama_aktiviti))
-                //     ])
-                //     ->columns(2),
 
-                // Section::make('Maklumat Penyandang')
-                //     ->schema([
-                //         TextEntry::make('butiran')
-                //             ->hiddenLabel()
-                //             ->formatStateUsing(fn($state) => "Butiran: {$state}"),
-                //     ])
                 Tabs::make('Tabs')
                     ->tabs([
                         Tab::make('Maklumat Waran')
@@ -69,8 +49,8 @@ class WaranJawatanInfolist
                                     ->color(
                                         fn($state) => match ($state) {
                                             'removed' => 'danger',
-                                            'pindaan nama' => 'neutral',
-                                            'batal nama' => 'quartenary',
+                                            'pindaan nama' => 'info',
+                                            'batal nama' => 'primary',
                                             default => 'success',
                                         }
                                     )
@@ -80,9 +60,23 @@ class WaranJawatanInfolist
                             ->schema([
                                 TextEntry::make('pegawai.nama')
                                     ->label('Nama Pegawai')
+                                    ->state(function ($record) {
+                                        if ($record->pegawai_id == null) {
+                                            return 'Tiada Penyandang';
+                                        } else {
+                                            return $record->pegawai?->nama;
+                                        }
+                                    })
                                     ->columnSpanFull(),
                                 TextEntry::make('pegawai.nokp')
-                                ->label('No Kad Pengenalan'),
+                                    ->label('No Kad Pengenalan')
+                                    ->state(function ($record) {
+                                        if ($record->pegawai_id == null) {
+                                            return 'Tiada';
+                                        } else {
+                                            return $record->pegawai?->nokp;
+                                        }
+                                    }),
                                 TextEntry::make('pegawai')
                                     ->label('Jawatan / Gred')
                                     ->formatStateUsing(
@@ -94,11 +88,32 @@ class WaranJawatanInfolist
                                 TextEntry::make('ptj.nama_ptj')
                                     ->label('PTJ'),
                                 TextEntry::make('bahagian.nama_bahagian')
-                                    ->label('Bahagian'),
+                                    ->label('Bahagian')
+                                    ->state(function ($record) {
+                                        if ($record->bahagian_id == null) {
+                                            return 'Tiada';
+                                        } else {
+                                            return $record->bahagian?->nama_bahagian;
+                                        }
+                                    }),
                                 TextEntry::make('unit.nama_unit')
-                                    ->label('Unit'),
+                                    ->label('Unit')
+                                    ->state(function ($record) {
+                                        if ($record->unit_id == null) {
+                                            return 'Tiada';
+                                        } else {
+                                            return $record->unit?->nama_unit;
+                                        }
+                                    }),
                                 TextEntry::make('subunit.nama_subunit')
-                                    ->label('Subunit'),
+                                    ->label('Subunit')
+                                    ->state(function ($record) {
+                                        if ($record->subunit_id == null) {
+                                            return 'Tiada';
+                                        } else {
+                                            return $record->subunit?->nama_subunit;
+                                        }
+                                    }),
 
                             ]),
 

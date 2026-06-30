@@ -169,11 +169,13 @@ class PegawaiForm
                                 Select::make('ptj_id')
                                     ->label('PTJ')
                                     ->relationship('ptj', 'nama_ptj')
+                                    ->required()
                                     ->searchable()
                                     ->preload()
                                     ->columnSpanFull()
                                     ->reactive()
                                     ->afterStateUpdated(fn($state, callable $set) => $set('bahagian_id', null)),
+
                                 Select::make('bahagian_id')
                                     ->label('Bahagian')
                                     ->options(function (Get $get) {
@@ -187,6 +189,7 @@ class PegawaiForm
                                             ->pluck('nama_bahagian', 'id');
                                     })
                                     ->searchable()
+                                    ->required()
                                     ->preload()
                                     ->columnSpanFull(),
 

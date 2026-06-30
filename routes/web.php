@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LetakJawatanExportController;
 use App\Http\Controllers\PenamatanPerkhidmatanExportController;
+use App\Http\Controllers\DataKeseluruhanExportController;
 use App\Http\Controllers\UserExportController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,6 @@ Route::get('/export-letak-jawatan', [LetakJawatanExportController::class, 'expor
 
 Route::get('/export-penamatan-perkhidmatan', [PenamatanPerkhidmatanExportController::class, 'export'])
     ->name('export.penamatanPerkhidmatan');
+
+Route::get('/export-data-keseluruhan', [DataKeseluruhanExportController::class, 'export'])
+    ->name('export.dataKeseluruhan');

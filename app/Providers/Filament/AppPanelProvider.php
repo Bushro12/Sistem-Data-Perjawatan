@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\WaranJawatans\Widgets\NamaPenyandang;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -40,7 +41,7 @@ class AppPanelProvider extends PanelProvider
                 'tertiary' => Color::Lime,
                 'quartenary' => Color::Slate,
                 'neutral' => Color::Neutral,
-                'export' => Color::Blue
+                'export' => Color::Blue,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -49,6 +50,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
+                // NamaPenyandang::class
                 // AccountWidget::class,
                 // FilamentInfoWidget::class,
                 // StatsOverviewWidget::class

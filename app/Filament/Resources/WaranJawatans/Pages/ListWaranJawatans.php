@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\WaranJawatans\Pages;
 
 use App\Filament\Resources\WaranJawatans\WaranJawatanResource;
+use App\Filament\Resources\WaranJawatans\Widgets\NamaPenyandang;
+use App\Filament\Resources\WaranJawatans\Widgets\WaranJawatanStats;
 use App\Models\Program;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -44,5 +46,12 @@ class ListWaranJawatans extends ListRecords
         }
 
         return $tabs;
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            WaranJawatanStats::class,
+        ];
     }
 }

@@ -196,7 +196,7 @@ class WaranJawatanForm
                                     ),
 
                             ]),
-                       
+
 
                         Tab::make('Nama Penyandang')
                             ->schema([
@@ -216,22 +216,30 @@ class WaranJawatanForm
                                             ->whereIn('gred_id', $gredIds)
                                             ->pluck('id');
 
-                                        $pegawaiQuery = Pegawai::query()
-                                            ->whereIn('jawatan_gred_id', $jawatanGredIds);
+                                        return Pegawai::query()
+                                            ->whereIn('jawatan_gred_id', $jawatanGredIds)
+                                            ->where(function ($query) use ($record) {
 
-                                        // exclude already used pegawai, BUT allow current record value
-                                        $usedPegawai = WaranJawatan::query()
-                                            ->whereNotNull('pegawai_id')
-                                            ->when(
-                                                $record,
-                                                fn($q) =>
-                                                $q->where('id', '!=', $record->id)
-                                            )
-                                            ->pluck('pegawai_id');
+                                                $query->whereNotIn('id', function ($q) use ($record) {
 
-                                        $pegawaiQuery->whereNotIn('id', $usedPegawai);
+                                                    $q->select('pegawai_id')
+                                                        ->from('waran_jawatans')
+                                                        ->whereNotNull('pegawai_id')
+                                                        ->where('status', 'active') // ✅ only active assignments
+                                                        ->whereNull('deleted_at');  // ✅ ignore soft deleted
 
-                                        return $pegawaiQuery->orderBy('nama')
+                                                    // exclude current record if editing
+                                                    if ($record) {
+                                                        $q->where('id', '!=', $record->id);
+                                                    }
+                                                });
+
+                                                // keep currently selected pegawai visible in dropdown
+                                                if ($record?->pegawai_id) {
+                                                    $query->orWhere('id', $record->pegawai_id);
+                                                }
+                                            })
+                                            ->orderBy('nama')
                                             ->pluck('nama', 'id')
                                             ->toArray();
                                     })
