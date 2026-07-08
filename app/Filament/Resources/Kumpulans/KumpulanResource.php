@@ -11,14 +11,13 @@ use App\Models\Kumpulan;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class KumpulanResource extends Resource
 {
     protected static ?string $model = Kumpulan::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-group';
 
     protected static ?string $recordTitleAttribute = 'nama_kumpulan';
 
@@ -53,7 +52,7 @@ class KumpulanResource extends Resource
         return [
             'index' => ListKumpulans::route('/'),
             'create' => CreateKumpulan::route('/create'),
-            'edit' => EditKumpulan::route('/{record}/edit'),
+            // 'edit' => EditKumpulan::route('/{record}/edit'),
         ];
     }
 }

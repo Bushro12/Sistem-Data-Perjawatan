@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Bahagians\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -35,14 +36,17 @@ class BahagiansTable
                 //
             ])
             ->recordActions([
-                ViewAction::make()
-                    ->label('')
-                    ->color('info'),
-                EditAction::make()
-                    ->label('')
-                    ->modal(),
-                DeleteAction::make()
-                    ->label(''),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make()
+                        ->label('Padam')
+                        ->modalHeading(fn($record) => "Padam {$record->nama_bahagian}")
+                        ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
+                        ->modalSubmitActionLabel('Ya, Padam')
+                        ->modalCancelActionLabel('Batal')
+                ])
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

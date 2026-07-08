@@ -22,32 +22,37 @@ class ListWarans extends ListRecords
         ];
     }
 
-    public function getTabs(): array
-{
-    $tabs = [
-        'all' => Tab::make('All'),
-    ];
-
-    foreach (Program::orderBy('nama_program')->get() as $program) {
-
-        $tabs[$program->id] = Tab::make($program->nama_program)
-    ->modifyQueryUsing(function (Builder $query) use ($program) {
-
-        $query
-            ->whereHas('waranJawatan.aktiviti', function ($q) use ($program) {
-                $q->where('program_id', $program->id);
-            })
-            ->groupBy('warans.id');
-    });
+    public function getBreadcrumb(): string
+    {
+        return 'Senarai';
     }
 
-    return $tabs;
-}
+    public function getTabs(): array
+    {
+        $tabs = [
+            'all' => Tab::make('All'),
+        ];
+
+        foreach (Program::orderBy('nama_program')->get() as $program) {
+
+            $tabs[$program->id] = Tab::make($program->nama_program)
+                ->modifyQueryUsing(function (Builder $query) use ($program) {
+
+                    $query
+                        ->whereHas('waranJawatan.aktiviti', function ($q) use ($program) {
+                            $q->where('program_id', $program->id);
+                        })
+                        ->groupBy('warans.id');
+                });
+        }
+
+        return $tabs;
+    }
 
     protected function getHeaderWidgets(): array
-{
-    return [
-        WaranStats::class,
-    ];
-}
+    {
+        return [
+            WaranStats::class,
+        ];
+    }
 }

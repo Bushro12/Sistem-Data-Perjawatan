@@ -2,21 +2,21 @@
 
     {{-- Stats Cards --}}
     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:16px;">
-        <div style="background:#eff6ff; border-radius:12px; padding:20px;">
-            <p style="font-size:13px; color:#3b82f6; font-weight:500; margin:0 0 4px;">Jumlah Waran</p>
-            <p style="font-size:28px; font-weight:700; color:#1d4ed8; margin:0;">{{ $totalWaran }}</p>
+        <div class="sneat-stat-card sneat-stat-card--blue">
+            <p class="sneat-stat-label">Jumlah Waran</p>
+            <p class="sneat-stat-value">{{ $totalWaran }}</p>
         </div>
-        <div style="background:#f0fdf4; border-radius:12px; padding:20px;">
-            <p style="font-size:13px; color:#16a34a; font-weight:500; margin:0 0 4px;">Waran Lebih</p>
-            <p style="font-size:28px; font-weight:700; color:#15803d; margin:0;">{{ $totalLebih }}</p>
+        <div class="sneat-stat-card sneat-stat-card--green">
+            <p class="sneat-stat-label">Waran Lebih</p>
+            <p class="sneat-stat-value">{{ $totalLebih }}</p>
         </div>
-        <div style="background:#fef2f2; border-radius:12px; padding:20px;">
-            <p style="font-size:13px; color:#dc2626; font-weight:500; margin:0 0 4px;">Waran Kurang</p>
-            <p style="font-size:28px; font-weight:700; color:#b91c1c; margin:0;">{{ $totalKurang }}</p>
+        <div class="sneat-stat-card sneat-stat-card--red">
+            <p class="sneat-stat-label">Waran Kurang</p>
+            <p class="sneat-stat-value">{{ $totalKurang }}</p>
         </div>
-        <div style="background:#f0f9ff; border-radius:12px; padding:20px;">
-            <p style="font-size:13px; color:#0284c7; font-weight:500; margin:0 0 4px;">Waran Seimbang</p>
-            <p style="font-size:28px; font-weight:700; color:#0369a1; margin:0;">{{ $totalSeimbang }}</p>
+        <div class="sneat-stat-card sneat-stat-card--sky">
+            <p class="sneat-stat-label">Waran Seimbang</p>
+            <p class="sneat-stat-value">{{ $totalSeimbang }}</p>
         </div>
     </div>
 
@@ -127,10 +127,21 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        function initDashboardCharts() {
+            const statusEl = document.getElementById('statusChart');
+            const programEl = document.getElementById('programChart');
+
+            if (!statusEl || !programEl) {
+                return;
+            }
+
+            // Destroy any chart already bound to these canvases (Filament's
+            // SPA navigation can re-run this without a full page reload).
+            Chart.getChart(statusEl)?.destroy();
+            Chart.getChart(programEl)?.destroy();
 
             // Donut Chart
-            new Chart(document.getElementById('statusChart'), {
+            new Chart(statusEl, {
                 type: 'doughnut',
                 data: {
                     labels: ['Lebih', 'Kurang', 'Seimbang'],
@@ -149,7 +160,7 @@
             });
 
             // Bar Chart
-            new Chart(document.getElementById('programChart'), {
+            new Chart(programEl, {
                 type: 'bar',
                 data: {
                     labels: {!! json_encode($waranByProgram->pluck('desc_program')) !!},
@@ -170,8 +181,10 @@
                     }
                 }
             });
+        }
 
-        });
+        document.addEventListener('DOMContentLoaded', initDashboardCharts);
+        document.addEventListener('livewire:navigated', initDashboardCharts);
     </script>
 
 </x-filament-panels::page>

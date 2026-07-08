@@ -14,8 +14,17 @@ class ListKumpulans extends ListRecords
     {
         return [
             CreateAction::make()
-            ->modal()
-            ->createAnother(false),
+                ->label('Tambah Kumpulan')
+                ->modal()
+                ->createAnother(false)
+                ->modalHeading('Tambah Kumpulan')
+                ->modalSubmitActionLabel('Tambah')
+                ->modalCancelActionLabel('Batal'),
         ];
+    }
+
+    public function getBreadcrumb(): string
+    {
+        return 'Senarai';
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Greds\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -32,14 +33,22 @@ class GredsTable
                 //
             ])
             ->recordActions([
-                ViewAction::make()
-                    ->label('')
-                    ->color('info'),
-                EditAction::make()
-                    ->modal()
-                    ->label(''),
-                DeleteAction::make()
-                    ->label(''),
+                ActionGroup::make([
+                    EditAction::make()
+                        // ->label('Kemaskini')
+                        ->modal()
+                        // ->modalHeading('Kemaskini Rekod')
+                        ->modalSubmitActionLabel('Simpan')
+                        ->modalCancelActionLabel('Batal'),
+
+                    DeleteAction::make()
+                        ->label('Padam')
+                        ->modalHeading(fn($record) => "Padam {$record->kod_gred}")
+                        ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
+                        ->modalSubmitActionLabel('Ya, Padam')
+                        ->modalCancelActionLabel('Batal')
+
+                ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -27,9 +28,28 @@ class Pegawai extends Model
         'is_kup',
         'is_kupj',
         'is_jtw',
-        'emel'
+        'emel',
+        'ada_unit',
+        'ada_subunit'
     ];
 
+    protected static function booted()
+{
+    static::addGlobalScope('ptj_access', function (Builder $query) {
+        $user = auth()->user();
+
+        // No authenticated user (Artisan, Queue, etc.)
+        if (!$user) {
+            return;
+        }
+
+        if (in_array($user->role, [1, 2])) {
+            return;
+        }
+
+        $query->where('ptj_id', $user->ptj_id);
+    });
+}
     public function ptj()
     {
         return $this->belongsTo(Ptj::class, 'ptj_id');
@@ -57,12 +77,18 @@ class Pegawai extends Model
 
     public function opsyenPencen()
     {
-        return $this->belongsTo(OpsyenPencen::class, 'bahagian_id');
+        return $this->belongsTo(OpsyenPencen::class, 'opsyen_pencen_id');
     }
 
     public function pegawaiKontrak()
     {
         return $this->hasOne(PegawaiKontrak::class);
     }
+
+    public function waranJawatan()
+    {
+        return $this->hasMany(WaranJawatan::class, 'pegawai_id');
+    }
+
 
 }

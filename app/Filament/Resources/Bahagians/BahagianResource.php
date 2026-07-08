@@ -11,14 +11,13 @@ use App\Models\Bahagian;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class BahagianResource extends Resource
 {
     protected static ?string $model = Bahagian::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-building-office';
 
     protected static ?string $recordTitleAttribute = 'nama_bahagian';
 

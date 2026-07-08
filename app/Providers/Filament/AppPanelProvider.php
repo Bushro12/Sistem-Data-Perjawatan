@@ -2,17 +2,19 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\WaranJawatans\Widgets\NamaPenyandang;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Filament\Widgets\StatsOverviewWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -29,35 +31,34 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->path('app')
-            ->brandName('e-SDaP')
+            ->homeUrl('/app')
+            ->brandLogo(view('filament.brand-logo'))
+            ->brandLogoHeight('auto')
+            ->brandName('MySTAFF')
+            ->favicon(asset('images/mystaff-logo-clean.png'))
             ->viteTheme('resources/css/filament/app/theme.css')
-            ->login()
+            ->font('Public Sans')
+            ->darkMode(true)
+            ->spa()
+            // ->login()
+            ->login(\App\Filament\Pages\Auth\Login::class)
             ->colors([
-                'primary' => [
-                    50 => '#fbf6ef',
-                    100 => '#f3e6d3',
-                    200 => '#e3c8a6',
-                    300 => '#d0a672',
-                    400 => '#b88246',
-                    500 => '#4d2e07', // your main color
-                    600 => '#3f2506',
-                    700 => '#321d05',
-                    800 => '#241504',
-                    900 => '#170d02',
-                    950 => '#0c0701',
-                ],
+                'primary' => Color::Teal,
                 'secondary' => Color::Violet,
                 'tertiary' => Color::Lime,
+                'quartenary' => Color::Slate,
+                'neutral' => Color::Neutral,
+                'export' => Color::Blue,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
-            ->pages([
-                Dashboard::class,
-            ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                // NamaPenyandang::class
+                // AccountWidget::class,
+                // FilamentInfoWidget::class,
+                // StatsOverviewWidget::class
+
             ])
 
             ->middleware([
@@ -74,12 +75,12 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugin(NeobrutalismeTheme::make()
-                ->customize([
-                    '--my-custom-color' => '#008080',
-                    '--my-custom-spacing' => '2rem',
-                ]));
-
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s');
+            // ->renderHook(
+            //     PanelsRenderHook::TOPBAR_END,
+            //     fn (): \Illuminate\Contracts\View\View => view('filament.topbar.dark-toggle'),
+            // );
 
     }
 }

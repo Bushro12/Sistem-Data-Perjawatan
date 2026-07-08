@@ -11,23 +11,22 @@ use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user';
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Kawalan';
     protected static ?int $navigationSort = 30;
 
-    protected static ?string $navigationLabel = 'User';
-    protected static ?string $pluralModelLabel = 'User';
-    protected static ?string $modelLabel = 'User';
+    protected static ?string $navigationLabel = 'Pengguna';
+    protected static ?string $pluralModelLabel = 'Pengguna';
+    protected static ?string $modelLabel = 'Pengguna';
 
 
     public static function form(Schema $schema): Schema
@@ -55,4 +54,6 @@ class UserResource extends Resource
             'edit' => EditUser::route('/{record}/edit'),
         ];
     }
+
+    
 }

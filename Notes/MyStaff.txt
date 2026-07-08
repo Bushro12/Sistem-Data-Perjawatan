@@ -1,0 +1,33 @@
+MyStaff
+
+1. php artisan schedule:work
+	- untuk delete pegawai pencen dan letak jawatan
+
+2. php artisan queue:work
+	- untuk keep refresh notification
+
+
+Update (by 30.6.2026)
+1. Notification Pegawai tamat perkhidmatan / letak jawatan
+2. auto delete data dari table pegawai untuk modul tamat perkhidmatan
+3. tambah view page untuk letak jawatan
+4. Tambah view page untuk penempatan waran
+5. Tambah kemaskini status untuk batal nama dan pindaan nama
+6. Update cara buang jawatan untuk waran tolak dan tambah notification.
+7. Tambah Modul Nama penyandang
+8. Tambah table senarai report.
+
+Update (by 7/7/2026)
+1. Report data keseluruhan
+2. View page penamatan perkhidmatan
+3. Notification after user kemaskini status penempatan waran.
+4. remove nama pegawai kontrak dari selection nama penyandang.
+5. Email password ke user lepas create new user
+6. View page untuk waran.
+7. Calculation JIK waran dekat user.
+
+------------------------------------------------------------------------------------------------------------
+Design to do(2/7/2026)
+1. letak gap dekat widget/card dalam nama penyandang
+2. betulkan topbar, samakan width dengan center card
+3. make header row for all table at the center not left side

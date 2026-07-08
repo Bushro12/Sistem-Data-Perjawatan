@@ -1,5 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "flowbite/src/themes/default";
 @tailwind base;
 @tailwind components;
@@ -7,3 +7,1174 @@
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+
+/* ===== e-SDaP Login Page - Teal Theme ===== */
+
+@font-face {
+    font-family: 'HYWenHei';
+    src: url('/fonts/hywenhei/HYWenHei.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.esdap-login-header span,
+.esdap-login-title,
+.esdap-right-tagline {
+    font-family: 'HYWenHei', 'Inter', sans-serif;
+}
+
+.fi-simple-layout:has(.esdap-login-wrapper) {
+    min-height: 100dvh;
+    display: block;
+    background: #000000;
+}
+
+.fi-simple-main-ctn:has(.esdap-login-wrapper) {
+    padding: 0 !important;
+}
+
+.fi-simple-main:has(.esdap-login-wrapper) {
+    max-width: none !important;
+    width: 100%;
+    margin: 0 !important;
+    padding: 14px !important;
+    background: #000000 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    box-sizing: border-box;
+}
+
+.esdap-login-wrapper {
+    min-height: calc(100dvh - 28px);
+    width: 100%;
+    display: flex;
+    background: #081715;
+    box-sizing: border-box;
+}
+
+.esdap-login-card {
+    display: flex;
+    width: 100%;
+    min-height: 100%;
+    background: #0e2622;
+}
+
+.esdap-login-left {
+    flex: 1 1 0%;
+    min-width: 0;
+    padding: 52px 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 2px solid #000000;
+}
+
+.esdap-login-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+    color: #d8f3ec;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.esdap-logo-mark {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    background: #ffffff;
+    border-radius: 50%;
+    padding: 4px;
+    box-sizing: content-box;
+}
+
+.esdap-login-tagline {
+    color: #5eada0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.esdap-login-title {
+    color: #f0fdfa;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+}
+
+.esdap-dot {
+    color: #14b8a6;
+}
+
+.esdap-login-sub {
+    color: #8fb9b0;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 36px;
+    max-width: 360px;
+}
+
+.esdap-form-area {
+    max-width: 380px;
+}
+
+.esdap-form-area .fi-fo-field-wrp-label,
+.esdap-form-area label {
+    color: #8fb9b0 !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em;
+}
+
+.esdap-form-area .fi-input-wrp {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 14px !important;
+    transition: all 0.2s ease;
+}
+
+.esdap-form-area .fi-input-wrp:hover {
+    border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+.esdap-form-area .fi-input-wrp:focus-within {
+    border-color: #14b8a6 !important;
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.22) !important;
+}
+
+.esdap-form-area input {
+    color: #f0fdfa !important;
+    background: transparent !important;
+}
+
+.esdap-form-area input::placeholder {
+    color: #4f7d74 !important;
+}
+
+.esdap-form-area .fi-fo-checkbox label {
+    color: #8fb9b0 !important;
+    font-weight: 500 !important;
+}
+
+.esdap-form-area .fi-btn {
+    background: linear-gradient(135deg, #14b8a6, #0d9488) !important;
+    border-radius: 999px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    border: none !important;
+    box-shadow: 0 8px 20px -6px rgba(20, 184, 166, 0.55);
+    transition: all 0.2s ease;
+}
+
+.esdap-form-area .fi-btn:hover {
+    background: linear-gradient(135deg, #0d9488, #0b7a6f) !important;
+    box-shadow: 0 10px 26px -6px rgba(20, 184, 166, 0.65);
+    transform: translateY(-1px);
+}
+
+.esdap-form-area a {
+    color: #5eada0 !important;
+}
+
+.esdap-form-area a:hover {
+    color: #7ec3b6 !important;
+}
+
+.esdap-login-right {
+    flex: 1 1 0%;
+    min-width: 0;
+    position: relative;
+    display: none;
+    overflow: hidden;
+    background: linear-gradient(155deg, #134e48 0%, #0a2b27 55%, #071e1b 100%);
+}
+
+.esdap-right-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+}
+
+.esdap-right-glow-1 {
+    width: 340px;
+    height: 340px;
+    background: rgba(20, 184, 166, 0.35);
+    top: -80px;
+    right: -80px;
+}
+
+.esdap-right-glow-2 {
+    width: 280px;
+    height: 280px;
+    background: rgba(20, 184, 166, 0.18);
+    bottom: -60px;
+    left: -60px;
+}
+
+.esdap-right-content {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 48px;
+    text-align: center;
+}
+
+.esdap-right-logo-ring {
+    width: 200px;
+    height: 200px;
+    max-width: 70%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    box-sizing: border-box;
+    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.45);
+}
+
+.esdap-right-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.esdap-right-tagline {
+    color: #aee0d6;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    max-width: 260px;
+}
+
+@media (min-width: 1024px) {
+    .esdap-login-right {
+        display: block;
+    }
+}
+
+/* ===== Sneat Panel Theme (Teal Variant) ===== */
+
+:root {
+    --sneat-body-bg: #f5f5f9;
+    --sneat-paper-bg: #ffffff;
+    --sneat-border: rgba(46, 38, 61, 0.12);
+    --sneat-text-main: #32475c;
+    --sneat-text-muted: #566a7f;
+    --sneat-shadow-sm: 0 2px 6px rgba(161, 172, 184, 0.25);
+    --sneat-radius: 0.5rem;
+    --sneat-primary: #14b8a6;
+    --sneat-primary-rgb: 20, 184, 166;
+    --sneat-primary-subtle: rgba(20, 184, 166, 0.1);
+}
+
+/* ── Font ── */
+.fi-body,
+.fi-body * {
+    font-family: 'Public Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ── Body background — teal gradient fading to neutral ── */
+.fi-body {
+    background:
+        linear-gradient(
+            160deg,
+            rgba(0, 191, 180, 0.35) 0%,
+            rgba(0, 191, 180, 0.12) 35%,
+            var(--sneat-body-bg) 65%
+        ) !important;
+    background-attachment: fixed !important;
+}
+
+/* ── Main content area ── */
+.fi-main-ctn {
+    background: transparent;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ SIDEBAR ━━━━━━━━━━━━━━━━━━━━ */
+
+.fi-sidebar {
+    background-color: var(--sneat-paper-bg) !important;
+    border-right: 1px solid var(--sneat-border) !important;
+    box-shadow: 4px 0 14px -4px rgba(161, 172, 184, 0.2) !important;
+    overflow: hidden !important;
+}
+
+/* Brand / logo area — no border-bottom; sidebar and topbar are separate panels */
+
+.fi-sidebar-header {
+    padding: 0 1.5rem !important;
+    background: transparent !important;
+    box-shadow: none !important;
+
+    /* Match the topbar's floating margin-top so both rows sit at the
+       same height and their vertically-centered content lines up */
+    @media (min-width: 1024px) {
+        margin-top: 1.25rem !important;
+    }
+}
+
+.fi-sidebar-header-logo-ctn {
+    width: 100%;
+}
+
+/* Override Filament's inline height style on fi-logo wrapper */
+.fi-logo {
+    height: auto !important;
+}
+
+/* Sneat-style brand: small logo + app name side by side */
+.sneat-brand-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.sneat-brand-img {
+    height: 2.375rem;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.sneat-brand-text {
+    font-size: 1.625rem;
+    font-weight: 700;
+    color: var(--sneat-text-main);
+    letter-spacing: -0.01em;
+    line-height: 1;
+}
+
+.dark .sneat-brand-text {
+    color: var(--sneat-text-main);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ SNEAT LAYOUT (DESKTOP) ━━━━━━━━━━━━━━━━━━━━
+   Goal: sidebar header (logo) and topbar sit side-by-side at the same height,
+   exactly like the Sneat demo.
+
+   Problem: Filament's DOM order is [topbar][.fi-layout[sidebar][content]].
+   With position:sticky, the sidebar always starts BELOW the topbar in document
+   flow. Switching to position:fixed on desktop puts the sidebar at top:0
+   regardless of DOM order, then we compensate with margin-left on the content. */
+@media (min-width: 1024px) {
+    /* 1. Sidebar: fixed at viewport top, full height — aligns with topbar level */
+    .fi-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        height: 100dvh !important;
+        z-index: 31 !important; /* above topbar (z-30) */
+    }
+
+    /* 2. Show sidebar header on desktop
+          Filament applies lg:hidden when topbar is present — override it */
+    .fi-body-has-topbar .fi-sidebar-header {
+        display: flex !important;
+    }
+
+    /* 3. Content: left margin compensates for fixed sidebar being out of flex flow */
+    .fi-main-ctn {
+        margin-left: var(--sidebar-width) !important;
+        min-width: 0 !important;
+    }
+}
+
+/* Nav — zero horizontal padding so <li> items reach the right edge
+   (needed for the active indicator to touch the sidebar border) */
+.fi-sidebar-nav {
+    padding: 0.5rem 0;
+}
+
+/* Group heading (the clickable collapse row) */
+.fi-sidebar-group-btn {
+    padding: 0.25rem 1.25rem;
+    padding-left: 1.75rem;
+    margin-top: 0.875rem;
+    margin-bottom: 0.125rem;
+}
+
+/* Group label text  e.g. "BUKU WARAN" — larger than nav items */
+.fi-sidebar-group-label {
+    color: var(--sneat-text-main) !important;
+    font-size: 0.9375rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+}
+
+/* Each nav <li> — must be position:relative for the ::after indicator */
+.fi-sidebar-item {
+    position: relative;
+    list-style: none;
+}
+
+/* Standalone items (no group label) — bolder, treated as top-level section */
+.fi-sidebar-group:not(:has(.fi-sidebar-group-btn)) .fi-sidebar-item-btn {
+    color: var(--sneat-text-main) !important;
+}
+
+.fi-sidebar-group:not(:has(.fi-sidebar-group-btn)) .fi-sidebar-item-btn .fi-sidebar-item-label {
+    color: var(--sneat-text-main) !important;
+    font-size: 0.9375rem !important;
+    font-weight: 700 !important;
+}
+
+.fi-sidebar-group:not(:has(.fi-sidebar-group-btn)) .fi-sidebar-item-btn .fi-sidebar-item-icon {
+    color: var(--sneat-text-main) !important;
+}
+
+/* The <a> tag — full-width strip, NO border-radius (Sneat style) */
+.fi-sidebar-item-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.625rem !important;
+    width: 100% !important;
+    padding: 0.625rem 1.25rem !important;
+    padding-left: 1.75rem !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    color: var(--sneat-text-muted) !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+    transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+/* Icon — default muted colour */
+.fi-sidebar-item-icon {
+    color: var(--sneat-text-muted) !important;
+    flex-shrink: 0;
+}
+
+/* ── Hover ── */
+.fi-sidebar-item-btn:hover {
+    background-color: var(--sneat-primary-subtle) !important;
+    color: var(--sneat-primary) !important;
+}
+
+.fi-sidebar-item-btn:hover .fi-sidebar-item-icon {
+    color: var(--sneat-primary) !important;
+}
+
+/* ── Active: light teal strip + teal text ── */
+/* fi-active lives on the <li>, so we target the child <a> */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background-color: var(--sneat-primary-subtle) !important;
+    color: var(--sneat-primary) !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-icon {
+    color: var(--sneat-primary) !important;
+}
+
+/* ── Right-edge indicator bar (the Sneat signature) ── */
+/* Sits on the <li> so it always touches the sidebar right border */
+.fi-sidebar-item.fi-active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--sneat-primary);
+    border-radius: 3px 0 0 3px;
+}
+
+/* ── Child nav items inside LABELLED groups — Sneat bullet dot style ──
+   :has(.fi-sidebar-group-btn) ensures we only target groups with a visible
+   header label, so standalone items like Dashboard get no bullet dot. */
+.fi-sidebar-group:has(.fi-sidebar-group-btn) .fi-sidebar-item-btn {
+    padding-left: 2.25rem !important;
+}
+
+.fi-sidebar-group:has(.fi-sidebar-group-btn) .fi-sidebar-item-btn::before {
+    content: '';
+    display: inline-block;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+    background-color: transparent;
+    border: 1.5px solid var(--sneat-text-muted);
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.fi-sidebar-group:has(.fi-sidebar-group-btn) .fi-sidebar-item-btn:hover::before {
+    background-color: var(--sneat-primary);
+    border-color: var(--sneat-primary);
+}
+
+.fi-sidebar-group:has(.fi-sidebar-group-btn) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn::before {
+    background-color: var(--sneat-primary);
+    border-color: var(--sneat-primary);
+    transform: scale(1.3);
+}
+
+/* ── Sub-items (nested inside parent nav items) ── */
+.fi-sidebar-sub-group-items .fi-sidebar-item-btn {
+    padding-left: 3.75rem !important;
+    font-size: 0.8125rem !important;
+}
+
+.fi-sidebar-sub-group-items .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background-color: var(--sneat-primary-subtle) !important;
+    color: var(--sneat-primary) !important;
+    box-shadow: none !important;
+}
+
+/* ── Group collapse chevron — Sneat style ──
+   Filament uses ChevronUp icon. We rotate it:
+   expanded → 180deg (points ↓), collapsed → 90deg (points →) */
+.fi-sidebar-group-collapse-btn {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0.125rem !important;
+    width: auto !important;
+    height: auto !important;
+    color: var(--sneat-text-muted) !important;
+    flex-shrink: 0;
+}
+
+.fi-sidebar-group-collapse-btn:hover {
+    background: transparent !important;
+    color: var(--sneat-primary) !important;
+}
+
+.fi-sidebar-group-collapse-btn svg {
+    width: 1rem !important;
+    height: 1rem !important;
+    transform: rotate(180deg);
+    transition: transform 0.25s ease;
+    color: inherit !important;
+}
+
+/* Collapsed state — rotate back to right-pointing arrow */
+.fi-sidebar-group.fi-collapsed .fi-sidebar-group-collapse-btn svg {
+    transform: rotate(90deg);
+}
+
+/* ── Sidebar scrollbar — thin Sneat style ── */
+.fi-sidebar-nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.fi-sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.fi-sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(var(--sneat-primary-rgb), 0.25);
+    border-radius: 4px;
+}
+
+.fi-sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--sneat-primary-rgb), 0.5);
+}
+
+/* Firefox */
+.fi-sidebar-nav {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--sneat-primary-rgb), 0.25) transparent;
+}
+
+/* ── Sidebar footer (user menu / notification bell) ── */
+.fi-sidebar-footer {
+    border-top: 1px solid var(--sneat-border);
+    padding: 0.75rem 1rem;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ TOPBAR ━━━━━━━━━━━━━━━━━━━━ */
+
+/* Ctn is just a positioning wrapper — it mirrors .fi-main-ctn's own
+   margin-left exactly, so its box is the same width as .fi-main-ctn's.
+   All visual styling lives on .fi-topbar (below), matching how .fi-main
+   centers inside .fi-main-ctn — this is what makes the two align. */
+.fi-topbar-ctn {
+    @media (min-width: 1024px) {
+        margin-left: var(--sidebar-width) !important;
+    }
+}
+
+.fi-topbar {
+    background-color: var(--sneat-paper-bg) !important;
+    border-bottom: 1px solid var(--sneat-border) !important;
+    box-shadow: 0 1px 4px rgba(161, 172, 184, 0.12) !important;
+
+    /* Desktop: centered box matching the content cards' effective width
+       (80rem content max-width minus its own 2rem+2rem inner padding) */
+    @media (min-width: 1024px) {
+        max-width: 76rem !important;
+        margin: 1.25rem auto 0 auto !important;
+        border-bottom: none !important;
+        border-radius: var(--sneat-radius) !important;
+        box-shadow: var(--sneat-shadow-sm) !important;
+    }
+}
+
+/* Hide logo from topbar on desktop — logo lives only in the sidebar */
+@media (min-width: 1024px) {
+    .fi-topbar-start .fi-logo {
+        display: none !important;
+    }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ SECTIONS / CARDS ━━━━━━━━━━━━━━━━━━━━ */
+
+.fi-section {
+    background-color: var(--sneat-paper-bg) !important;
+    border-radius: var(--sneat-radius) !important;
+    box-shadow: var(--sneat-shadow-sm) !important;
+    border: 1px solid var(--sneat-border) !important;
+}
+
+.fi-section-header-ctn {
+    border-bottom: 1px solid var(--sneat-border);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ SNEAT STATS CARDS ━━━━━━━━━━━━━━━━━━━━ */
+
+.sneat-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .sneat-stats-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.sneat-stat-card {
+    background: var(--sneat-paper-bg);
+    border: 1px solid var(--sneat-border);
+    border-radius: var(--sneat-radius);
+    padding: 1.5rem;
+    box-shadow: var(--sneat-shadow-sm);
+}
+
+.sneat-stat-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.sneat-stat-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--sneat-text-muted);
+    margin-bottom: 0.375rem;
+}
+
+.sneat-stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--sneat-text-main);
+    line-height: 1.2;
+    margin: 0;
+}
+
+.sneat-stat-desc {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    margin-top: 0.375rem;
+}
+
+.sneat-stat-desc svg {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+}
+
+.sneat-stat-desc--success { color: #22c55e; }
+.sneat-stat-desc--danger  { color: #ef4444; }
+
+.sneat-stat-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sneat-stat-icon svg {
+    width: 1.375rem;
+    height: 1.375rem;
+}
+
+.sneat-stat-icon--default {
+    background: rgba(var(--sneat-primary-rgb), 0.12);
+    color: var(--sneat-primary);
+}
+
+.sneat-stat-icon--success {
+    background: rgba(34, 197, 94, 0.12);
+    color: #22c55e;
+}
+
+.sneat-stat-icon--danger {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+/* Dark mode */
+.dark .sneat-stat-card {
+    background: var(--sneat-paper-bg);
+    border-color: var(--sneat-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.dark .sneat-stat-value {
+    color: var(--sneat-text-main);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ DASHBOARD KPI CARDS (colour variants) ━━━━━━━━━━━━━━━━━━━━ */
+/* Light mode: soft pastel tints. Dark mode: tinted glass over the
+   Deep Ocean gradient, keeping each card's semantic colour as an accent. */
+
+.sneat-stat-card--blue { background: #eff6ff; border-color: #bfdbfe; }
+.sneat-stat-card--blue .sneat-stat-label { color: #3b82f6; }
+.sneat-stat-card--blue .sneat-stat-value { color: #1d4ed8; }
+
+.sneat-stat-card--green { background: #f0fdf4; border-color: #bbf7d0; }
+.sneat-stat-card--green .sneat-stat-label { color: #16a34a; }
+.sneat-stat-card--green .sneat-stat-value { color: #15803d; }
+
+.sneat-stat-card--red { background: #fef2f2; border-color: #fecaca; }
+.sneat-stat-card--red .sneat-stat-label { color: #dc2626; }
+.sneat-stat-card--red .sneat-stat-value { color: #b91c1c; }
+
+.sneat-stat-card--sky { background: #f0f9ff; border-color: #bae6fd; }
+.sneat-stat-card--sky .sneat-stat-label { color: #0284c7; }
+.sneat-stat-card--sky .sneat-stat-value { color: #0369a1; }
+
+.dark .sneat-stat-card--blue { background: rgba(59, 130, 246, 0.08); border-color: rgba(59, 130, 246, 0.2); }
+.dark .sneat-stat-card--blue .sneat-stat-label { color: #93c5fd; }
+.dark .sneat-stat-card--blue .sneat-stat-value { color: #dbeafe; }
+
+.dark .sneat-stat-card--green { background: rgba(45, 212, 191, 0.08); border-color: rgba(45, 212, 191, 0.2); }
+.dark .sneat-stat-card--green .sneat-stat-label { color: #5eead4; }
+.dark .sneat-stat-card--green .sneat-stat-value { color: #d1fae5; }
+
+.dark .sneat-stat-card--red { background: rgba(248, 113, 113, 0.08); border-color: rgba(248, 113, 113, 0.2); }
+.dark .sneat-stat-card--red .sneat-stat-label { color: #fca5a5; }
+.dark .sneat-stat-card--red .sneat-stat-value { color: #fee2e2; }
+
+.dark .sneat-stat-card--sky { background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.2); }
+.dark .sneat-stat-card--sky .sneat-stat-label { color: #7dd3fc; }
+.dark .sneat-stat-card--sky .sneat-stat-value { color: #e0f2fe; }
+
+/* ━━━━━━━━━━━━━━━━━━━━ TABLES (Sneat Bordered) ━━━━━━━━━━━━━━━━━━━━ */
+
+.fi-ta-ctn {
+    background-color: var(--sneat-paper-bg) !important;
+    border-radius: var(--sneat-radius) !important;
+    box-shadow: var(--sneat-shadow-sm) !important;
+    border: 1px solid var(--sneat-border) !important;
+    overflow: hidden;
+}
+
+/* Collapse borders so cell borders share walls */
+.fi-ta-table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+}
+
+/* Header cells — tinted background, uppercase label, right border for column dividers */
+.fi-ta-header-cell {
+    background-color: rgba(var(--sneat-primary-rgb), 0.04) !important;
+    color: var(--sneat-text-main) !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+    padding: 0.75rem 1rem !important;
+    border-bottom: 2px solid var(--sneat-border) !important;
+    border-right: 1px solid var(--sneat-border) !important;
+    white-space: nowrap;
+}
+
+.fi-ta-header-cell:last-child {
+    border-right: none !important;
+}
+
+/* Data cells — horizontal + vertical borders (full grid) */
+.fi-ta-row td.fi-ta-cell {
+    padding: 0.75rem 1rem !important;
+    border-bottom: 1px solid var(--sneat-border) !important;
+    border-right: 1px solid var(--sneat-border) !important;
+    color: var(--sneat-text-main) !important;
+    font-size: 0.875rem !important;
+    vertical-align: middle !important;
+}
+
+.fi-ta-row td.fi-ta-cell:last-child {
+    border-right: none !important;
+}
+
+/* Selection checkbox column — same padding for <th> and <td> so checkboxes line up */
+th.fi-ta-selection-cell,
+td.fi-ta-selection-cell {
+    padding: 0.75rem 0.75rem 0.75rem 1rem !important;
+    vertical-align: middle !important;
+    border-right: 1px solid var(--sneat-border) !important;
+}
+
+/* Hover row */
+.fi-ta-row:hover td.fi-ta-cell {
+    background-color: rgba(var(--sneat-primary-rgb), 0.04) !important;
+}
+
+/* Remove last row bottom border (outer container border handles it) */
+.fi-ta-row:last-child td.fi-ta-cell {
+    border-bottom: none !important;
+}
+
+/* Dark mode */
+.dark .fi-ta-header-cell {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    color: var(--sneat-text-main) !important;
+    border-bottom-color: var(--sneat-border) !important;
+    border-right-color: var(--sneat-border) !important;
+}
+
+.dark .fi-ta-row td.fi-ta-cell {
+    color: var(--sneat-text-main) !important;
+    border-bottom-color: var(--sneat-border) !important;
+    border-right-color: var(--sneat-border) !important;
+}
+
+.dark .fi-ta-row:hover td.fi-ta-cell {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ MODALS ━━━━━━━━━━━━━━━━━━━━ */
+
+.fi-modal-window {
+    border-radius: calc(var(--sneat-radius) * 1.5) !important;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Header divider — separates title from content */
+.fi-modal-header {
+    border-bottom: 1px solid var(--sneat-border) !important;
+    padding-bottom: 1rem !important;
+}
+
+/* Footer divider — separates content from action buttons */
+.fi-modal-footer {
+    border-top: 1px solid var(--sneat-border) !important;
+    padding-top: 1rem !important;
+}
+
+/* Dark mode */
+.dark .fi-modal-header {
+    border-bottom-color: var(--sneat-border) !important;
+}
+
+.dark .fi-modal-footer {
+    border-top-color: var(--sneat-border) !important;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ FORM INPUTS ━━━━━━━━━━━━━━━━━━━━ */
+
+.fi-input-wrp {
+    border-radius: var(--sneat-radius) !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fi-input-wrp:focus-within {
+    border-color: var(--sneat-primary) !important;
+    box-shadow: 0 0 0 3px rgba(var(--sneat-primary-rgb), 0.18) !important;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ FORM FIELD LABELS (Sneat style) ━━━━━━━━━━━━━━━━━━━━ */
+
+/* Field label text — medium weight, muted color, slightly smaller */
+.fi-fo-field-wrp-label {
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    color: var(--sneat-text-muted) !important;
+    margin-bottom: 0.25rem !important;
+    letter-spacing: 0 !important;
+}
+
+/* The inner label content span */
+.fi-fo-field-label-content {
+    color: var(--sneat-text-muted) !important;
+}
+
+/* Required asterisk — match Sneat's teal */
+.fi-fo-field-wrp-label-required-mark {
+    color: var(--sneat-primary) !important;
+}
+
+/* Error message */
+.fi-fo-field-wrp-error-message {
+    font-size: 0.75rem !important;
+    color: #ef4444 !important;
+    margin-top: 0.25rem !important;
+}
+
+/* Section inside a form — card with border */
+.fi-fo-section-content {
+    background-color: var(--sneat-paper-bg) !important;
+    border-radius: var(--sneat-radius) !important;
+    border: 1px solid var(--sneat-border) !important;
+}
+
+/* Dark mode form labels */
+.dark .fi-fo-field-wrp-label,
+.dark .fi-fo-field-label-content {
+    color: var(--sneat-text-muted) !important;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ INFOLIST (view modal) ━━━━━━━━━━━━━━━━━━━━ */
+
+/* Label column — smaller, muted */
+.fi-in-entry-label-col {
+    padding-bottom: 0 !important;
+}
+
+.fi-in-entry-label-col .fi-in-entry-label {
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    color: var(--sneat-text-muted) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+}
+
+/* Value column — readable, main text color */
+.fi-in-entry-content-col {
+    padding-top: 0.125rem !important;
+}
+
+.fi-in-entry-content-ctn {
+    font-size: 0.875rem !important;
+    font-weight: 400 !important;
+    color: var(--sneat-text-main) !important;
+}
+
+/* Dark mode infolist */
+.dark .fi-in-entry-label .fi-in-entry-label {
+    color: var(--sneat-text-muted) !important;
+}
+
+.dark .fi-in-entry-content-ctn {
+    color: var(--sneat-text-main) !important;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ BUTTONS ━━━━━━━━━━━━━━━━━━━━ */
+
+.fi-btn {
+    border-radius: var(--sneat-radius) !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ TABS / FILTER PILLS ━━━━━━━━━━━━━━━━━━━━ */
+
+.fi-tabs-item {
+    border-radius: 0.375rem !important;
+    padding: 0.3rem 0.75rem !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    color: var(--sneat-text-muted) !important;
+    background: transparent !important;
+    transition: background-color 0.2s ease, color 0.2s ease !important;
+}
+
+.fi-tabs-item:hover {
+    background-color: var(--sneat-primary-subtle) !important;
+    color: var(--sneat-primary) !important;
+}
+
+.fi-tabs-item.fi-active {
+    background-color: var(--sneat-primary-subtle) !important;
+    color: var(--sneat-primary) !important;
+    font-weight: 600 !important;
+}
+
+/* Dark mode */
+.dark .fi-tabs-item {
+    color: var(--sneat-text-muted) !important;
+}
+
+.dark .fi-tabs-item:hover,
+.dark .fi-tabs-item.fi-active {
+    background-color: var(--sneat-primary-subtle) !important;
+    color: var(--sneat-primary) !important;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ PAGE HEADER ━━━━━━━━━━━━━━━━━━━━ */
+
+.fi-header-heading {
+    color: var(--sneat-text-main) !important;
+    font-weight: 700 !important;
+}
+
+.fi-breadcrumbs-item {
+    color: var(--sneat-text-muted) !important;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ DARK MODE TOGGLE BUTTON ━━━━━━━━━━━━━━━━━━━━ */
+
+/* .sneat-dark-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--sneat-text-muted);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.sneat-dark-toggle-btn:hover {
+    background-color: var(--sneat-primary-subtle);
+    color: var(--sneat-primary);
+}
+
+.sneat-dark-toggle-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+} */
+
+/* ━━━━━━━━━━━━━━━━━━━━ DARK MODE ━━━━━━━━━━━━━━━━━━━━ */
+
+/* "Deep Ocean" monochromatic gradient — subtle depth instead of flat
+   dark boxes. Every element that uses var(--sneat-*) switches automatically. */
+.dark {
+    --sneat-body-bg: #051318;
+    --sneat-paper-bg: rgba(15, 32, 39, 0.7);
+    --sneat-border: rgba(255, 255, 255, 0.05);
+    --sneat-text-main: #cfd3ec;
+    --sneat-text-muted: #a3a5c0;
+    --sneat-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+    --sneat-primary: #2dd4bf;
+    --sneat-primary-rgb: 45, 212, 191;
+    --sneat-primary-subtle: rgba(45, 212, 191, 0.15);
+}
+
+/* Filament uses Tailwind dark: classes which set their own bg/text colors.
+   The !important on our rules already overrides them for fi-* elements,
+   but some inner text nodes fall through — patch them here. */
+
+.dark .fi-body {
+    background: linear-gradient(135deg, #0a222d 0%, #051318 100%) !important;
+    background-attachment: fixed !important;
+    color: var(--sneat-text-main) !important;
+}
+
+.dark .fi-main-ctn {
+    background: transparent !important;
+}
+
+/* Sidebar — semi-transparent glass panel over the gradient body */
+.dark .fi-sidebar {
+    background-color: var(--sneat-paper-bg) !important;
+    border-right-color: var(--sneat-border) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.dark .fi-sidebar-header-ctn {
+    border-bottom-color: var(--sneat-border) !important;
+}
+
+/* Topbar — same rounded, centered shape as light mode (via the base
+   .fi-topbar rule), just glassy: translucent paper-bg + blur. */
+.dark .fi-topbar {
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+}
+
+/* Cards / sections — glassmorphism: translucent dark teal + blur + hairline border */
+.dark .fi-section,
+.dark .fi-wi-stats-overview-stat,
+.dark .fi-ta-ctn {
+    background-color: var(--sneat-paper-bg) !important;
+    border-color: var(--sneat-border) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.dark .fi-section-header-ctn {
+    border-bottom-color: var(--sneat-border) !important;
+}
+
+/* Modals */
+.dark .fi-modal-window {
+    background-color: var(--sneat-paper-bg) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Dropdowns */
+.dark .fi-dropdown-panel {
+    background-color: var(--sneat-paper-bg) !important;
+    border-color: var(--sneat-border) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Table rows */
+.dark .fi-ta-row:hover td {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Text */
+.dark .fi-header-heading {
+    color: var(--sneat-text-main) !important;
+}
+
+.dark .fi-breadcrumbs-item {
+    color: var(--sneat-text-muted) !important;
+}
+
+/* Form inputs */
+.dark .fi-input-wrp {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    border-color: var(--sneat-border) !important;
+}
+
+.dark .fi-input-wrp input,
+.dark .fi-input-wrp textarea,
+.dark .fi-input-wrp select {
+    color: var(--sneat-text-main) !important;
+}
+
+/* Toggle button in dark mode — sun icon should be teal */
+.dark .sneat-dark-toggle-btn {
+    color: var(--sneat-text-muted);
+}

@@ -11,14 +11,13 @@ use App\Models\Gred;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class GredResource extends Resource
 {
     protected static ?string $model = Gred::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
 
     protected static ?string $recordTitleAttribute = 'desc_gred';
 
@@ -53,7 +52,7 @@ class GredResource extends Resource
         return [
             'index' => ListGreds::route('/'),
             'create' => CreateGred::route('/create'),
-            'edit' => EditGred::route('/{record}/edit'),
+            // 'edit' => EditGred::route('/{record}/edit'),
         ];
     }
 }

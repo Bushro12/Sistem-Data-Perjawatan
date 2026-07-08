@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Ptjs\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -31,25 +33,35 @@ class PtjsTable
                     ->label('Pengarah')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('pengarah')
+                    ->label('Pengarah')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('parlimen.nama_parlimen')
+                    ->label('Parlimen')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('dun.nama_dun')
+                    ->label('Dun')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->defaultSort('nama_ptj', 'asc')
             ->filters([
                 //
             ])
             ->recordActions([
-                ViewAction::make()
-                ->label("")
-                ->color("info"),
-                EditAction::make()
-                ->label("")
-                ->modal(),
-                DeleteAction::make()
-                ->label(""),
+                ActionGroup::make([
+                    // ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make()
+                ])
 
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                   
                 ]),
             ]);
     }

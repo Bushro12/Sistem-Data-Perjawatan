@@ -15,18 +15,14 @@ class ListBahagians extends ListRecords
     {
         return [
             CreateAction::make()
-            ->modal()
-            ->createAnother(false),
+            ->label('Tambah Bahagian')
+            // ->modal()
+            // ->createAnother(false),
         ];
     }
 
-    // public function getTabs(): array
-    // {
-    //     return [
-    //         'bahagian' => Tab::make('Bahagian'),
-
-    //         'unit' => Tab::make('Unit')
-    //             ->modifyQueryUsing(fn ($query) => $query->whereHas('units')),
-    //     ];
-    // }
+    public function getBreadcrumb(): string
+    {
+        return 'Senarai';
+    }
 }

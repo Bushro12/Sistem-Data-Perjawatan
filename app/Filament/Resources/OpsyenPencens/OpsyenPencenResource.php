@@ -11,14 +11,13 @@ use App\Models\OpsyenPencen;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class OpsyenPencenResource extends Resource
 {
     protected static ?string $model = OpsyenPencen::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';
 
     protected static ?string $recordTitleAttribute = 'opsyen';
     protected static ?string $modelLabel = 'Opsyen Pencen';

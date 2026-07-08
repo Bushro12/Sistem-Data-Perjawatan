@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Kumpulans\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -16,20 +17,34 @@ class KumpulansTable
         return $table
             ->columns([
                 TextColumn::make('no')
-                ->Label('Bil')
-                ->rowIndex(),
+                    ->Label('Bil')
+                    ->rowIndex(),
                 TextColumn::make('nama_kumpulan')
-                ->label('Kumpulan')
-                ->sortable()
-                ->searchable()
+                    ->label('Kumpulan')
+                    ->sortable()
+                    ->searchable()
             ])
             ->filters([
                 //
             ])
             ->recordActions([
-                EditAction::make()
-                ->modal(),
-                DeleteAction::make()
+                ActionGroup::make([
+                    EditAction::make()
+                        // ->label('Kemaskini')
+                        ->modal()
+                        // ->modalHeading('Kemaskini Rekod')
+                        ->modalSubmitActionLabel('Simpan')
+                        ->modalCancelActionLabel('Batal'),
+
+                    DeleteAction::make()
+                        ->label('Padam')
+                        ->modalHeading(fn($record) => "Padam {$record->nama_kumpulan}")
+                        ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
+                        ->modalSubmitActionLabel('Ya, Padam')
+                        ->modalCancelActionLabel('Batal')
+
+                ])
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

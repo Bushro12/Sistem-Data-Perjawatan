@@ -2,26 +2,29 @@
 
 namespace App\Filament\Resources\Warans;
 
+use App\Filament\Resources\WaranJawatans\Pages\CreateWaranJawatan;
 use App\Filament\Resources\Warans\Pages\CreateWaran;
 use App\Filament\Resources\Warans\Pages\CustomTable;
 use App\Filament\Resources\Warans\Pages\EditWaran;
 use App\Filament\Resources\Warans\Pages\ListWarans;
+use App\Filament\Resources\Warans\Pages\ViewWaran;
 use App\Filament\Resources\Warans\RelationManagers\WaranJawatansRelationManager;
 use App\Filament\Resources\Warans\Schemas\WaranForm;
+use App\Filament\Resources\Warans\Schemas\WaranInfolist;
 use App\Filament\Resources\Warans\Tables\WaransTable;
 use App\Filament\Resources\Warans\Widgets\WaranStats;
 use App\Models\Waran;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class WaranResource extends Resource
 {
     protected static ?string $model = Waran::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $recordTitleAttribute = 'no_waran';
 
@@ -36,30 +39,66 @@ class WaranResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getModel()
+            ::all()
+            ->filter(
+                fn($record) =>
+                in_array($record->status_jik, ['Kurang', 'Lebih'])
+            )
+            ->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        $count = static::getModel()
+            ::all()
+            ->filter(
+                fn($record) =>
+                in_array($record->status_jik, ['Kurang', 'Lebih'])
+            )
+            ->count();
+
+        return $count > 0 ? 'danger' : null;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return WaranForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return WaranInfolist::configure($schema);
+    }
     public static function table(Table $table): Table
     {
         return WaransTable::configure($table);
     }
 
-public static function getRelations(): array
-{
-    return [
-        WaranJawatansRelationManager::class,
-    ];
-}
+    public static function getRelations(): array
+    {
+        // if (request()->routeIs('filament.app.resources.warans.view')) {
+        //     return [];
+        // }
+
+        return [
+            WaranJawatansRelationManager::class,
+        ];
+    }
 
     public static function getPages(): array
     {
         return [
-            'custom' =>CustomTable::route('/custom'),
+            'custom' => CustomTable::route('/custom'),
             'index' => ListWarans::route('/'),
             'create' => CreateWaran::route('/create'),
+            'view' => ViewWaran::route('/{record}'),
             'edit' => EditWaran::route('/{record}/edit'),
+            // 'penempatan' => WaranJawatan
         ];
     }
 
@@ -78,15 +117,25 @@ public static function getRelations(): array
         ]);
     }
 
- public static function getWidgets(): array
-{
-    return [
-        WaranStats::class,
-    ];
-}
+    public static function getWidgets(): array
+    {
+        return [
+            WaranStats::class,
+        ];
+    }
 
-public static function getHeaderWidgets(): array
-{
-    return [];
-}
+    public static function getHeaderWidgets(): array
+    {
+        return [];
+    }
+
+    // public static function canEdit(Model $record): bool
+    // {
+    //     return auth()->user()->isAdmin();
+    // }
+
+    // public static function canView(Model $record): bool
+    // {
+    //     return true;
+    // }
 }

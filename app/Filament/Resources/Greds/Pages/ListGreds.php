@@ -10,12 +10,21 @@ class ListGreds extends ListRecords
 {
     protected static string $resource = GredResource::class;
 
-    protected function getHeaderActions(): array
+     protected function getHeaderActions(): array
     {
         return [
             CreateAction::make()
-            ->modal()
-            ->createAnother(false),
+                ->label('Tambah Gred')
+                ->modal()
+                ->createAnother(false)
+                ->modalHeading('Tambah Gred')
+                ->modalSubmitActionLabel('Tambah')
+                ->modalCancelActionLabel('Batal'),
         ];
+    }
+
+    public function getBreadcrumb(): string
+    {
+        return 'Senarai';
     }
 }

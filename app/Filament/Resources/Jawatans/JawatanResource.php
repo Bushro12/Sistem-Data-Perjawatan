@@ -11,7 +11,6 @@ use App\Models\Jawatan;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 // use Illuminate\Database\Eloquent\Builder;
 
@@ -20,7 +19,7 @@ class JawatanResource extends Resource
 {
     protected static ?string $model = Jawatan::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-check';
 
     protected static ?string $recordTitleAttribute = 'desc_jawatan';
 
@@ -56,7 +55,7 @@ class JawatanResource extends Resource
         return [
             'index' => ListJawatans::route('/'),
             'create' => CreateJawatan::route('/create'),
-            'edit' => EditJawatan::route('/{record}/edit'),
+            // 'edit' => EditJawatan::route('/{record}/edit'),
         ];
     }
 // public static function getEloquentQuery(): Builder

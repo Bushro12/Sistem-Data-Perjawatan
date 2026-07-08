@@ -11,19 +11,23 @@ class ListJawatans extends ListRecords
 {
     protected static string $resource = JawatanResource::class;
 
-    protected function getHeaderActions(): array
+   protected function getHeaderActions(): array
     {
-
-
         return [
             CreateAction::make()
                 ->label('Tambah Jawatan')
                 ->modal()
-                ->createAnother(false),
-
+                ->createAnother(false)
+                ->modalHeading('Tambah Jawatan')
+                ->modalSubmitActionLabel('Tambah')
+                ->modalCancelActionLabel('Batal'),
         ];
     }
 
+    public function getBreadcrumb(): string
+    {
+        return 'Senarai';
+    }
     protected function getHeaderWidgets(): array
     {
         return [

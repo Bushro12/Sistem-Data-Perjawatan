@@ -81,19 +81,23 @@ class JawatansTable
                 //         ->hiddenLabel(),
                 // ])
                 // ->buttonGroup(),
-                ViewAction::make()
-                    ->modal()
-                    ->label('')
-                    ->tooltip('View')
-                    ->color('info'),
-                EditAction::make()
-                    ->modal()
-                    ->label('')
-                    ->tooltip('Edit'),
-                DeleteAction::make()
-                    ->modal()
-                    ->label('')
-                    ->tooltip('Delete'),
+                ActionGroup::make([
+                    // ViewAction::make(),
+                    EditAction::make()
+                        // ->label('Kemaskini')
+                        ->modal()
+                        // ->modalHeading('Kemaskini Rekod')
+                        ->modalSubmitActionLabel('Simpan')
+                        ->modalCancelActionLabel('Batal'),
+
+                    DeleteAction::make()
+                        ->label('Padam')
+                        ->modalHeading(fn($record) => "Padam {$record->desc_jawatan}")
+                        ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
+                        ->modalSubmitActionLabel('Ya, Padam')
+                        ->modalCancelActionLabel('Batal')
+                ])
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

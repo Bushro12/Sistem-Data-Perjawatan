@@ -14,8 +14,12 @@ class ListParlimens extends ListRecords
     {
         return [
             CreateAction::make()
-            ->modal()
-            ->createAnother(false),
+            ->label('Tambah Parlimen')
         ];
+    }
+
+    public function getBreadcrumb(): string
+    {
+        return 'Senarai';
     }
 }

@@ -11,16 +11,19 @@ use App\Models\Subunit;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
 class SubunitResource extends Resource
 {
     protected static ?string $model = Subunit::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-squares-plus';
 
     protected static ?string $recordTitleAttribute = 'nama_subunit';
+
+    protected static ?string $navigationLabel = 'Sub Unit';
+    protected static ?string $modelLabel = 'Sub Unit';
+    protected static ?string $pluralModelLabel = 'Sub Unit';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Kawalan';
     protected static ?int $navigationSort = 24;

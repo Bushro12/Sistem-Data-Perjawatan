@@ -14,8 +14,14 @@ class ListSubunits extends ListRecords
     {
         return [
             CreateAction::make()
-            ->modal()
-            ->createAnother(false),
+            ->label('Tambah Sub Unit')
+            // ->modal()
+            // ->createAnother(false),
         ];
+    }
+
+    public function getBreadcrumb(): string
+    {
+        return 'Senarai';
     }
 }

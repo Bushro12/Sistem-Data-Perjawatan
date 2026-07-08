@@ -10,12 +10,18 @@ class ListPrograms extends ListRecords
 {
     protected static string $resource = ProgramResource::class;
 
+
     protected function getHeaderActions(): array
     {
         return [
             CreateAction::make()
             ->label('Tambah Program & Aktiviti')
-            
+
         ];
+    }
+
+    public function getBreadcrumb(): string
+    {
+        return 'Senarai';
     }
 }

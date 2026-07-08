@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -39,6 +40,20 @@ class WaranJawatan extends Model
         return $this->belongsTo(Ptj::class, 'ptj_id');
     }
 
+    public function bahagian()
+    {
+        return $this->belongsTo(Bahagian::class, 'bahagian_id');
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class, 'unit_id');
+    }
+
+    public function subunit()
+    {
+        return $this->belongsTo(Subunit::class, 'subunit_id');
+    }
     public function aktiviti()
     {
         return $this->belongsTo(Aktiviti::class, 'aktiviti_id');
@@ -73,14 +88,33 @@ class WaranJawatan extends Model
     {
         return Gred::whereIn('id', $this->gred_ids ?? [])
             ->pluck('kod_gred')
-            ->implode(', ');
+            ->implode('/');
     }
+
 
     public function getJawatanListAttribute()
     {
         return Jawatan::whereIn('id', $this->jawatan_ids ?? [])
             ->pluck('desc_jawatan')
             ->implode(', ');
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('ptj_access', function (Builder $query) {
+
+            $user = auth()->user();
+
+            // superadmin & admin can see all
+            if (in_array($user->role, [1, 2])) {
+                return;
+            }
+
+            // normal user → filter by PTJ
+            $query->where('ptj_id', $user->ptj_id);
+
+            // });
+        });
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Subunits\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -23,6 +24,8 @@ class SubunitsTable
                 ->label('Unit'),
                 TextColumn::make('nama_subunit')
                 ->label('Sub Unit'),
+                TextColumn::make('parlimen.nama_parlimen')
+                ->label('Parlimen'),
                 TextColumn::make('dun.nama_dun')
                 ->label('Dun')
             ])
@@ -30,17 +33,16 @@ class SubunitsTable
                 //
             ])
             ->recordActions([
-                ViewAction::make()
-                    ->color("info")
-                    ->label("")
-                    ->tooltip("View"),
-                EditAction::make()
-                    ->modal()
-                    ->label("")
-                    ->tooltip("Edit"),
-                DeleteAction::make()
-                    ->label("")
-                    ->tooltip("Delete"),
+               ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make()
+                        ->label('Padam')
+                        ->modalHeading(fn($record) => "Padam {$record->nama_subunit}")
+                        ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
+                        ->modalSubmitActionLabel('Ya, Padam')
+                        ->modalCancelActionLabel('Batal')
+                ])
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

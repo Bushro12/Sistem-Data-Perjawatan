@@ -17,7 +17,7 @@ class GredForm
                 ->required()
                 ->columnSpan(1),
                 TextInput::make('desc_gred')
-                ->label('Kod')
+                ->label('Gred')
                 ->required()
                 ->columnSpan(2),
             ]);

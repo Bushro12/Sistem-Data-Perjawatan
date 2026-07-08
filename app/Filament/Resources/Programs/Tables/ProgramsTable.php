@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Programs\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -60,16 +61,18 @@ class ProgramsTable
                 //
             ])
             ->recordActions([
-                // ViewAction::make()
-                //     ->label('View')
-                //     ->color('info')
-                //     ->tooltip('View'),
-                EditAction::make()
+                ActionGroup::make([
+                     EditAction::make()
                     ->label('Edit')
                     ->tooltip('Edit'),
                 DeleteAction::make()
-                    ->label('Delete')
-                    ->tooltip('Delete'),
+                        ->label('Padam')
+                        ->modalHeading(fn($record) => "Padam {$record->nama_program}")
+                        ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
+                        ->modalSubmitActionLabel('Ya, Padam')
+                        ->modalCancelActionLabel('Batal')
+                ])
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

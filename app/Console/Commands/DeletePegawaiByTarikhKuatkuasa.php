@@ -2,9 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Filament\Resources\LetakJawatans\LetakJawatanResource;
 use App\Models\LetakJawatan;
 use App\Models\Pegawai;
+use App\Models\User;
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -30,6 +34,25 @@ protected $signature = 'pegawai:delete-letak-jawatan';
         if ($pegawai && ! $pegawai->trashed()) {
 
             $pegawai->delete();
+
+            $recipients = User::whereIn('role', [1, 2])->get();
+
+            Notification::make()
+            ->title('Pegawai Tamat Perkhidmatan')
+                    ->body("{$pegawai->nama} telah ditamatkan perkhidmatan secara automatik.")
+                    ->danger()
+                    ->actions([
+                        Action::make('view')
+                            ->label('Lihat Pegawai')
+                            ->url(
+                                LetakJawatanResource::getUrl('edit', [
+                                    'record' => $record,
+                                ])
+                            )
+                            ->markAsRead(),
+                    ])
+                    ->sendToDatabase($recipients);
+
 
             $this->info("Pegawai {$pegawai->nama} deleted.");
         }

@@ -14,7 +14,17 @@ class ListOpsyenPencens extends ListRecords
     {
         return [
             CreateAction::make()
-            ->modal(),
+                ->label('Tambah Opsyen Pencem')
+                ->modal()
+                ->createAnother(false)
+                ->modalHeading('Tambah Opsyen Pencen')
+                ->modalSubmitActionLabel('Tambah')
+                ->modalCancelActionLabel('Batal'),
         ];
+    }
+
+     public function getBreadcrumb(): string
+    {
+        return 'Senarai';
     }
 }
