@@ -14,6 +14,7 @@ Route::get('/', function () {
 });
 
 Route::get('/export-users', [UserExportController::class, 'export'])
+    ->middleware('auth')
     ->name('export.users');
 
 // Route::get('/export-letakJawatan', [LetakJawatanExportController::class, 'export'])
