@@ -59,6 +59,7 @@ class PegawaiInfolist
             $record->is_tetap == 1 => 'tetap',
             $record->is_kontrak_interim == 1 => 'kontrak-interim',
             $record->is_kontrak == 1 => 'kontrak',
+            $record->is_kontrak_isi_tetap == 1 => 'kontrak-isi-tetap',
             default => null,
         };
     }

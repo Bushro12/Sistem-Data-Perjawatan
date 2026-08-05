@@ -236,7 +236,12 @@ class WaranJawatanForm
 
                                         $pegawai = $query
                                             ->orderBy('nama')
-                                            ->pluck('nama', 'id')
+                                            ->get()
+                                            ->mapWithKeys(function ($pegawai) {
+                                                return [
+                                                    $pegawai->id => "{$pegawai->nama} ({$pegawai->nokp})",
+                                                ];
+                                            })
                                             ->toArray();
 
 
@@ -247,10 +252,10 @@ class WaranJawatanForm
                                                 ->find($record->pegawai_id);
 
                                             if ($currentPegawai) {
-                                                $pegawai[$currentPegawai->id] = $currentPegawai->nama;
+                                                $pegawai[$currentPegawai->id] =
+                                                    "{$currentPegawai->nama} ({$currentPegawai->nokp})";
                                             }
                                         }
-
                                         return $pegawai;
                                     })
                                     ->disabled(function ($record, Get $get) {

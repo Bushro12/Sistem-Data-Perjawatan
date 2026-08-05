@@ -48,7 +48,8 @@ class AppPanelProvider extends PanelProvider
             ->spa()
             // ->login()
             ->login(\App\Filament\Pages\Auth\Login::class)
-            ->passwordReset()
+            ->passwordReset(\App\Filament\Pages\Auth\RequestPasswordReset::class,
+)
             ->profile(EditProfile::class)
             ->userMenuItems([
                 'logout' => Action::make('logout')

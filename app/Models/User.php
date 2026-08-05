@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Ptj;
 use Illuminate\Support\Facades\Storage;
+use Filament\Auth\Notifications\ResetPassword;
 
 #[Fillable(['name', 'email', 'password', 'ptj_id', 'nokp', 'phone_number', 'status', 'role', 'avatar'])]
 #[Hidden(['password', 'remember_token'])]
@@ -28,6 +29,7 @@ class User extends Authenticatable implements HasAvatar
      *
      * @return array<string, string>
      */
+
     protected function casts(): array
     {
         return [
@@ -35,6 +37,7 @@ class User extends Authenticatable implements HasAvatar
             'password' => 'hashed',
         ];
     }
+
 
     public function ptj()
     {

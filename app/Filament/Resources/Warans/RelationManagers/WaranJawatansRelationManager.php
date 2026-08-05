@@ -354,7 +354,12 @@ class WaranJawatansRelationManager extends RelationManager
 
                                         $pegawai = $query
                                             ->orderBy('nama')
-                                            ->pluck('nama', 'id')
+                                            ->get()
+                                            ->mapWithKeys(function ($pegawai) {
+                                                return [
+                                                    $pegawai->id => "{$pegawai->nama} ({$pegawai->nokp})",
+                                                ];
+                                            })
                                             ->toArray();
 
 
@@ -365,7 +370,8 @@ class WaranJawatansRelationManager extends RelationManager
                                                 ->find($record->pegawai_id);
 
                                             if ($currentPegawai) {
-                                                $pegawai[$currentPegawai->id] = $currentPegawai->nama;
+                                                $pegawai[$currentPegawai->id] =
+                                                    "{$currentPegawai->nama} ({$currentPegawai->nokp})";
                                             }
                                         }
 
@@ -767,10 +773,15 @@ class WaranJawatansRelationManager extends RelationManager
                                                         ->columnSpanFull()
                                                         ->state(function ($record) {
                                                             if ($record->pegawai_id == null) {
-                                                                return 'Tiada Penyandang';
+                                                                $pegawai = 'Tiada Penyandang';
+
                                                             } else {
-                                                                return $record->pegawai?->nama;
+                                                                $nama = $record->pegawai?->nama;
+                                                                $nokp = $record->pegawai?->nokp;
+                                                                $pegawai = $nama . ' (' . $nokp . ')';
                                                             }
+
+                                                            return $pegawai;
 
                                                         }),
 

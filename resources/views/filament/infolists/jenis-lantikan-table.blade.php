@@ -3,6 +3,7 @@
         $record->is_tetap == 1 => 'Tetap',
         $record->is_kontrak == 1 => 'Kontrak',
         $record->is_kontrak_interim == 1 => 'Kontrak Interim',
+        $record->is_kontrak_isi_tetap == 1 => 'Kontrak Isi Tetap',
         default => null,
     };
 
@@ -14,7 +15,7 @@
     };
 
     $showTetapFields = $record->is_tetap == 1 || $record->is_kontrak_interim == 1;
-    $showKontrakFields = $record->is_kontrak == 1;
+    $showKontrakFields = $record->is_kontrak == 1 || $record->is_kontrak_isi_tetap == 1;
 @endphp
 
 <table class="w-full border-collapse text-sm">
@@ -33,6 +34,7 @@
                         'bg-success-soft text-fg-success-strong' => $lantikan === 'Tetap',
                         'bg-warning-soft text-fg-warning' => $lantikan === 'Kontrak',
                         'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' => $lantikan === 'Kontrak Interim',
+                        'bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-400' => $lantikan === 'Kontrak Isi Tetap',
                     ])>
                         {{ $lantikan }}
                     </span>

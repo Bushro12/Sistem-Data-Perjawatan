@@ -264,14 +264,14 @@ class PegawaiForm
                                             ->columnSpan(1)
 
                                     ])
-                                   ->visible(function (?Pegawai $record): bool {
+                                    ->visible(function (?Pegawai $record): bool {
                                         if (!$record) {
                                             // Create page
                                             return true;
                                         }
 
                                         return auth()->user()->ptj_id === $record->ptj_id || auth()->user()->role == 1 || auth()->user()->role == 2;
-                                   }),
+                                    }),
 
                                 Textentry::make('unit')
                                     ->label('Unit')
@@ -326,13 +326,14 @@ class PegawaiForm
 
                         Tab::make('Jenis Lantikan')
                             ->schema([
-                                Checkbox::make('is_kontrak')
-                                    ->label('KONTRAK')
+                                Checkbox::make('is_tetap')
+                                    ->label('TETAP')
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, $set, $get) {
                                         if ($state) {
-                                            $set('is_tetap', false);
+                                            $set('is_kontrak', false);
                                             $set('is_kontrak_interim', false);
+                                            $set('is_kontrak_isi_tetap', false);
                                         }
                                     }),
                                 Checkbox::make('is_kup')
@@ -344,16 +345,17 @@ class PegawaiForm
                                             $set('is_jtw', false);
                                         }
                                     }),
-
-                                Checkbox::make('is_tetap')
-                                    ->label('TETAP')
+                                Checkbox::make('is_kontrak')
+                                    ->label('KONTRAK')
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, $set, $get) {
                                         if ($state) {
-                                            $set('is_kontrak', false);
+                                            $set('is_tetap', false);
                                             $set('is_kontrak_interim', false);
+                                            $set('is_kontrak_isi_tetap', false);
                                         }
                                     }),
+
 
                                 Checkbox::make('is_kupj')
                                     ->label('KHAS UNTUK PENYANDANG JAWATAN (KUPJ)')
@@ -362,6 +364,7 @@ class PegawaiForm
                                         if ($state) {
                                             $set('is_kup', false);
                                             $set('is_jtw', false);
+
                                         }
                                     }),
 
@@ -372,6 +375,7 @@ class PegawaiForm
                                         if ($state) {
                                             $set('is_kontrak', false);
                                             $set('is_tetap', false);
+                                            $set('is_kontrak_isi_tetap', false);
                                         }
                                     }),
 
@@ -382,13 +386,25 @@ class PegawaiForm
                                         if ($state) {
                                             $set('is_kup', false);
                                             $set('is_kupj', false);
+
+                                        }
+                                    }),
+
+                                Checkbox::make('is_kontrak_isi_tetap')
+                                    ->label('KONTRAK ISI TETAP')
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, $set, $get) {
+                                        if ($state) {
+                                            $set('is_kontrak', false);
+                                            $set('is_tetap', false);
+                                            $set('is_kontrak_interim', false);
                                         }
                                     }),
 
                                 Section::make('Maklumat Lantikan')
                                     ->columns(2)
                                     ->columnSpanFull()
-                                    ->visible(fn(Get $get) => !$get('is_kontrak'))
+                                    ->visible(fn(Get $get) => $get('is_tetap') || $get('is_kontrak_interim'))
                                     ->schema([
                                         DatePicker::make('tarikh_lantikan')
                                             ->label('Tarikh Lantikan')
@@ -468,7 +484,7 @@ class PegawaiForm
                                 Section::make('Maklumat Lantikan Kontrak')
                                     ->columns(2)
                                     ->columnSpanFull()
-                                    ->visible(fn(Get $get) => $get('is_kontrak'))
+                                    ->visible(fn(Get $get) => $get('is_kontrak') || $get('is_kontrak_isi_tetap'))
                                     ->schema([
                                         DatePicker::make('tarikh_lantikan1')
                                             ->label('Tarikh Lantikan 1')
@@ -646,7 +662,7 @@ class PegawaiForm
                                 TextEntry::make('program')
                                     ->label('program')
                                     ->getStateUsing(function ($record) {
-                                        $waranJawatan = $record->waranJawatan->first();
+                                        $waranJawatan = $record->waranJawatan;
                                         $program = $waranJawatan?->aktiviti?->program;
 
                                         return $program
@@ -658,7 +674,7 @@ class PegawaiForm
                                 TextEntry::make('aktiviti')
                                     ->label('Aktiviti')
                                     ->getStateUsing(function ($record) {
-                                        $waranJawatan = $record->waranJawatan->first();
+                                        $waranJawatan = $record->waranJawatan;
                                         $aktiviti = $waranJawatan?->aktiviti;
 
                                         return $aktiviti

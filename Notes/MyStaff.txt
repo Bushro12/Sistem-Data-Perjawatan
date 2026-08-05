@@ -60,3 +60,21 @@ TASK (19/07/2026)
 
 upm_mystaff
 4JFngtBEbhqwj(xB
+
+
+Meet 4/8
+1. Forgot password guna ic. jangan tulis email send to sapa
+2. email user wajib guna moh
+3. limit request untuk forgot password.
+4. hebahan move ke atas
+5. term waran di dashboard etc
+6. status waran di dashboard guna percentage
+7. buang ringkasan system
+8. delete waran lepas ada yang keluar
+9. calculation data include pindaan nama
+10. tambah Kontrak Isi Tetap di maklumat penyandang
+11. selection nama pegawai -> Nama (ic)
+12. Tarikh pinjam.
+13. Pinjam userdua2ptj boleh edit maklumat3:38 PM 4/8/2026
+14. report kena ada cetakan dijana (Tarikh)
+15. Senarai UAT

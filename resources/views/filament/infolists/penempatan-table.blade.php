@@ -26,9 +26,12 @@
         ? $record->subunit?->nama_subunit
         : $waranJawatan?->subunit?->nama_subunit;
 
-    $ptjPegawaiId = $record->ptj?->id;
-    $ptjWaranId = $waranJawatan?->ptj?->id;
-    $statusPinjam = (!$isKontrak && $ptjPegawaiId !== $ptjWaranId) ? 'Pinjam' : 'Tiada';
+   $ptjPegawaiId = $record->ptj?->id;
+$ptjWaranId = $waranJawatan?->ptj?->id;
+
+$statusPinjam = ($waranJawatan && !$isKontrak && $ptjPegawaiId !== $ptjWaranId)
+    ? 'Pinjam'
+    : 'Tiada';
 @endphp
 
 <table class="w-full border-collapse text-sm">

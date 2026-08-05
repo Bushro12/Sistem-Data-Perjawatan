@@ -40,30 +40,28 @@ class PegawaisTable
                     ->label('Pegawai')
                     ->formatStateUsing(function ($record) {
 
-                        $lantikan = match (true) {
-                            $record->is_tetap == 1 => ['TETAP'],
-                            $record->is_kontrak == 1 => ['KONTRAK'],
-                            $record->is_kontrak_interim == 1 => ['KONTRAK INTERIM'],
-                            default => ['-', 'gray'],
-                        };
+                    $html =
+                    '<strong>' . ($record->nama ?? '') . '</strong><br>' .
+                    '<span class="text-xs text-gray-500">' . ($record->nokp ?? '') . '</span><br>' .
+                    '<span class="text-xs text-gray-500">' . ($record->jawatan_gred ? $record->jawatan_gred->jawatan->desc_jawatan .
+                    ' (' . $record->jawatan_gred->gred->kod_gred . ')' : '');
 
-                        return
-                            '<strong>' . ($record->nama ?? '-') . '</strong><br>' .
-                            ($record->nokp ?? '-') . '<br>' .
-                            ($record->jawatan_gred
-                                ? $record->jawatan_gred->jawatan->desc_jawatan .
-                                ' (' . $record->jawatan_gred->gred->kod_gred . ')'
-                                : '-');
-                        // . ($lantikan[0]);
+                    return $html;
+                        // $lantikan = match (true) {
+                        //     $record->is_tetap == 1 => ['TETAP'],
+                        //     $record->is_kontrak == 1 => ['KONTRAK'],
+                        //     $record->is_kontrak_interim == 1 => ['KONTRAK INTERIM'],
+                        //     default => ['-', 'gray'],
+                        // };
 
                         // return
-                        //     '<div><strong>' . ($record->nama ?? '-') . '</strong></div>' .
-                        //     '<div style="margin-top: 2px;">' .
+                        //     '<strong>' . ($record->nama ?? '-') . '</strong><br>' .
+                        //     ($record->nokp ?? '-') . '<br>' .
                         //     ($record->jawatan_gred
                         //         ? $record->jawatan_gred->jawatan->desc_jawatan .
                         //         ' (' . $record->jawatan_gred->gred->kod_gred . ')'
-                        //         : '-') .
-                        //     '</div>';
+                        //         : '-');
+
                     })
                     ->html()
                     ->searchable(query: function ($query, string $search) {
@@ -86,14 +84,16 @@ class PegawaisTable
                             '<strong>' . ($record->ptj?->nama_ptj ?? '') . '</strong><br>' .
                             '<span class="text-xs text-gray-500">' . ($record->bahagian?->nama_bahagian ?? '') . '</span>';
 
+                            $waranJawatan = $record->waranJawatan;
+
                         $ptj_pegawai = $record->ptj?->id;
                         $ptj_waran = $record->waranJawatan?->ptj?->id;
 
-                        if (!$record->is_kontrak && $ptj_pegawai !== $ptj_waran) {
-                            $html .= '<br><span class="text-xs px-2 py-1 rounded bg-warning-100 text-warning-700">
-                        Pinjam
-                      </span>';
-                        }
+                       if ($waranJawatan && !$record->is_kontrak && $ptj_pegawai !== $ptj_waran) {
+    $html .= '<br><span class="text-xs px-2 py-1 rounded bg-warning-100 text-warning-700">
+        Pinjam
+    </span>';
+}
 
                         return $html;
                     })

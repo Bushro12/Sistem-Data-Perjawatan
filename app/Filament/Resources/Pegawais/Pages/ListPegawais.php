@@ -77,6 +77,11 @@ class ListPegawais extends ListRecords
             // ->badge(Pegawai::where('is_kontrak', 1)->count()),
 
 
+            'kontrak_isi_tetap' => Tab::make('KONTRAK ISI TETAP')
+            ->extraAttributes(['class' => 'fi-tabs-item-kontrak'])
+            ->modifyQueryUsing(
+                fn(Builder $query) => $query->where('is_kontrak_isi_tetap', 1)
+            )
         ];
     }
 
