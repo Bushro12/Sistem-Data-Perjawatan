@@ -127,7 +127,7 @@ class PegawaisTable
                             return '<strong>Jawatan tanpa waran</strong>';
                         }
 
-                        return '<strong>' . ($record->waranJawatan?->first()?->waran?->no_waran ?? '') . '</strong>';
+                        return '<strong>' . ($record->waranJawatan?->waran?->no_waran ?? '') . '</strong>';
                     })
                     ->html()
                     ->searchable(query: function ($query, string $search) {
