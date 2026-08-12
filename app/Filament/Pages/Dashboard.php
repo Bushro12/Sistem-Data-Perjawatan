@@ -8,8 +8,6 @@ use Filament\Pages\Page;
 use Filament\Panel;
 use App\Models\Hebahan;
 use App\Models\Waran;
-use App\Models\Pegawai;
-use App\Models\Ptj;
 use App\Models\Program;
 use App\Models\WaranJawatan;
 
@@ -42,10 +40,12 @@ protected string $view = 'filament.pages.dashboard';
     {
         $allWarans = Waran::with(['waranJawatan'])->get();
 
-        $totalWaran    = $allWarans->count();
-        $totalLebih    = $allWarans->filter(fn($w) => $w->status_jik === 'Lebih')->count();
-        $totalKurang   = $allWarans->filter(fn($w) => $w->status_jik === 'Kurang')->count();
-        $totalSeimbang = $allWarans->filter(fn($w) => $w->status_jik === 'Seimbang')->count();
+        $totalWaran           = $allWarans->count();
+        $totalLebih           = $allWarans->filter(fn($w) => $w->status_jik === 'Lebih')->count();
+        $totalKurang          = $allWarans->filter(fn($w) => $w->status_jik === 'Kurang')->count();
+        $totalSeimbang        = $allWarans->filter(fn($w) => $w->status_jik === 'Seimbang')->count();
+        $totalPengisianSemasa = $allWarans->sum('isi_count');
+        $totalKekosongan      = $allWarans->sum('kosong_count');
 
         $recentWarans = Waran::with(['waranJawatan'])->latest()->take(5)->get();
 
@@ -72,14 +72,14 @@ protected string $view = 'filament.pages.dashboard';
             ->get();
 
         return [
-            'totalWaran'     => $totalWaran,
-            'totalLebih'     => $totalLebih,
-            'totalKurang'    => $totalKurang,
-            'totalSeimbang'  => $totalSeimbang,
+            'totalWaran'           => $totalWaran,
+            'totalLebih'           => $totalLebih,
+            'totalKurang'          => $totalKurang,
+            'totalSeimbang'        => $totalSeimbang,
+            'totalPengisianSemasa' => $totalPengisianSemasa,
+            'totalKekosongan'      => $totalKekosongan,
             'recentWarans'   => $recentWarans,
             'waranByProgram' => $waranByProgram->sortByDesc('waran_count')->values(),
-            'totalPtj'       => Ptj::count(),
-            'totalPegawai'   => Pegawai::count(),
             'recentHebahans' => $recentHebahans,
         ];
     }

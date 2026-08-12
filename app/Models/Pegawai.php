@@ -25,6 +25,7 @@ class Pegawai extends Model
         'is_tetap',
         'is_kontrak_interim',
         'is_kontrak',
+        'is_kontrak_isi_tetap',
         'is_kup',
         'is_kupj',
         'is_jtw',
