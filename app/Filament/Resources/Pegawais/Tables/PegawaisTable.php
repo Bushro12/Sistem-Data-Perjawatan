@@ -334,6 +334,7 @@ class PegawaisTable
         return match (true) {
             $record->is_tetap == 1 => 'tetap',
             $record->is_kontrak_interim == 1 => 'kontrak-interim',
+            $record->is_kontrak_isi_tetap == 1 => 'kontrak-isi-tetap',
             $record->is_kontrak == 1 => 'kontrak',
             default => null,
         };
