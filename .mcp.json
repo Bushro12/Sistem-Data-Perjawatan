@@ -1,8 +1,18 @@
 {
-  "mcpServers": {
-    "codegraph": {
-      "command": "codegraph",
-      "args": ["serve", "--mcp"]
+    "mcpServers": {
+        "codegraph": {
+            "command": "codegraph",
+            "args": [
+                "serve",
+                "--mcp"
+            ]
+        },
+        "laravel-boost": {
+            "command": "C:\\Users\\HP\\.config\\herd\\bin\\php84\\php.exe",
+            "args": [
+                "artisan",
+                "boost:mcp"
+            ]
+        }
     }
-  }
 }

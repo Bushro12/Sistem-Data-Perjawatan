@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Pencens;
 use App\Filament\Resources\Pencens\Pages\CreatePencen;
 use App\Filament\Resources\Pencens\Pages\EditPencen;
 use App\Filament\Resources\Pencens\Pages\ListPencens;
-use App\Filament\Resources\Pencens\Pages\ViewPencen;
+use App\Filament\Resources\Pencens\Pages\ViewPencens;
 use App\Filament\Resources\Pencens\Schemas\PencenForm;
 use App\Filament\Resources\Pencens\Schemas\PencenInfoList;
 use App\Filament\Resources\Pencens\Tables\PencensTable;
@@ -22,6 +22,7 @@ class PencenResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-left-on-rectangle';
 
     protected static ?string $recordTitleAttribute = 'nama';
+
     protected static ?string $modelLabel = 'Penamatan Perkhidmatan';
 
     protected static ?string $pluralModelLabel = 'Penamatan Perkhidmatan';
@@ -31,7 +32,6 @@ class PencenResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Pegawai';
 
     protected static ?int $navigationSort = 13;
-
 
     public static function form(Schema $schema): Schema
     {
@@ -61,7 +61,7 @@ class PencenResource extends Resource
             'index' => ListPencens::route('/'),
             'create' => CreatePencen::route('/create'),
             'edit' => EditPencen::route('/{record}/edit'),
-            'view' => ViewPencen::route('/{record}')
+            'view' => ViewPencens::route('/{record}'),
         ];
     }
 }
