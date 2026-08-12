@@ -8,6 +8,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Actions\Action;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class UserForm
@@ -35,7 +36,11 @@ class UserForm
                         TextInput::make('email')
                             ->label('Email')
                             ->required()
-                            ->email(),
+                            ->email()
+                            ->rule('regex:/^[A-Za-z0-9._%+-]+@moh\.gov\.my$/')
+                            ->validationMessages([
+                                'regex' => 'Sila guna email @moh.gov.my sahaja.',
+                            ]),
 
                         TextInput::make('nokp')
                             ->label('No Kad Pengenalan')
@@ -85,6 +90,8 @@ class UserForm
                             )
                             ->hiddenOn('view')
                             ->required(fn(string $context) => $context === 'create')
+                            ->dehydrated(fn($state) => filled($state))
+                            ->dehydrateStateUsing(fn($state) => Hash::make($state))
                             ->visible(
                                 fn(string $context) =>
                                 $context === 'create' || auth()->user()->role === 1

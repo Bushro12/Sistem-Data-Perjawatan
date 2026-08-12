@@ -682,7 +682,53 @@ class PegawaiForm
                                             : '-';
                                     })
                                     ->visible(fn(Get $get) => $get('is_kontrak_interim') || $get('is_tetap')),
+
+                                TextEntry::make('lain-lain')
+                                    ->label('Lain-lain')
+                                    ->getStateUsing(function ($record) {
+                                        $isKontrak = $record->is_kontrak == 1;
+                                        $waranJawatan = $record->waranJawatan;
+
+                                        $ptjPegawaiId = $record->ptj?->id;
+                                        $ptjWaranId = $waranJawatan?->ptj?->id;
+
+                                        return (!$isKontrak && $ptjPegawaiId !== $ptjWaranId)
+                                            ? 'Pinjam'
+                                            : 'Tiada';
+                                    })
+                                    ->badge()
+                                    ->color(fn($state) => match ($state) {
+                                        'Pinjam' => 'danger',
+                                        'Tiada' => 'success',
+                                        default => 'gray',
+                                    })
+                                    ->size('lg'),
+
+                                DatePicker::make('tarikh_pinjam')
+                                    ->label('Tarikh Pinjam')
+                                    ->native(false)
+                                    ->visible(function ($record) {
+                                        if (!$record) {
+                                            return false;
+                                        }
+
+                                        $waranJawatan = $record->waranJawatan;
+
+                                        return !$record->is_kontrak
+                                            && $record->ptj?->id !== $waranJawatan?->ptj?->id;
+                                    })
+                                    ->required(function ($record) {
+    if (!$record) {
+        return false;
+    }
+
+    return !$record->is_kontrak
+        && $record->ptj?->id !== $record->waranJawatan?->ptj?->id;
+})
+
                             ]),
+
+
 
                     ])
                     ->columns(2)

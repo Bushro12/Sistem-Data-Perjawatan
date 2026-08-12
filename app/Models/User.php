@@ -9,6 +9,7 @@ use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -67,5 +68,12 @@ class User extends Authenticatable implements HasAvatar
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
     }
+
+    protected function name(): Attribute
+{
+    return Attribute::make(
+        set: fn ($value) => mb_strtoupper(trim($value), 'UTF-8'),
+    );
+}
 }
 
