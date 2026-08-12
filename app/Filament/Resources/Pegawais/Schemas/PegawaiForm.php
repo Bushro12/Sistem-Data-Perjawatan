@@ -194,7 +194,8 @@ class PegawaiForm
                                         }
 
                                         return auth()->user()->ptj_id === $record->ptj_id || auth()->user()->role == 1 || auth()->user()->role == 2;
-                                    })->afterStateUpdated(fn($state, callable $set) => $set('bahagian_id', null)),
+                                    })
+                                    ->afterStateUpdated(fn($state, callable $set) => $set('bahagian_id', null)),
 
                                 TextEntry::make('ptj')
                                     ->label('PTJ')
@@ -689,6 +690,11 @@ class PegawaiForm
                                         $isKontrak = $record->is_kontrak == 1;
                                         $waranJawatan = $record->waranJawatan;
 
+                                        // If pegawai doesn't have waran jawatan
+                                        if (!$waranJawatan) {
+                                            return 'Tiada';
+                                        }
+
                                         $ptjPegawaiId = $record->ptj?->id;
                                         $ptjWaranId = $waranJawatan?->ptj?->id;
 
@@ -714,10 +720,15 @@ class PegawaiForm
 
                                         $waranJawatan = $record->waranJawatan;
 
+                                        if (!$waranJawatan) {
+                                            return false;
+                                        }
+
                                         return !$record->is_kontrak
                                             && $record->ptj?->id !== $waranJawatan?->ptj?->id;
                                     })
                                     ->required(function ($record) {
+                                        if (!$record) {
                                             return false;
                                         }
 
