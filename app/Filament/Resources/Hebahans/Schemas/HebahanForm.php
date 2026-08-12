@@ -18,6 +18,7 @@ class HebahanForm
             ->components([
                 Section::make()
                     ->columns(2)
+                    ->columnSpanFull()
                     ->components([
                         TextInput::make('tajuk')
                             ->label('Tajuk')

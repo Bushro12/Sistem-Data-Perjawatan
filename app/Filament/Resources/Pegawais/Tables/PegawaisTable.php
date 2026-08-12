@@ -127,7 +127,7 @@ class PegawaisTable
                             return '<strong>Jawatan tanpa waran</strong>';
                         }
 
-                        return '<strong>' . ($record->waranJawatan?->first()?->waran?->no_waran ?? '') . '</strong>';
+                        return '<strong>' . ($record->waranJawatan?->waran?->no_waran ?? '') . '</strong>';
                     })
                     ->html()
                     ->searchable(query: function ($query, string $search) {
@@ -334,6 +334,7 @@ class PegawaisTable
         return match (true) {
             $record->is_tetap == 1 => 'tetap',
             $record->is_kontrak_interim == 1 => 'kontrak-interim',
+            $record->is_kontrak_isi_tetap == 1 => 'kontrak-isi-tetap',
             $record->is_kontrak == 1 => 'kontrak',
             default => null,
         };

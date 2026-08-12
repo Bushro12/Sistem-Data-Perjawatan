@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Donut chart style preview</title>
+<style>
+  body { font-family: 'Public Sans', Arial, sans-serif; margin: 0; padding: 40px; background: #f5f5f9; }
+  h2 { margin-top: 0; font-size: 15px; color: #32475c; }
+  p.note { color: #6b7280; font-size: 13px; margin-top: 4px; }
+  .row { display: flex; gap: 24px; flex-wrap: wrap; }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 6px rgba(161,172,184,.25);
+    width: 340px;
+  }
+  .chart-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .legend { display: flex; gap: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<h2 style="font-size:20px; margin-bottom: 4px;">Status Waran donut — current vs. Sneat CRM demo style</h2>
+<p class="note">Same data (Lebih 0 / Kurang 4 / Seimbang 3), same colours — only the chart style/library differs. For comparison only, not wired into the real app.</p>
+
+<div class="row" style="margin-top: 24px;">
+
+  <div class="card">
+    <h2>Current (Chart.js)</h2>
+    <p class="note">What the dashboard uses today — legend below, value shown in the center.</p>
+    <div class="chart-wrap">
+      <div style="position:relative; width:200px; height:200px;">
+        <canvas id="currentChart" width="200" height="200"></canvas>
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
+          <p style="font-size:24px; font-weight:700; margin:0;">7</p>
+          <p style="font-size:12px; color:#6b7280; margin:0;">Jumlah</p>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="dot" style="background:#16a34a;"></div>Lebih (0)</div>
+        <div class="legend-item"><div class="dot" style="background:#dc2626;"></div>Kurang (4)</div>
+        <div class="legend-item"><div class="dot" style="background:#0284c7;"></div>Seimbang (3)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Sneat CRM demo style (ApexCharts)</h2>
+    <p class="note">Smaller, no legend, 75% cutout, single aggregate label in the center — matches the reference page's compact widget look.</p>
+    <div class="chart-wrap">
+      <div id="apexChart"></div>
+      <div class="legend">
+        <div class="legend-item"><div class="dot" style="background:#16a34a;"></div>Lebih</div>
+        <div class="legend-item"><div class="dot" style="background:#dc2626;"></div>Kurang</div>
+        <div class="legend-item"><div class="dot" style="background:#0284c7;"></div>Seimbang</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+  // Current Chart.js version
+  new Chart(document.getElementById('currentChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Lebih', 'Kurang', 'Seimbang'],
+      datasets: [{
+        data: [0, 4, 3],
+        backgroundColor: ['#16a34a', '#dc2626', '#0284c7'],
+        borderWidth: 0,
+        hoverOffset: 4
+      }]
+    },
+    options: {
+      responsive: false,
+      cutout: '70%',
+      plugins: { legend: { display: false }, tooltip: { enabled: true } }
+    }
+  });
+
+  // Sneat-style ApexCharts donut
+  new ApexCharts(document.getElementById('apexChart'), {
+    chart: { type: 'donut', height: 180, width: 180 },
+    series: [0, 4, 3],
+    labels: ['Lebih', 'Kurang', 'Seimbang'],
+    colors: ['#16a34a', '#dc2626', '#0284c7'],
+    legend: { show: false },
+    dataLabels: { enabled: false },
+    tooltip: { theme: false },
+    stroke: { width: 0 },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '75%',
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              showAlways: true,
+              label: 'Jumlah',
+              fontSize: '12px',
+              color: '#6b7280',
+              formatter: function () { return '7'; }
+            },
+            value: {
+              fontSize: '24px',
+              fontWeight: 700,
+              color: '#32475c'
+            }
+          }
+        }
+      }
+    }
+  }).render();
+</script>
+
+</body>
+</html>

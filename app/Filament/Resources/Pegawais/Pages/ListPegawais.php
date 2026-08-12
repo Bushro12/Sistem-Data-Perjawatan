@@ -11,6 +11,7 @@ use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -58,10 +59,17 @@ class ListPegawais extends ListRecords
         );
     }
 
+    public function getTabsContentComponent(): Component
+    {
+        return parent::getTabsContentComponent()
+            ->extraAttributes(['class' => 'mystaff-lantikan-filter-tabs']);
+    }
+
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make('ALL'),
+            'all' => Tab::make('ALL')
+                ->extraAttributes(['class' => 'fi-tabs-item-all']),
             // ->badge(Pegawai::count()),
 
             'tetap' => Tab::make('TETAP')
@@ -86,10 +94,12 @@ class ListPegawais extends ListRecords
             // ->badge(Pegawai::where('is_kontrak', 1)->count()),
 
             'kontrak_isi_tetap' => Tab::make('KONTRAK ISI TETAP')
-                ->extraAttributes(['class' => 'fi-tabs-item-kontrak'])
-                ->modifyQueryUsing(
-                    fn (Builder $query) => $query->where('is_kontrak_isi_tetap', 1)
-                ),
+            ->extraAttributes(['class' => 'fi-tabs-item-kontrak-isi-tetap'])
+            ->modifyQueryUsing(
+                fn(Builder $query) => $query->where('is_kontrak_isi_tetap', 1)
+            )
+
+
         ];
     }
 

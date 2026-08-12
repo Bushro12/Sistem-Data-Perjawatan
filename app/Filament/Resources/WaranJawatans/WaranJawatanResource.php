@@ -33,7 +33,7 @@ class WaranJawatanResource extends Resource
 
     protected static ?string $navigationLabel = 'Nama Penyandang';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Buku Waran';
+    protected static string|\UnitEnum|null $navigationGroup = 'Pegawai';
 
     protected static ?int $navigationSort = 2;
 

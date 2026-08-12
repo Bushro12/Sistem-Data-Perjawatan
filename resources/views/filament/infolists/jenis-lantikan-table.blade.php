@@ -34,7 +34,7 @@
                         'bg-success-soft text-fg-success-strong' => $lantikan === 'Tetap',
                         'bg-warning-soft text-fg-warning' => $lantikan === 'Kontrak',
                         'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400' => $lantikan === 'Kontrak Interim',
-                        'bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-400' => $lantikan === 'Kontrak Isi Tetap',
+                        'bg-pink-100 text-pink-700 dark:bg-pink-500/20 dark:text-pink-400' => $lantikan === 'Kontrak Isi Tetap',
                     ])>
                         {{ $lantikan }}
                     </span>
