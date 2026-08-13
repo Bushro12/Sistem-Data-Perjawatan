@@ -25,7 +25,6 @@ class Login extends BaseLogin
                 Hidden::make('cfTurnstileResponse')
                     ->default(null),
                 View::make('filament.components.turnstile'),
-                $this->getRememberFormComponent(),
             ]);
     }
 
