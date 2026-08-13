@@ -40,13 +40,13 @@ class PegawaisTable
                     ->label('Pegawai')
                     ->formatStateUsing(function ($record) {
 
-                    $html =
-                    '<strong>' . ($record->nama ?? '') . '</strong><br>' .
-                    '<span class="text-xs text-gray-500">' . ($record->nokp ?? '') . '</span><br>' .
-                    '<span class="text-xs text-gray-500">' . ($record->jawatan_gred ? $record->jawatan_gred->jawatan->desc_jawatan .
-                    ' (' . $record->jawatan_gred->gred->kod_gred . ')' : '');
+                        $html =
+                            '<strong>' . ($record->nama ?? '') . '</strong><br>' .
+                            '<span class="text-xs text-gray-500">' . ($record->nokp ?? '') . '</span><br>' .
+                            '<span class="text-xs text-gray-500">' . ($record->jawatan_gred ? $record->jawatan_gred->jawatan->desc_jawatan .
+                                ' (' . $record->jawatan_gred->gred->kod_gred . ')' : '');
 
-                    return $html;
+                        return $html;
                         // $lantikan = match (true) {
                         //     $record->is_tetap == 1 => ['TETAP'],
                         //     $record->is_kontrak == 1 => ['KONTRAK'],
@@ -84,16 +84,16 @@ class PegawaisTable
                             '<strong>' . ($record->ptj?->nama_ptj ?? '') . '</strong><br>' .
                             '<span class="text-xs text-gray-500">' . ($record->bahagian?->nama_bahagian ?? '') . '</span>';
 
-                            $waranJawatan = $record->waranJawatan;
+                        $waranJawatan = $record->waranJawatan;
 
                         $ptj_pegawai = $record->ptj?->id;
                         $ptj_waran = $record->waranJawatan?->ptj?->id;
 
-                       if ($waranJawatan && !$record->is_kontrak && $ptj_pegawai !== $ptj_waran) {
-    $html .= '<br><span class="text-xs px-2 py-1 rounded bg-warning-100 text-warning-700">
+                        if ($waranJawatan && !$record->is_kontrak && $ptj_pegawai !== $ptj_waran) {
+                            $html .= '<br><span class="text-xs px-2 py-1 rounded bg-warning-100 text-warning-700">
         Pinjam
     </span>';
-}
+                        }
 
                         return $html;
                     })

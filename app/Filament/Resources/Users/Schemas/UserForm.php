@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use App\Models\Ptj;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Actions\Action;
+// use Filament\Actions\Action;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -22,7 +22,7 @@ class UserForm
                         TextInput::make('name')
                             ->label('Nama')
                             ->required()
-                            ->dehydrateStateUsing(fn(string $state): string => strtoupper($state))
+                            ->dehydrateStateUsing(fn (string $state): string => strtoupper($state))
                             ->extraInputAttributes(['style' => 'text-transform:uppercase'])
                             ->columnSpanFull(),
 
@@ -51,7 +51,7 @@ class UserForm
                             ->live(onBlur: true)
                             ->validationMessages([
                                 'unique' => 'No kad pengenalan ini sudah wujud.',
-                                'digits' => 'Sila masukkan No kad pengenalan yang sah.'
+                                'digits' => 'Sila masukkan No kad pengenalan yang sah.',
                             ]),
 
                         TextInput::make('phone_number')
@@ -85,20 +85,18 @@ class UserForm
                             ->suffixAction(
                                 Action::make('generate')
                                     ->icon('heroicon-o-arrow-path')
-                                    ->action(fn($set) => $set('password', Str::random(10)))
-                                    ->tooltip("Generate Password")
+                                    ->action(fn ($set) => $set('password', Str::random(10)))
+                                    ->tooltip('Generate Password')
                             )
                             ->hiddenOn('view')
-                            ->required(fn(string $context) => $context === 'create')
-                            ->dehydrated(fn($state) => filled($state))
-                            ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                            ->required(fn (string $context) => $context === 'create')
+                            ->dehydrated(fn ($state) => filled($state))
                             ->visible(
-                                fn(string $context) =>
-                                $context === 'create' || auth()->user()->role === 1
-                            )
+                                fn (string $context) => $context === 'create' || auth()->user()->role === 1
+                            ),
                     ])
                     ->columns(2)
-                    ->columnSpanFull()
+                    ->columnSpanFull(),
 
             ]);
     }

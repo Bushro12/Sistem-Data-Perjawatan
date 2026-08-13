@@ -29,6 +29,7 @@ class Pegawai extends Model
         'is_kup',
         'is_kupj',
         'is_jtw',
+        'tarikh_pinjam',
         'emel',
         'ada_unit',
         'ada_subunit'
