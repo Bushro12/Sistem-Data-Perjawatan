@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Teal palette preview</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 40px; background: #fafafa; }
+  h2 { margin-top: 40px; }
+  .row { display: flex; height: 160px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+  .swatch { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px; color: #fff; font-size: 12px; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+  .swatch span { display: block; }
+</style>
+</head>
+<body>
+
+<h2>Filament built-in Color::Teal</h2>
+<div class="row">
+  <div class="swatch" style="background-color: oklch(0.984 0.014 180.72); color:#000; text-shadow:none;"><span>50</span></div>
+  <div class="swatch" style="background-color: oklch(0.953 0.051 180.801); color:#000; text-shadow:none;"><span>100</span></div>
+  <div class="swatch" style="background-color: oklch(0.91 0.096 180.426); color:#000; text-shadow:none;"><span>200</span></div>
+  <div class="swatch" style="background-color: oklch(0.855 0.138 181.071); color:#000; text-shadow:none;"><span>300</span></div>
+  <div class="swatch" style="background-color: oklch(0.777 0.152 181.912); color:#000; text-shadow:none;"><span>400</span></div>
+  <div class="swatch" style="background-color: oklch(0.704 0.14 182.503);"><span>500</span></div>
+  <div class="swatch" style="background-color: oklch(0.6 0.118 184.704);"><span>600</span></div>
+  <div class="swatch" style="background-color: oklch(0.511 0.096 186.391);"><span>700</span></div>
+  <div class="swatch" style="background-color: oklch(0.437 0.078 188.216);"><span>800</span></div>
+  <div class="swatch" style="background-color: oklch(0.386 0.063 188.416);"><span>900</span></div>
+  <div class="swatch" style="background-color: oklch(0.277 0.046 192.524);"><span>950</span></div>
+</div>
+
+<h2>Custom softer/muted teal (generated from #4F8A8B, same approach used for the pink theme)</h2>
+<div class="row">
+  <div class="swatch" style="background-color: oklch(0.97717647058824 0.01395454545455 197.028); color:#000; text-shadow:none;"><span>50</span></div>
+  <div class="swatch" style="background-color: oklch(0.95035294117647 0.03272727272727 197.028); color:#000; text-shadow:none;"><span>100</span></div>
+  <div class="swatch" style="background-color: oklch(0.90547058823529 0.06318181818182 197.028); color:#000; text-shadow:none;"><span>200</span></div>
+  <div class="swatch" style="background-color: oklch(0.84047058823529 0.10604545454546 197.028); color:#000; text-shadow:none;"><span>300</span></div>
+  <div class="swatch" style="background-color: oklch(0.75352941176471 0.15027272727273 197.028); color:#000; text-shadow:none;"><span>400</span></div>
+  <div class="swatch" style="background-color: oklch(0.68270588235294 0.17009090909091 197.028);"><span>500</span></div>
+  <div class="swatch" style="background-color: oklch(0.59782352941176 0.16913636363636 197.028);"><span>600</span></div>
+  <div class="swatch" style="background-color: oklch(0.51494117647059 0.14940909090909 197.028);"><span>700</span></div>
+  <div class="swatch" style="background-color: oklch(0.44611764705882 0.12331818181818 197.028);"><span>800</span></div>
+  <div class="swatch" style="background-color: oklch(0.39458823529412 0.09963636363636 197.028);"><span>900</span></div>
+  <div class="swatch" style="background-color: oklch(0.27788235294118 0.07136363636364 197.028);"><span>950</span></div>
+</div>
+
+<p style="margin-top:40px; color:#666; font-size:13px;">Top row = Filament's default <code>Color::Teal</code> (brighter, more saturated, used as-is e.g. <code>Color::Teal</code>).<br>
+Bottom row = a custom-generated palette from a single dustier hex (<code>#4F8A8B</code>), the same technique used for the current pink theme &mdash; gives a softer, less neon look.</p>
+
+</body>
+</html>

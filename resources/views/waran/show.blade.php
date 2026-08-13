@@ -40,7 +40,7 @@
         <div class="card text-center h-100">
             <div class="card-body py-3">
                 <small class="text-muted d-block mb-1">Jenis</small>
-                <span class="badge {{ $waran->jenis === 'tambah' ? 'bg-label-success' : 'bg-label-warning' }} fs-6">
+                <span class="badge {{ $waran->jenis === 'Tambah' ? 'bg-label-success' : 'bg-label-warning' }} fs-6">
                     {{ ucfirst($waran->jenis) }}
                 </span>
             </div>
@@ -82,7 +82,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Senarai Jawatan</h5>
-        @if($waran->jenis === 'tambah')
+        @if($waran->jenis === 'Tambah')
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambahJawatan">
             <i class="bx bx-plus me-1"></i> Tambah Jawatan
         </button>

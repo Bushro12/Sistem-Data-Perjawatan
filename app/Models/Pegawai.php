@@ -25,6 +25,7 @@ class Pegawai extends Model
         'is_tetap',
         'is_kontrak_interim',
         'is_kontrak',
+        'is_kontrak_isi_tetap',
         'is_kup',
         'is_kupj',
         'is_jtw',
@@ -34,22 +35,28 @@ class Pegawai extends Model
     ];
 
     protected static function booted()
-{
-    static::addGlobalScope('ptj_access', function (Builder $query) {
-        $user = auth()->user();
+    {
+        static::addGlobalScope('ptj_access', function (Builder $query) {
+            $user = auth()->user();
 
-        // No authenticated user (Artisan, Queue, etc.)
-        if (!$user) {
-            return;
-        }
+            // No authenticated user (Artisan, Queue, etc.)
+            if (!$user) {
+                return;
+            }
 
-        if (in_array($user->role, [1, 2])) {
-            return;
-        }
+            // Superadmin & Admin can see all
+            if (in_array($user->role, [1, 2])) {
+                return;
+            }
 
-        $query->where('ptj_id', $user->ptj_id);
-    });
-}
+            $query->where(function ($q) use ($user) {
+                $q->where('ptj_id', $user->ptj_id)
+                    ->orWhereHas('waranJawatan', function ($waranQuery) use ($user) {
+                        $waranQuery->where('ptj_id', $user->ptj_id);
+                    });
+            });
+        });
+    }
     public function ptj()
     {
         return $this->belongsTo(Ptj::class, 'ptj_id');
@@ -87,7 +94,7 @@ class Pegawai extends Model
 
     public function waranJawatan()
     {
-        return $this->hasMany(WaranJawatan::class, 'pegawai_id');
+        return $this->hasOne(WaranJawatan::class, 'pegawai_id');
     }
 
 

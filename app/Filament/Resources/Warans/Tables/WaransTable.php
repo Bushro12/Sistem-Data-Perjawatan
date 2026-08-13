@@ -25,6 +25,7 @@ class WaransTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultPaginationPageOption(5)
             ->recordUrl(fn($record) => route('filament.app.resources.warans.view', [
                 'record' => $record,
             ]))
@@ -42,7 +43,8 @@ class WaransTable
                 // Bil
                 TextColumn::make('no')
                     ->label('Bil')
-                    ->rowIndex(),
+                    ->rowIndex()
+                    ->width(1),
 
                 // Waran Info
                 TextColumn::make('no_waran')
@@ -158,11 +160,11 @@ class WaransTable
                         return match (true) {
                             $record->status_jik === 'Seimbang' => 'success',
 
-                            $record->jenis === 'tolak' && $record->status_jik === 'Lebih' => 'danger',
-                            $record->jenis === 'tolak' && $record->status_jik === 'Kurang' => 'warning',
+                            $record->jenis === 'Tolak' && $record->status_jik === 'Lebih' => 'danger',
+                            $record->jenis === 'Tolak' && $record->status_jik === 'Kurang' => 'warning',
 
-                            $record->jenis !== 'tolak' && $record->status_jik === 'Lebih' => 'danger',
-                            $record->jenis !== 'tolak' && $record->status_jik === 'Kurang' => 'warning',
+                            $record->jenis !== 'Tolak' && $record->status_jik === 'Lebih' => 'danger',
+                            $record->jenis !== 'Tolak' && $record->status_jik === 'Kurang' => 'warning',
 
                             default => 'gray',
                         };
@@ -206,6 +208,8 @@ class WaransTable
                     )
                     ->searchable()
                     ->preload()
+
+                    
 
             ])
             ->recordActions([

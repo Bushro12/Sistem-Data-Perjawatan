@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit button style preview</title>
+<style>
+  body { font-family: 'Public Sans', Arial, sans-serif; margin: 0; padding: 40px; background: #f5f5f9; }
+  h2 { font-size: 15px; color: #32475c; margin: 0 0 4px; }
+  p.note { color: #6b7280; font-size: 13px; margin: 0 0 20px; }
+  .section { margin-bottom: 48px; }
+  .card { background: #fff; border-radius: 12px; padding: 32px; box-shadow: 0 2px 6px rgba(161,172,184,.25); display: flex; align-items: center; gap: 40px; }
+
+  /* ===== Original, exactly as pasted (Uiverse.io by barisdogansutcu) ===== */
+  .uiverse-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 10px;
+    height: 44px;
+    color: white;
+    text-shadow: 2px 2px rgb(116, 116, 116);
+    text-transform: uppercase;
+    cursor: pointer;
+    border: solid 2px black;
+    letter-spacing: 1px;
+    font-weight: 600;
+    font-size: 17px;
+    background-color: hsl(49deg 98% 60%);
+    border-radius: 50px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+  }
+  .uiverse-btn:active { transform: scale(0.9); transition: all 100ms ease; }
+  .uiverse-btn svg { transition: all 0.5s ease; z-index: 2; }
+  .uiverse-btn:hover svg { transform: scale(3) translate(50%); }
+
+  /* ===== Adapted: pink, matching the app's existing Kontrak Isi Tetap colour (#db2777),
+     used for the modal's "Edit" footer button. Same pill shape / border / text-shadow /
+     press-down animation. The original's hover trick swaps a "play" icon out for a "now
+     playing" icon sliding in from the left — there's no natural second icon for "Edit",
+     so that part is simplified to the pencil icon scaling up on hover instead. ===== */
+  .edit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 20px;
+    height: 40px;
+    color: white;
+    text-shadow: 1px 1px rgba(131, 24, 67, 0.6);
+    text-transform: uppercase;
+    cursor: pointer;
+    border: solid 2px #831843;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    font-size: 13px;
+    background-color: #db2777;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+  }
+  .edit-btn:active { transform: scale(0.92); transition: all 100ms ease; }
+  .edit-btn svg { width: 16px; height: 16px; transition: transform 0.3s ease; }
+  .edit-btn:hover { background-color: #be185d; }
+  .edit-btn:hover svg { transform: scale(1.25) rotate(-8deg); }
+
+  .label { font-size: 12px; color: #6b7280; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<div class="section">
+  <h2>Original (Uiverse.io by barisdogansutcu)</h2>
+  <p class="note">Pasted as-is — yellow pill, black border, text-shadow, press-down on click, icon zooms/swaps on hover.</p>
+  <div class="card">
+    <div>
+      <button class="uiverse-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M8 5v14l11-7z"/></svg>
+        Play
+      </button>
+      <p class="label">Hover to see the icon zoom effect</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Adapted — "Edit" button for the Kontrak Isi Tetap modal</h2>
+  <p class="note">Same pill shape, border, text-shadow, and press animation — recoloured to the pink already used for Kontrak Isi Tetap (#db2777 / #831843 border), sized to match the real modal footer button, pencil icon instead of play.</p>
+  <div class="card">
+    <div>
+      <button class="edit-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>
+        Edit
+      </button>
+      <p class="label">Hover to see the pencil nudge, click to see the press-down</p>
+    </div>
+    <div>
+      <p class="label" style="margin-top:0;">For reference — this is the current "Edit" button style already live in the Kontrak Isi Tetap modal:</p>
+      <button style="background-color:#db2777; border-color:#db2777; color:#fff; border:1px solid #db2777; border-radius:8px; padding:8px 16px; font-weight:600; font-size:13px; cursor:pointer;">Edit</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -152,33 +152,39 @@ class Waran extends Model
 
     }
     protected static function booted()
-    {
-        static::deleting(function ($waran) {
-            $waran->waranJawatan()->forcedelete();
-        });
+{
+    static::addGlobalScope('ptj_access', function (Builder $query) {
 
+        $user = auth()->user();
 
-        static::addGlobalScope('ptj_access', function (Builder $query) {
+        if (!$user) {
+            return;
+        }
 
-            $user = auth()->user();
+        if (in_array($user->role, [1, 2])) {
+            return;
+        }
 
-            if (in_array($user->role, [1, 2])) {
-                return;
-            }
+        $query->where(function ($q) use ($user) {
 
-            $query->where(function ($q) use ($user) {
+            // WaranJawatan belongs to user's PTJ
+            $q->whereHas('waranJawatan', function ($sub) use ($user) {
+                $sub->where('ptj_id', $user->ptj_id);
+            })
 
-                $q->whereHas('waranJawatan', function ($sub) use ($user) {
-                    $sub->where('ptj_id', $user->ptj_id);
-                })
-                    ->orWhereHas('waranTolakJawatan', function ($sub) use ($user) {
-                        $sub->where('ptj_id', $user->ptj_id);
-                    });
+            // OR WaranJawatan has pegawai from user's PTJ
+            ->orWhereHas('waranJawatan.pegawai', function ($sub) use ($user) {
+                $sub->where('ptj_id', $user->ptj_id);
+            })
 
+            // OR rejected waran jawatan
+            ->orWhereHas('waranTolakJawatan', function ($sub) use ($user) {
+                $sub->where('ptj_id', $user->ptj_id);
             });
 
         });
-    }
+    });
+}
 
     // public function parent()
     // {

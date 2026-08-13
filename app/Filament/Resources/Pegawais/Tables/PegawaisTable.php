@@ -26,31 +26,42 @@ class PegawaisTable
     {
         return $table
             // ->recordAction(null)
+            ->defaultPaginationPageOption(5)
             ->recordUrl(null)
+            ->recordClasses(fn(Pegawai $record) => static::lantikanSlug($record)
+                ? 'fi-ta-row-' . static::lantikanSlug($record)
+                : null)
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
-                    ->rowIndex(),
+                    ->rowIndex()
+                    ->width(1),
                 TextColumn::make('nama')
                     ->label('Pegawai')
                     ->formatStateUsing(function ($record) {
 
-                        $lantikan = match (true) {
-                            $record->is_tetap == 1 => ['TETAP'],
-                            $record->is_kontrak == 1 => ['KONTRAK'],
-                            $record->is_kontrak_interim == 1 => ['KONTRAK INTERIM'],
-                            default => ['-', 'gray'],
-                        };
+                    $html =
+                    '<strong>' . ($record->nama ?? '') . '</strong><br>' .
+                    '<span class="text-xs text-gray-500">' . ($record->nokp ?? '') . '</span><br>' .
+                    '<span class="text-xs text-gray-500">' . ($record->jawatan_gred ? $record->jawatan_gred->jawatan->desc_jawatan .
+                    ' (' . $record->jawatan_gred->gred->kod_gred . ')' : '');
 
-                        return
-                            '<strong>' . ($record->nama ?? '-') . '</strong><br>' .
-                                // ($record->nokp ?? '-') . '<br>' .
-                            ($record->jawatan_gred
-                                ? $record->jawatan_gred->jawatan->desc_jawatan .
-                                ' (' . $record->jawatan_gred->gred->kod_gred . ')'
-                                : '-') .
-                            '<br>';
-                        // . ($lantikan[0]);
+                    return $html;
+                        // $lantikan = match (true) {
+                        //     $record->is_tetap == 1 => ['TETAP'],
+                        //     $record->is_kontrak == 1 => ['KONTRAK'],
+                        //     $record->is_kontrak_interim == 1 => ['KONTRAK INTERIM'],
+                        //     default => ['-', 'gray'],
+                        // };
+
+                        // return
+                        //     '<strong>' . ($record->nama ?? '-') . '</strong><br>' .
+                        //     ($record->nokp ?? '-') . '<br>' .
+                        //     ($record->jawatan_gred
+                        //         ? $record->jawatan_gred->jawatan->desc_jawatan .
+                        //         ' (' . $record->jawatan_gred->gred->kod_gred . ')'
+                        //         : '-');
+
                     })
                     ->html()
                     ->searchable(query: function ($query, string $search) {
@@ -66,15 +77,28 @@ class PegawaisTable
                     ->sortable(),
 
                 TextColumn::make('ptj')
-                    ->label('Penempatan')
-                    ->formatStateUsing(
-                        fn($record) =>
-                        '<strong>' . ($record->ptj?->nama_ptj ?? '') . '</strong><br>' .
-                        ($record->bahagian?->nama_bahagian ?? '') . '<br>'
-                        // .
-                        // ($record->unit?->nama_unit ?? '') . '<br>' .
-                        // ($record->subunit?->nama_subunit ?? '')
-                    )
+                    ->label('PTJ')
+                    ->formatStateUsing(function ($record) {
+
+                        $html =
+                            '<strong>' . ($record->ptj?->nama_ptj ?? '') . '</strong><br>' .
+                            '<span class="text-xs text-gray-500">' . ($record->bahagian?->nama_bahagian ?? '') . '</span>';
+
+                            $waranJawatan = $record->waranJawatan;
+
+                        $ptj_pegawai = $record->ptj?->id;
+                        $ptj_waran = $record->waranJawatan?->ptj?->id;
+
+                       if ($waranJawatan && !$record->is_kontrak && $ptj_pegawai !== $ptj_waran) {
+    $html .= '<br><span class="text-xs px-2 py-1 rounded bg-warning-100 text-warning-700">
+        Pinjam
+    </span>';
+}
+
+                        return $html;
+                    })
+
+
 
                     ->html()
                     ->sortable(
@@ -103,7 +127,7 @@ class PegawaisTable
                             return '<strong>Jawatan tanpa waran</strong>';
                         }
 
-                        return '<strong>' . ($record->waranJawatan?->first()?->waran?->no_waran ?? '') . '</strong>';
+                        return '<strong>' . ($record->waranJawatan?->waran?->no_waran ?? '') . '</strong>';
                     })
                     ->html()
                     ->searchable(query: function ($query, string $search) {
@@ -144,10 +168,9 @@ class PegawaisTable
                             ) ||
                             (
                                 $record->is_jtw == 0 &&
+                                $record->is_kontrak == 0 &&
                                 is_null($noWaran)
                             );
-
-
 
                         return $tidakLengkap ? 'Tidak Lengkap' : 'Lengkap';
                     })
@@ -169,6 +192,7 @@ class PegawaisTable
                             ) ||
                             (
                                 $record->is_jtw == 0 &&
+                                $record->is_kontrak == 0 &&
                                 is_null($noWaran)
                             );
 
@@ -192,9 +216,16 @@ class PegawaisTable
                                         ->orWhere(function ($q) {
                                             $q->whereNull('unit_id')
                                                 ->where('ada_subunit', 0);
+                                        })
+
+                                        ->orWhere(function ($q) {
+                                            $q->where('is_jtw', 0)
+                                                ->where('is_kontrak', 0)
+                                                ->whereDoesntHave('waranJawatan');
                                         });
                                 });
                             }
+
                             if (str_contains($search, 'lengkap') && !str_contains($search, 'tidak lengkap')) {
                                 $query->whereNotNull('ptj_id')
                                     ->whereNotNull('bahagian_id')
@@ -207,6 +238,12 @@ class PegawaisTable
                                     ->where(function ($q) {
                                         $q->whereNotNull('unit_id')
                                             ->orWhere('ada_subunit', 1);
+                                    })
+
+                                    ->where(function ($q) {
+                                        $q->where('is_jtw', 1)
+                                            ->orWhere('is_kontrak', 1)
+                                            ->orWhereHas('waranJawatan');
                                     });
                             }
                         }
@@ -215,17 +252,26 @@ class PegawaisTable
                         query: function ($query, string $direction) {
 
                             $query->orderByRaw("
-                CASE
-                    WHEN ptj_id IS NULL
-                        OR bahagian_id IS NULL
-                        OR subunit_id IS NULL
-                        OR unit_id IS NULL
-                    THEN 0
-                    ELSE 1
-                END {$direction}
-            ");
+                                                    CASE
+                                                        WHEN ptj_id IS NULL
+                                                            OR bahagian_id IS NULL
+                                                            OR (subunit_id IS NULL AND ada_unit = 0)
+                                                            OR (unit_id IS NULL AND ada_subunit = 0)
+                                                            OR (
+                                                                is_jtw = 0
+                                                                AND is_kontrak = 0
+                                                                AND NOT EXISTS (
+                                                                    SELECT 1
+                                                                    FROM waran_jawatans
+                                                                    WHERE waran_jawatans.pegawai_id = pegawais.id
+                                                                )
+                                                            )
+                                                        THEN 0
+                                                        ELSE 1
+                                                    END {$direction}
+                                                ");
                         }
-                    ),
+                    )
             ])
             ->filters([
                 //
@@ -236,6 +282,11 @@ class PegawaisTable
                         ->label('Papar')
                         ->modal()
                         ->modalHeading(fn($record) => $record->nama)
+                        ->extraModalWindowAttributes(fn(Pegawai $record) => [
+                            'class' => static::lantikanSlug($record)
+                                ? 'fi-modal-window-' . static::lantikanSlug($record)
+                                : null,
+                        ])
                         ->extraModalFooterActions([
                             Action::make('edit')
                                 ->label('Edit')
@@ -276,5 +327,16 @@ class PegawaisTable
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    protected static function lantikanSlug(Pegawai $record): ?string
+    {
+        return match (true) {
+            $record->is_tetap == 1 => 'tetap',
+            $record->is_kontrak_interim == 1 => 'kontrak-interim',
+            $record->is_kontrak_isi_tetap == 1 => 'kontrak-isi-tetap',
+            $record->is_kontrak == 1 => 'kontrak',
+            default => null,
+        };
     }
 }

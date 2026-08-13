@@ -4,7 +4,7 @@
             <div class="esdap-login-left">
                 <div class="esdap-login-header">
                     <img src="{{ asset('images/mystaff-logo-clean.png') }}" alt="MySTAFF" class="esdap-logo-mark" />
-                    <span>e-SDaP</span>
+                    <span>MySTAFF</span>
                 </div>
 
                 <p class="esdap-login-tagline">SISTEM DATA PERJAWATAN</p>

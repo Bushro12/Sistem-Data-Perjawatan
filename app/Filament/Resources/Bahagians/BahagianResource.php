@@ -56,4 +56,5 @@ class BahagianResource extends Resource
             'edit' => EditBahagian::route('/{record}/edit'),
         ];
     }
+
 }

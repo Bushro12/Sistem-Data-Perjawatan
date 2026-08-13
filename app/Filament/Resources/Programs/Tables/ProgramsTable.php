@@ -21,7 +21,8 @@ class ProgramsTable
             ->columns([
                 TextColumn::make('no')
                     ->label("Bil")
-                    ->rowindex(),
+                    ->rowindex()
+                    ->width(1),
                 TextColumn::make('desc_program')
                     ->getStateUsing(
                         fn($record) =>

@@ -29,7 +29,7 @@ class PegawaiPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin();
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isUser();
     }
 
     /**

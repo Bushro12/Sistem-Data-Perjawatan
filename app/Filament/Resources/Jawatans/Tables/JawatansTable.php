@@ -22,7 +22,8 @@ class JawatansTable
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
-                    ->rowIndex(),
+                    ->rowIndex()
+                    ->width(1),
                 TextColumn::make('desc_jawatan')
                     ->label('Jawatan')
                     ->sortable()

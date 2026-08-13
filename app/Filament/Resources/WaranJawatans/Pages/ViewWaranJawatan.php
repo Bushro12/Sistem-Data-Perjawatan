@@ -16,4 +16,16 @@ class ViewWaranJawatan extends ViewRecord
             EditAction::make(),
         ];
     }
+
+    public function getTitle(): string
+    {
+        // return 'Paparan ' . ($this->record->butiran) . ' - ' . ($this->record->aktiviti?->no_aktivit) . ' ' . ($this->record->aktiviti?->nama_aktiviti);
+        return 'Butiran ' . ($this->record->butiran);
+
+    }
+
+    public function getBreadCrumb(): string
+    {
+        return 'Paparan';
+    }
 }

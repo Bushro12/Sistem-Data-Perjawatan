@@ -61,7 +61,8 @@ class WaranJawatan extends Model
 
     public function pegawai()
     {
-        return $this->belongsTo(Pegawai::class, 'pegawai_id');
+        return $this->belongsTo(Pegawai::class, 'pegawai_id')
+            ->withoutGlobalScopes();
     }
 
     public function jawatan()
@@ -111,10 +112,27 @@ class WaranJawatan extends Model
             }
 
             // normal user → filter by PTJ
-            $query->where('ptj_id', $user->ptj_id);
+            $query->where(function ($query) use ($user) {
+
+                // Waran under user's PTJ
+                $query->where('ptj_id', $user->ptj_id)
+
+                    // OR waran assigned to pegawai in user's PTJ
+                    ->orWhereHas('pegawai', function ($pegawaiQuery) use ($user) {
+                        $pegawaiQuery->where('ptj_id', $user->ptj_id);
+                    });
+            });
 
             // });
         });
+
     }
+
+    public function tbk()
+    {
+        return $this->hasOne(Tbk::class);
+    }
+
+
 
 }

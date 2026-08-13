@@ -12,12 +12,15 @@ use App\Models\Subunit;
 use App\Models\Unit;
 use App\Models\WaranJawatan;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
@@ -201,6 +204,7 @@ class WaranJawatanForm
                         Tab::make('Nama Penyandang')
                             ->schema([
                                 Select::make('pegawai_id')
+                                    ->live()
                                     ->label('Pegawai')
                                     ->options(function (Get $get, $record) {
 
@@ -216,53 +220,113 @@ class WaranJawatanForm
                                             ->whereIn('gred_id', $gredIds)
                                             ->pluck('id');
 
-                                        return Pegawai::query()
+
+                                        $query = Pegawai::query()
                                             ->whereIn('jawatan_gred_id', $jawatanGredIds)
-                                            ->where(function ($query) {
-                                                $query->where('is_kontrak', false);
+                                            ->where('is_kontrak', false);
 
-                                            })
-                                            ->where(function ($query) use ($record) {
 
-                                                $query->whereNotIn('id', function ($q) use ($record) {
+                                        // Admin & superadmin can see all PTJ
+                                        if (!in_array(auth()->user()->role, [1, 2])) {
 
-                                                    $q->select('pegawai_id')
-                                                        ->from('waran_jawatans')
-                                                        ->whereNotNull('pegawai_id')
-                                                        ->where('status', 'active') // ✅ only active assignments
-                                                        ->whereNull('deleted_at');  // ✅ ignore soft deleted
+                                            // Normal user only sees own PTJ
+                                            $query->where('ptj_id', auth()->user()->ptj_id);
+                                        }
 
-                                                    // exclude current record if editing
-                                                    if ($record) {
-                                                        $q->where('id', '!=', $record->id);
-                                                    }
-                                                });
 
-                                                // keep currently selected pegawai visible in dropdown
-                                                if ($record?->pegawai_id) {
-                                                    $query->orWhere('id', $record->pegawai_id);
-                                                }
-                                            })
+                                        $pegawai = $query
                                             ->orderBy('nama')
-                                            ->pluck('nama', 'id')
+                                            ->get()
+                                            ->mapWithKeys(function ($pegawai) {
+                                                return [
+                                                    $pegawai->id => "{$pegawai->nama} ({$pegawai->nokp})",
+                                                ];
+                                            })
                                             ->toArray();
+
+
+                                        // Keep current selected pegawai visible even if different PTJ
+                                        if ($record?->pegawai_id) {
+
+                                            $currentPegawai = Pegawai::withoutGlobalScopes()
+                                                ->find($record->pegawai_id);
+
+                                            if ($currentPegawai) {
+                                                $pegawai[$currentPegawai->id] =
+                                                    "{$currentPegawai->nama} ({$currentPegawai->nokp})";
+                                            }
+                                        }
+                                        return $pegawai;
                                     })
-                                    ->columnSpanFull()
-                                    ->searchable(),
+                                    ->disabled(function ($record, Get $get) {
+
+                                        $user = auth()->user();
+
+                                        // Admin & Superadmin can always edit
+                                        if (in_array($user->role, [1, 2])) {
+                                            return false;
+                                        }
+
+                                        // Role 3 cannot edit when is_kup is true
+                                        if ($user->role == 3 && $get('is_kup')) {
+                                            return true;
+                                        }
+
+                                        if (!$record?->pegawai_id) {
+                                            return false;
+                                        }
+
+                                        $pegawai = Pegawai::withoutGlobalScopes()
+                                            ->find($record->pegawai_id);
+
+                                        return $pegawai?->ptj_id != $user->ptj_id;
+                                    })
+                                    ->dehydrated()
+
+                                    ->afterStateUpdated(function ($state, Get $get, Set $set) {
+
+                                        if (blank($state) || blank($get('gred_ids'))) {
+                                            $set('tbk', null);
+                                            $set('tbk_gred_id', null);
+                                            return;
+                                        }
+
+                                        $pegawai = Pegawai::withoutGlobalScopes()->with('jawatan_gred')->find($state);
+
+                                        if (!$pegawai) {
+                                            return;
+                                        }
+
+                                        $selectedGreds = \App\Models\Gred::query()->whereIn('id', $get('gred_ids'))->orderBy('kod_gred')->pluck('id')->values();
+                                        $lowestGredId = $selectedGreds->first();
+                                        $tbk = $selectedGreds->search($pegawai->jawatan_gred->gred_id);
+
+                                        if ($tbk === false) {
+                                            $set('tbk', null);
+                                            $set('tbk_gred_id', null);
+                                            return;
+                                        }
+
+                                        $set('tbk', $tbk);
+                                        $set('tbk_gred_id', $lowestGredId);
+
+                                    })->columnSpanFull()->searchable(),
+
 
                                 Checkbox::make('is_kup')
-                                    ->label('Khas Untuk Penyandang (KUP)'),
+                                    ->label('Khas Untuk Penyandang (KUP)')
+                                    ->columnSpanFull(),
+
+                                Hidden::make('tbk'),
+                                Hidden::make('tbk_gred_id'),
 
                                 Textarea::make('catatan_jawatan')
                                     ->label('Catatan')
-
                                     ->columnSpanFull(),
                             ])
                     ])
                     ->columns(2)
                     ->columnSpanFull(),
-
-
             ]);
     }
 }

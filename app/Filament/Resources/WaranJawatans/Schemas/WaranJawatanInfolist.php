@@ -77,14 +77,27 @@ class WaranJawatanInfolist
                                             return $record->pegawai?->nokp;
                                         }
                                     }),
+                                // TextEntry::make('pegawai')
+                                //     ->label('Jawatan / Gred')
+                                //     ->formatStateUsing(
+                                //         fn($record) =>
+                                //         $record->pegawai?->jawatan_gred?->jawatan?->desc_jawatan . ', ' .
+                                //         $record->pegawai?->jawatan_gred?->gred?->kod_gred
+                                //     )
+                                //     ->wrap(),
                                 TextEntry::make('pegawai')
                                     ->label('Jawatan / Gred')
-                                    ->formatStateUsing(
-                                        fn($record) =>
-                                        $record->pegawai?->jawatan_gred?->jawatan?->desc_jawatan . ', ' .
-                                        $record->pegawai?->jawatan_gred?->gred?->kod_gred
-                                    )
-                                    ->wrap(),
+                                    ->formatStateUsing(function ($record) {
+
+                                        $jawatan = $record->pegawai?->jawatan_gred?->jawatan?->desc_jawatan;
+                                        $gred = $record->pegawai?->jawatan_gred?->gred?->kod_gred;
+
+                                        $tbk = $record->tbk?->tbk;
+
+                                        return $jawatan . ', ' . $gred .
+                                            ($tbk ? " (TBK{$tbk})" : '');
+                                    })
+                                    ->wrap(),  
                                 TextEntry::make('ptj.nama_ptj')
                                     ->label('PTJ'),
                                 TextEntry::make('bahagian.nama_bahagian')

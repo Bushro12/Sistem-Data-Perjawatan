@@ -8,7 +8,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('pegawai:delete-letak-jawatan')
-    ->daily();
+    ->everyFiveSeconds();
 
 Schedule::command('pegawai:delete-tamat-perkhidmatan')
-    ->daily();
+    ->everyFiveSeconds();

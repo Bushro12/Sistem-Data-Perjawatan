@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Pencens\Tables;
 
+use App\Filament\Resources\Pegawais\PegawaiResource;
+use App\Filament\Resources\Pencens\PencenResource;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -18,10 +21,13 @@ class PencensTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultPaginationPageOption(5)
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
-                    ->rowIndex(),
+                    ->rowIndex()
+                    ->width(1),
                 TextColumn::make('nama')
                     ->label('Nama Pegawai')
                     ->sortable()
@@ -99,7 +105,17 @@ class PencensTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    //  ViewAction::make(),
+                    ViewAction::make()
+                        ->label('Papar')
+                        ->modal()
+                        ->modalHeading(fn($record) => $record->nama)
+                        ->extraModalFooterActions([
+                            Action::make('edit')
+                                ->label('Edit')
+                                ->url(fn($record) => PencenResource::getUrl('edit', [
+                                    'record' => $record,
+                                ])),
+                        ]),
                     EditAction::make(),
                     DeleteAction::make()
                         ->label('Padam')

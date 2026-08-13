@@ -18,13 +18,16 @@ class PtjsTable
     {
         return $table
             ->columns([
+
                 TextColumn::make('no')
                     ->label('No')
-                    ->rowIndex(),
+                    ->rowIndex()
+                    ->width(1),
                 TextColumn::make('nama_ptj')
                     ->label('Nama PTJ')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap(),
                 TextColumn::make('kod_ptj')
                     ->label('Kod PTJ')
                     ->searchable()
@@ -32,11 +35,8 @@ class PtjsTable
                 TextColumn::make('pengarah')
                     ->label('Pengarah')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('pengarah')
-                    ->label('Pengarah')
-                    ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap(),
                 TextColumn::make('parlimen.nama_parlimen')
                     ->label('Parlimen')
                     ->searchable()
@@ -61,7 +61,7 @@ class PtjsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                   
+
                 ]),
             ]);
     }

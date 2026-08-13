@@ -18,7 +18,8 @@ class KumpulansTable
             ->columns([
                 TextColumn::make('no')
                     ->Label('Bil')
-                    ->rowIndex(),
+                    ->rowIndex()
+                    ->width(1),
                 TextColumn::make('nama_kumpulan')
                     ->label('Kumpulan')
                     ->sortable()

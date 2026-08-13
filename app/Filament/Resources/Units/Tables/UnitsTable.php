@@ -19,7 +19,8 @@ class UnitsTable
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
-                    ->rowIndex(),
+                    ->rowIndex()
+                    ->width(1),
                 TextColumn::make('bahagian.nama_bahagian')
                     ->label('Bahagian')
                     ->sortable()

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Units\Schemas;
 
 use App\Models\Dun;
+use App\Models\Ptj;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -18,13 +19,58 @@ class UnitForm
             ->components([
                 Section::make('Maklumat Unit')
                     ->schema([
+                        Select::make('ptj_id')
+                            ->label('PTJ')
+                            ->required()
+                            ->options(
+                                Ptj::query()
+                                    ->orderBy('nama_ptj')
+                                    ->pluck('nama_ptj', 'id')
+                            )
+                            ->live()
+                            ->searchable()
+                            ->dehydrated(false)
+                            ->visible(fn($record) => $record === null)
+                            ->columnSpanFull(),
+
+                        TextInput::make('ptj_id')
+                            ->label('PTJ')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                $component->state(
+                                    $record?->bahagian?->ptj?->nama_ptj
+                                );
+                            })
+                            ->readOnly()
+                            ->visible(fn($record) => $record !== null)
+                            ->columnSpanFull(),
+
                         Select::make('bahagian_id')
                             ->label('Bahagian')
-                            ->relationship('bahagian', 'nama_bahagian')
+                            ->options(function (Get $get) {
+                                return \App\Models\Bahagian::query()
+                                    ->where('ptj_id', $get('ptj_id'))
+                                    ->orderBy('nama_bahagian')
+                                    ->pluck('nama_bahagian', 'id');
+                            })
                             ->searchable()
-                            ->required()
                             ->preload()
+                            ->required()
+                            ->live()
+                            ->columnSpanFull()
+                            ->visible(fn($record) => $record === null),
+
+                        TextInput::make('bahagian_id')
+                            ->label('Bahagian')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                $component->state(
+                                    $record?->bahagian?->nama_bahagian
+                                );
+                            })
+                            ->readOnly()
+                            ->visible(fn($record) => $record !== null)
+                            ->dehydrated(false)
                             ->columnSpanFull(),
+
                         TextInput::make('nama_unit')
                             ->label('Unit')
                             ->required()

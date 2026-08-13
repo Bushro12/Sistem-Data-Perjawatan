@@ -18,7 +18,8 @@ class OpsyenPencensTable
             ->columns([
                 TextColumn::make('no')
                 ->label('Bil')
-                ->rowIndex(),
+                ->rowIndex()
+                ->width(1),
                 TextColumn::make('opsyen')
                 ->label('Opsyen Pencen')
                 ->sortable()

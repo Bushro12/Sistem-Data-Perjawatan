@@ -19,7 +19,8 @@ class GredsTable
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
-                    ->rowIndex(),
+                    ->rowIndex()
+                    ->width(1),
                 TextColumn::make('kod_gred')
                     ->label('Kod')
                     ->sortable()

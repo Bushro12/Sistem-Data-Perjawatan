@@ -25,9 +25,9 @@ class PegawaiResource extends Resource
 
     protected static ?string $modelLabel = 'Pegawai';
 
-    protected static ?string $pluralModelLabel = 'Pegawai';
+    protected static ?string $pluralModelLabel = 'Maklumat Penyandang';
 
-    protected static ?string $navigationLabel = 'Senarai Pegawai';
+    protected static ?string $navigationLabel = 'Maklumat Penyandang';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Pegawai';
 

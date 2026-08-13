@@ -19,7 +19,8 @@ class ParlimensTable
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
-                    ->rowIndex(),
+                    ->rowIndex()
+                    ->width(1),
                 TextColumn::make('nama_parlimen')
                     ->label('Parlimen')
                     ->sortable()

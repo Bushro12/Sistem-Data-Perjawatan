@@ -5,7 +5,9 @@ namespace App\Filament\Resources\Pencens;
 use App\Filament\Resources\Pencens\Pages\CreatePencen;
 use App\Filament\Resources\Pencens\Pages\EditPencen;
 use App\Filament\Resources\Pencens\Pages\ListPencens;
+use App\Filament\Resources\Pencens\Pages\ViewPencen;
 use App\Filament\Resources\Pencens\Schemas\PencenForm;
+use App\Filament\Resources\Pencens\Schemas\PencenInfoList;
 use App\Filament\Resources\Pencens\Tables\PencensTable;
 use App\Models\Pencen;
 use BackedEnum;
@@ -36,6 +38,11 @@ class PencenResource extends Resource
         return PencenForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return PencenInfoList::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return PencensTable::configure($table);
@@ -54,6 +61,7 @@ class PencenResource extends Resource
             'index' => ListPencens::route('/'),
             'create' => CreatePencen::route('/create'),
             'edit' => EditPencen::route('/{record}/edit'),
+            'view' => ViewPencen::route('/{record}')
         ];
     }
 }

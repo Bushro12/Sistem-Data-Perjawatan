@@ -2,13 +2,18 @@
 
 namespace App\Filament\Resources\Subunits\Schemas;
 
+use App\Models\Bahagian;
 use App\Models\Dun;
+use App\Models\Ptj;
+use App\Models\Unit;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 
 
 class SubunitForm
@@ -19,11 +24,96 @@ class SubunitForm
             ->components([
                 Section::make('Maklumat Sub Unit')
                     ->schema([
+
+                        Select::make('ptj_id')
+                            ->label('PTJ')
+                            ->required()
+                            ->options(
+                                Ptj::query()
+                                    ->orderBy('nama_ptj')
+                                    ->pluck('nama_ptj', 'id')
+                            )
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                $component->state(
+                                    $record?->unit?->bahagian?->ptj_id
+                                );
+                            })
+                            ->live()
+                            ->searchable()
+                            ->dehydrated(false)
+                            ->visible(fn($record) => $record === null)
+                            ->columnSpanFull(),
+
+                        TextInput::make('ptj_id')
+                            ->label('PTJ')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                $component->state(
+                                    $record?->unit?->bahagian?->ptj?->nama_ptj
+                                );
+                            })
+                            ->readOnly()
+                            ->visible(fn($record) => $record !== null)
+                            ->columnSpanFull(),
+
+                        Select::make('bahagian_id')
+                            ->label('Bahagian')
+                            ->required()
+                            ->options(function (Get $get) {
+                                $ptjId = $get('ptj_id');
+
+                                return $ptjId
+                                    ? Bahagian::where('ptj_id', $ptjId)
+                                        ->orderBy('nama_bahagian')
+                                        ->pluck('nama_bahagian', 'id')
+                                    : [];
+                            })
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                $component->state(
+                                    $record?->unit?->bahagian_id
+                                );
+                            })
+                            ->live()
+                            ->searchable()
+                            ->visible(fn($record) => $record === null)
+                            ->dehydrated(false),
+
+                        TextInput::make('bahagian_id')
+                            ->label('Bahagian')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                $component->state(
+                                    $record?->unit?->bahagian?->nama_bahagian
+                                );
+                            })
+                            ->readOnly()
+                            ->visible(fn($record) => $record !== null),
+
                         Select::make('unit_id')
                             ->label('Unit')
-                            ->relationship('unit', 'nama_unit')
-                            ->searchable()
-                            ->preload(),
+                            ->required()
+                            ->options(function (Get $get) {
+                                $bahagianId = $get('bahagian_id');
+
+                                return $bahagianId
+                                    ? Unit::where('bahagian_id', $bahagianId)
+                                        ->orderBy('nama_unit')
+                                        ->pluck('nama_unit', 'id')
+                                    : [];
+                            })
+                            ->default(fn($record) => $record?->unit_id)
+                            ->visible(fn($record) => $record === null)
+
+                            ->searchable(),
+
+                        TextInput::make('unit_id')
+                            ->label('Unit')
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                $component->state(
+                                    $record?->unit?->nama_unit
+                                );
+                            })
+                            ->readOnly()
+                            ->visible(fn($record) => $record !== null)
+                            ->dehydrated(false),
 
                         TextInput::make('nama_subunit')
                             ->label('Sub Unit')
@@ -33,6 +123,7 @@ class SubunitForm
 
                         Select::make('parlimen_id')
                             ->label('Parlimen')
+                            ->required()
                             ->relationship('parlimen', 'nama_parlimen')
                             ->searchable()
                             ->preload()
@@ -41,6 +132,7 @@ class SubunitForm
 
                         Select::make('dun_id')
                             ->label('DUN')
+                            ->required()
                             ->searchable()
                             ->options(function (Get $get): array {
                                 $parlimenId = $get('parlimen_id');

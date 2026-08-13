@@ -161,6 +161,37 @@
     font-weight: 500 !important;
 }
 
+.esdap-form-area input[type="checkbox"].fi-checkbox-input {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    width: 18px !important;
+    height: 18px !important;
+    border-radius: 4px !important;
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    outline: 1px solid rgba(20, 184, 166, 0.55) !important;
+    outline-offset: 1px;
+    cursor: pointer;
+}
+
+.esdap-form-area input[type="checkbox"].fi-checkbox-input:hover {
+    outline-color: #2dd4bf !important;
+}
+
+.esdap-form-area input[type="checkbox"].fi-checkbox-input:checked {
+    background-color: #14b8a6 !important;
+    outline-color: #14b8a6 !important;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 16 16' fill='%23fff' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 12px 12px !important;
+}
+
+.esdap-form-area input[type="checkbox"].fi-checkbox-input:focus {
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.25) !important;
+}
+
 .esdap-form-area .fi-btn {
     background: linear-gradient(135deg, #14b8a6, #0d9488) !important;
     border-radius: 999px !important;
@@ -485,8 +516,12 @@
 }
 
 /* ── Right-edge indicator bar (the Sneat signature) ── */
-/* Sits on the <li> so it always touches the sidebar right border */
-.fi-sidebar-item.fi-active::after {
+/* Anchored to the same <a> that carries the active background (not the
+   <li>) so both always share the exact same box height — the <li> and <a>
+   can differ in computed height (e.g. <li> only becomes flex-col when
+   active), which previously made the bar and highlight misalign. The <a>
+   is already width:100%, so right:0 still touches the sidebar border. */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn::after {
     content: '';
     position: absolute;
     right: 0;
@@ -495,6 +530,19 @@
     width: 3px;
     background-color: var(--sneat-primary);
     border-radius: 3px 0 0 3px;
+}
+
+/* ── Standalone active item (e.g. Dashboard) — match the "Buku Waran"
+   group header's floating pill look: inset margin, rounded corners,
+   and the accent bar poking out to touch the sidebar's right border. ── */
+.fi-sidebar-group:not(:has(.fi-sidebar-group-btn)) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    width: calc(100% - 1.25rem) !important;
+    margin: 0 0.625rem !important;
+    border-radius: var(--sneat-radius) !important;
+}
+
+.fi-sidebar-group:not(:has(.fi-sidebar-group-btn)) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn::after {
+    right: -0.625rem;
 }
 
 /* ── Child nav items inside LABELLED groups — Sneat bullet dot style ──
@@ -526,6 +574,58 @@
     background-color: var(--sneat-primary);
     border-color: var(--sneat-primary);
     transform: scale(1.3);
+}
+
+/* ── Grouped items: no row highlight on the active subsection itself —
+   the dot above already marks it. The group label carries the highlight
+   instead (see "Active group label" below), and the edge bar is hidden
+   here so it doesn't compete with the dot. ── */
+.fi-sidebar-group:has(.fi-sidebar-group-btn) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background-color: transparent !important;
+    color: var(--sneat-text-muted) !important;
+    font-weight: 500 !important;
+}
+
+.fi-sidebar-group:has(.fi-sidebar-group-btn) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-icon,
+.fi-sidebar-group:has(.fi-sidebar-group-btn) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-label {
+    color: var(--sneat-text-muted) !important;
+}
+
+.fi-sidebar-group:has(.fi-sidebar-group-btn) .fi-sidebar-item.fi-active > .fi-sidebar-item-btn::after {
+    display: none;
+}
+
+/* ── Active group heading — rounded teal pill + edge bar, replicating the
+   original Sneat "Layouts" active-group look, shown here instead of on
+   the subsection. ── */
+.fi-sidebar-group-btn {
+    position: relative;
+    border-radius: var(--sneat-radius) !important;
+    transition: background-color 0.2s ease;
+}
+
+.fi-sidebar-group:has(.fi-sidebar-item.fi-active) .fi-sidebar-group-btn {
+    background-color: var(--sneat-primary-subtle) !important;
+    margin: 0 0.625rem;
+    /* Match a normal row's padding (instead of the compact default) so the
+       active pill — and its edge bar — are the same height as Dashboard's. */
+    padding: 0.625rem 1.25rem !important;
+    padding-left: 1.75rem !important;
+}
+
+.fi-sidebar-group:has(.fi-sidebar-item.fi-active) .fi-sidebar-group-label {
+    color: var(--sneat-primary) !important;
+}
+
+.fi-sidebar-group:has(.fi-sidebar-item.fi-active) .fi-sidebar-group-btn::after {
+    content: '';
+    position: absolute;
+    right: -0.625rem;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--sneat-primary);
+    border-radius: 3px 0 0 3px;
 }
 
 /* ── Sub-items (nested inside parent nav items) ── */
@@ -742,6 +842,16 @@
     color: #ef4444;
 }
 
+.sneat-stat-icon--blue {
+    background: rgba(59, 130, 246, 0.12);
+    color: #3b82f6;
+}
+
+.sneat-stat-icon--sky {
+    background: rgba(2, 132, 199, 0.12);
+    color: #0284c7;
+}
+
 /* Dark mode */
 .dark .sneat-stat-card {
     background: var(--sneat-paper-bg);
@@ -831,6 +941,7 @@
     border-right: 1px solid var(--sneat-border) !important;
     color: var(--sneat-text-main) !important;
     font-size: 0.875rem !important;
+    line-height: 1.5 !important;
     vertical-align: middle !important;
 }
 
@@ -881,16 +992,186 @@ td.fi-ta-selection-cell {
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18) !important;
 }
 
+/* ── Pegawai "Papar" modal — whole popup tinted to match the jenis
+   lantikan row colour (see .fi-ta-row-* above), including the inner
+   tab panel, the active tab pill, and the footer buttons + their
+   hover states. Solid (opaque) pastel colours are used here — not
+   rgba — so the dimmed page behind the modal never bleeds through. ── */
+.fi-modal-window-tetap,
+.fi-modal-window-tetap .fi-sc-tabs-tab {
+    background-color: #eff6ff !important;
+}
+
+.fi-modal-window-kontrak-interim,
+.fi-modal-window-kontrak-interim .fi-sc-tabs-tab {
+    background-color: #fffbeb !important;
+}
+
+.fi-modal-window-kontrak,
+.fi-modal-window-kontrak .fi-sc-tabs-tab {
+    background-color: #faf5ff !important;
+}
+
+.fi-modal-window-kontrak-isi-tetap,
+.fi-modal-window-kontrak-isi-tetap .fi-sc-tabs-tab {
+    background-color: #fdf2f8 !important;
+}
+
+.dark .fi-modal-window-tetap,
+.dark .fi-modal-window-tetap .fi-sc-tabs-tab {
+    background-color: #1e3a5f !important;
+}
+
+.dark .fi-modal-window-kontrak-interim,
+.dark .fi-modal-window-kontrak-interim .fi-sc-tabs-tab {
+    background-color: #4d3a0f !important;
+}
+
+.dark .fi-modal-window-kontrak,
+.dark .fi-modal-window-kontrak .fi-sc-tabs-tab {
+    background-color: #3b1f52 !important;
+}
+
+.dark .fi-modal-window-kontrak-isi-tetap,
+.dark .fi-modal-window-kontrak-isi-tetap .fi-sc-tabs-tab {
+    background-color: #500724 !important;
+}
+
+/* Active tab pill ("Maklumat Pegawai" etc.) inside the modal.
+   The label/icon are targeted explicitly too, since a directly-set
+   colour on them would otherwise win over the inherited colour set on
+   the parent .fi-tabs-item, regardless of the parent rule's
+   specificity. */
+.fi-modal-window-tetap .fi-tabs-item:hover,
+.fi-modal-window-tetap .fi-tabs-item.fi-active,
+.fi-modal-window-tetap .fi-tabs-item:hover .fi-tabs-item-label,
+.fi-modal-window-tetap .fi-tabs-item.fi-active .fi-tabs-item-label,
+.fi-modal-window-tetap .fi-tabs-item:hover > .fi-icon,
+.fi-modal-window-tetap .fi-tabs-item.fi-active > .fi-icon {
+    color: #2563eb !important;
+}
+
+.fi-modal-window-tetap .fi-tabs-item:hover,
+.fi-modal-window-tetap .fi-tabs-item.fi-active {
+    background-color: rgba(37, 99, 235, 0.25) !important;
+}
+
+.fi-modal-window-kontrak-interim .fi-tabs-item:hover,
+.fi-modal-window-kontrak-interim .fi-tabs-item.fi-active,
+.fi-modal-window-kontrak-interim .fi-tabs-item:hover .fi-tabs-item-label,
+.fi-modal-window-kontrak-interim .fi-tabs-item.fi-active .fi-tabs-item-label,
+.fi-modal-window-kontrak-interim .fi-tabs-item:hover > .fi-icon,
+.fi-modal-window-kontrak-interim .fi-tabs-item.fi-active > .fi-icon {
+    color: #d97706 !important;
+}
+
+.fi-modal-window-kontrak-interim .fi-tabs-item:hover,
+.fi-modal-window-kontrak-interim .fi-tabs-item.fi-active {
+    background-color: rgba(217, 119, 6, 0.25) !important;
+}
+
+.fi-modal-window-kontrak .fi-tabs-item:hover,
+.fi-modal-window-kontrak .fi-tabs-item.fi-active,
+.fi-modal-window-kontrak .fi-tabs-item:hover .fi-tabs-item-label,
+.fi-modal-window-kontrak .fi-tabs-item.fi-active .fi-tabs-item-label,
+.fi-modal-window-kontrak .fi-tabs-item:hover > .fi-icon,
+.fi-modal-window-kontrak .fi-tabs-item.fi-active > .fi-icon {
+    color: #9333ea !important;
+}
+
+.fi-modal-window-kontrak .fi-tabs-item:hover,
+.fi-modal-window-kontrak .fi-tabs-item.fi-active {
+    background-color: rgba(147, 51, 234, 0.25) !important;
+}
+
+.fi-modal-window-kontrak-isi-tetap .fi-tabs-item:hover,
+.fi-modal-window-kontrak-isi-tetap .fi-tabs-item.fi-active,
+.fi-modal-window-kontrak-isi-tetap .fi-tabs-item:hover .fi-tabs-item-label,
+.fi-modal-window-kontrak-isi-tetap .fi-tabs-item.fi-active .fi-tabs-item-label,
+.fi-modal-window-kontrak-isi-tetap .fi-tabs-item:hover > .fi-icon,
+.fi-modal-window-kontrak-isi-tetap .fi-tabs-item.fi-active > .fi-icon {
+    color: #db2777 !important;
+}
+
+.fi-modal-window-kontrak-isi-tetap .fi-tabs-item:hover,
+.fi-modal-window-kontrak-isi-tetap .fi-tabs-item.fi-active {
+    background-color: rgba(219, 39, 119, 0.25) !important;
+}
+
+/* Footer buttons — "Edit" filled solid, "Close" outlined with a
+   matching hover tint */
+.fi-modal-window-tetap .fi-modal-footer-actions .fi-btn:first-child {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #fff !important;
+}
+
+.fi-modal-window-tetap .fi-modal-footer-actions .fi-btn:first-child:hover {
+    background-color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+}
+
+.fi-modal-window-kontrak-interim .fi-modal-footer-actions .fi-btn:first-child {
+    background-color: #d97706 !important;
+    border-color: #d97706 !important;
+    color: #fff !important;
+}
+
+.fi-modal-window-kontrak-interim .fi-modal-footer-actions .fi-btn:first-child:hover {
+    background-color: #b45309 !important;
+    border-color: #b45309 !important;
+}
+
+.fi-modal-window-kontrak .fi-modal-footer-actions .fi-btn:first-child {
+    background-color: #9333ea !important;
+    border-color: #9333ea !important;
+    color: #fff !important;
+}
+
+.fi-modal-window-kontrak .fi-modal-footer-actions .fi-btn:first-child:hover {
+    background-color: #7e22ce !important;
+    border-color: #7e22ce !important;
+}
+
+.fi-modal-window-kontrak-isi-tetap .fi-modal-footer-actions .fi-btn:first-child {
+    background-color: #db2777 !important;
+    border-color: #db2777 !important;
+    color: #fff !important;
+}
+
+.fi-modal-window-kontrak-isi-tetap .fi-modal-footer-actions .fi-btn:first-child:hover {
+    background-color: #be185d !important;
+    border-color: #be185d !important;
+}
+
+.fi-modal-window-tetap .fi-modal-footer-actions .fi-btn:last-child:hover {
+    background-color: rgba(37, 99, 235, 0.12) !important;
+    border-color: #2563eb !important;
+    color: #2563eb !important;
+}
+
+.fi-modal-window-kontrak-interim .fi-modal-footer-actions .fi-btn:last-child:hover {
+    background-color: rgba(217, 119, 6, 0.12) !important;
+    border-color: #d97706 !important;
+    color: #d97706 !important;
+}
+
+.fi-modal-window-kontrak .fi-modal-footer-actions .fi-btn:last-child:hover {
+    background-color: rgba(147, 51, 234, 0.12) !important;
+    border-color: #9333ea !important;
+    color: #9333ea !important;
+}
+
+.fi-modal-window-kontrak-isi-tetap .fi-modal-footer-actions .fi-btn:last-child:hover {
+    background-color: rgba(219, 39, 119, 0.12) !important;
+    border-color: #db2777 !important;
+    color: #db2777 !important;
+}
+
 /* Header divider — separates title from content */
 .fi-modal-header {
     border-bottom: 1px solid var(--sneat-border) !important;
     padding-bottom: 1rem !important;
-}
-
-/* Footer divider — separates content from action buttons */
-.fi-modal-footer {
-    border-top: 1px solid var(--sneat-border) !important;
-    padding-top: 1rem !important;
 }
 
 /* Dark mode */
@@ -898,8 +1179,26 @@ td.fi-ta-selection-cell {
     border-bottom-color: var(--sneat-border) !important;
 }
 
-.dark .fi-modal-footer {
-    border-top-color: var(--sneat-border) !important;
+/* Filament's own sticky-footer style adds a border-top — override it off */
+.fi-modal-footer {
+    border-top: none !important;
+}
+
+/* Filament also adds a border-bottom on the content area (above the
+   footer) for icon/heading/description modals — override it off too */
+.fi-modal-content {
+    border-bottom: none !important;
+}
+
+/* Simple confirmation modals (no form fields, e.g. logout) — drop the
+   header divider and Filament's footer gap so the description flows
+   straight into the buttons instead of leaving an empty banded gap */
+.fi-modal-window:not(.fi-modal-window-has-content) .fi-modal-header {
+    border-bottom: none !important;
+}
+
+.fi-modal-window:not(.fi-modal-window-has-content) .fi-modal-footer {
+    margin-top: 0 !important;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━ FORM INPUTS ━━━━━━━━━━━━━━━━━━━━ */
@@ -1032,15 +1331,212 @@ td.fi-ta-selection-cell {
     color: var(--sneat-primary) !important;
 }
 
+/* ── Jenis Lantikan tabs (Pegawai list) — distinct colour per type.
+   Solid, fully opaque fill with white text (like a filled button),
+   not a translucent tint, so each pill reads clearly regardless of
+   what's behind it. Same solid colours in light and dark mode since
+   an opaque fill doesn't need to adapt to the page background.
+
+   Every selector is prefixed with .mystaff-lantikan-filter-tabs so it
+   beats the generic .fi-tabs-item.fi-active rule (2 classes) on
+   specificity (3 classes here) rather than relying on source order —
+   without the prefix, the :hover/.fi-active state was losing to that
+   generic rule and falling back to the default teal tint. ── */
+.mystaff-lantikan-filter-tabs .fi-tabs-item-all,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-all {
+    background-color: var(--sneat-primary) !important;
+    color: #ffffff !important;
+}
+
+.mystaff-lantikan-filter-tabs .fi-tabs-item-all:hover,
+.mystaff-lantikan-filter-tabs .fi-tabs-item-all.fi-active,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-all:hover,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-all.fi-active {
+    background-color: #0d9488 !important;
+    color: #ffffff !important;
+}
+
+.mystaff-lantikan-filter-tabs .fi-tabs-item-tetap,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-tetap {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+.mystaff-lantikan-filter-tabs .fi-tabs-item-tetap:hover,
+.mystaff-lantikan-filter-tabs .fi-tabs-item-tetap.fi-active,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-tetap:hover,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-tetap.fi-active {
+    background-color: #1d4ed8 !important;
+    color: #ffffff !important;
+}
+
+.mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim {
+    background-color: #d97706 !important;
+    color: #ffffff !important;
+}
+
+.mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim:hover,
+.mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim.fi-active,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim:hover,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim.fi-active {
+    background-color: #b45309 !important;
+    color: #ffffff !important;
+}
+
+.mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak {
+    background-color: #9333ea !important;
+    color: #ffffff !important;
+}
+
+.mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak:hover,
+.mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak.fi-active,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak:hover,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak.fi-active {
+    background-color: #7e22ce !important;
+    color: #ffffff !important;
+}
+
+.mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap {
+    background-color: #db2777 !important;
+    color: #ffffff !important;
+}
+
+.mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap:hover,
+.mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap.fi-active,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap:hover,
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap.fi-active {
+    background-color: #be185d !important;
+    color: #ffffff !important;
+}
+
+/* Filament's own CSS sets colour directly on .fi-tabs-item-label (and
+   .fi-icon), not just the outer .fi-tabs-item — a child's own explicit
+   colour always wins over an inherited one from the parent, regardless
+   of the parent rule's specificity. Force the label back to whatever
+   colour the parent pill resolved to above, in every state. */
+.mystaff-lantikan-filter-tabs .fi-tabs-item .fi-tabs-item-label,
+.mystaff-lantikan-filter-tabs .fi-tabs-item > .fi-icon {
+    color: inherit !important;
+}
+
+/* ── Pegawai list filter tabs (ALL/TETAP/KONTRAK INTERIM/KONTRAK/
+   KONTRAK ISI TETAP) — standalone pill buttons instead of one joined
+   segmented bar. Scoped to .mystaff-lantikan-filter-tabs (set via
+   ListPegawais::getTabsContentComponent()) so this doesn't affect
+   tabs anywhere else in the app (e.g. the Pegawai view/modal tabs).
+   Colours themselves are untouched — still driven by the
+   .fi-tabs-item-* rules above; this only changes shape/spacing. ── */
+.mystaff-lantikan-filter-tabs .fi-tabs {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    gap: 0.5rem !important;
+    flex-wrap: wrap;
+}
+
+.mystaff-lantikan-filter-tabs .fi-tabs-item {
+    border-radius: 999px !important;
+    padding: 0.4rem 1rem !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+}
+
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Currently-selected pill gets a white ring so it's unmistakable which
+   filter is active — the colour alone (idle vs. active is just a
+   slightly darker shade of the same hue) wasn't distinct enough. One
+   rule covers every status colour since it doesn't set a colour of
+   its own, just the ring/lift. */
+.mystaff-lantikan-filter-tabs .fi-tabs-item.fi-active {
+    box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark .mystaff-lantikan-filter-tabs .fi-tabs-item.fi-active {
+    box-shadow: 0 0 0 3px #1f2937, 0 0 0 5px rgba(255, 255, 255, 0.2), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ── Pegawai table rows — left-edge colour bar matching the jenis
+   lantikan tab colours above. inset box-shadow is used because a plain
+   border on <tr> is suppressed by border-collapse. ── */
+.fi-ta-row.fi-ta-row-tetap {
+    box-shadow: inset 3px 0 0 #2563eb;
+}
+
+.fi-ta-row.fi-ta-row-kontrak-interim {
+    box-shadow: inset 3px 0 0 #d97706;
+}
+
+.fi-ta-row.fi-ta-row-kontrak {
+    box-shadow: inset 3px 0 0 #9333ea;
+}
+
+.fi-ta-row.fi-ta-row-kontrak-isi-tetap {
+    box-shadow: inset 3px 0 0 #db2777;
+}
+
+.dark .fi-ta-row.fi-ta-row-tetap {
+    box-shadow: inset 3px 0 0 #60a5fa;
+}
+
+.dark .fi-ta-row.fi-ta-row-kontrak-interim {
+    box-shadow: inset 3px 0 0 #fbbf24;
+}
+
+.dark .fi-ta-row.fi-ta-row-kontrak {
+    box-shadow: inset 3px 0 0 #c084fc;
+}
+
+.dark .fi-ta-row.fi-ta-row-kontrak-isi-tetap {
+    box-shadow: inset 3px 0 0 #f472b6;
+}
+
 /* ━━━━━━━━━━━━━━━━━━━━ PAGE HEADER ━━━━━━━━━━━━━━━━━━━━ */
 
 .fi-header-heading {
     color: var(--sneat-text-main) !important;
     font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.625rem !important;
 }
 
 .fi-breadcrumbs-item {
     color: var(--sneat-text-muted) !important;
+}
+
+/* ── Back button — placed inline before the page heading via
+   getHeading() on pages that opt in (e.g. Maklumat Penyandang). ── */
+.mystaff-back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    border: 1px solid var(--sneat-border);
+    background-color: var(--sneat-paper-bg);
+    color: var(--sneat-text-muted);
+    flex-shrink: 0;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.mystaff-back-btn svg {
+    width: 1.125rem;
+    height: 1.125rem;
+}
+
+.mystaff-back-btn:hover {
+    background-color: var(--sneat-primary-subtle);
+    color: var(--sneat-primary);
+    border-color: var(--sneat-primary);
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━ DARK MODE TOGGLE BUTTON ━━━━━━━━━━━━━━━━━━━━ */
@@ -1078,8 +1574,8 @@ td.fi-ta-selection-cell {
     --sneat-body-bg: #051318;
     --sneat-paper-bg: rgba(15, 32, 39, 0.7);
     --sneat-border: rgba(255, 255, 255, 0.05);
-    --sneat-text-main: #cfd3ec;
-    --sneat-text-muted: #a3a5c0;
+    --sneat-text-main: #cfe8e3;
+    --sneat-text-muted: #9fb6b1;
     --sneat-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
     --sneat-primary: #2dd4bf;
     --sneat-primary-rgb: 45, 212, 191;
@@ -1178,3 +1674,4 @@ td.fi-ta-selection-cell {
 .dark .sneat-dark-toggle-btn {
     color: var(--sneat-text-muted);
 }
+

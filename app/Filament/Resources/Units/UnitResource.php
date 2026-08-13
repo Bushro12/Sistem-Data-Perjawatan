@@ -52,4 +52,5 @@ class UnitResource extends Resource
             'edit' => EditUnit::route('/{record}/edit'),
         ];
     }
+    
 }

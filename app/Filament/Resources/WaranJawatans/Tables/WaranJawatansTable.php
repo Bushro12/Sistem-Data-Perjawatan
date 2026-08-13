@@ -21,11 +21,13 @@ class WaranJawatansTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultPaginationPageOption(5)
             ->recordUrl(null)
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
-                    ->rowindex(),
+                    ->rowindex()
+                    ->width(1),
 
                 TextColumn::make('pegawai_id')
                     ->label('Pegawai')
@@ -60,10 +62,10 @@ class WaranJawatansTable
                     ->searchable(),
 
                 TextColumn::make('aktiviti')
-                    ->label('Aktiviti')
+                    ->label('Aktiviti / Jawatan')
                     ->formatStateUsing(
                         fn($record) =>
-                        ($record->aktiviti?->no_aktivit) . ' - ' . ($record->aktiviti?->nama_aktiviti)
+                        ($record->aktiviti?->no_aktivit) . ' - ' . ($record->aktiviti?->nama_aktiviti) . '<br>' . ($record->jawatan_list . ' , GRED ' . $record->gred_list)
                     )
                     ->html()
                     ->wrap()

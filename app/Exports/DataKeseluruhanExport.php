@@ -26,30 +26,33 @@ class DataKeseluruhanExport implements FromCollection, WithCustomStartCell, With
             'pegawai'
         ])
             ->get()
-            ->groupBy(fn($item) => $item->aktiviti?->program?->nama_program . ': ' .
-                $item->aktiviti?->program?->desc_program);
+            ->groupBy(fn($item) => $item->aktiviti?->program?->nama_program);
 
         $rows = collect();
 
         $currentRow = 5; // because startCell = A5
 
-
-        foreach ($programs as $program => $items) {
-
-            // PROGRAM ROW
+        foreach ($programs as $programId => $items) {
             $programRow = $currentRow;
 
+            $program = $items->first()->aktiviti->program;
+
+            $namaProgram = $programId == 'PROGRAM 1'
+                ? 'IBU PEJABAT JKN'
+                : $program->nama_program . ': ' . $program->desc_program;
+
             $rows->push([
-                $program,
+                $namaProgram,
                 '',
                 '',
                 '',
                 '',
                 '',
                 '',
-                ''
+                '',
             ]);
 
+            //
             $currentRow++;
 
 

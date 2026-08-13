@@ -19,11 +19,13 @@ class LetakJawatansTable
     public static function configure(Table $table): Table
     {
         return $table
-        ->recordUrl(null)
+            ->defaultPaginationPageOption(5)
+            ->recordUrl(null)
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
-                    ->rowIndex(),
+                    ->rowIndex()
+                    ->width(1),
                 TextColumn::make('nama')
                     ->label('Pegawai')
                     ->formatStateUsing(
@@ -72,9 +74,9 @@ class LetakJawatansTable
             ->recordActions([
                 ActionGroup::make([
                     ViewAction::make()
-                    ->modal()
-                    ->modalHeading(fn($record) => $record->nama)
-                     ->extraModalFooterActions([
+                        ->modal()
+                        ->modalHeading(fn($record) => $record->nama)
+                        ->extraModalFooterActions([
                             Action::make('edit')
                                 ->label('Edit')
                                 ->url(fn($record) => LetakJawatanResource::getUrl('edit', [
