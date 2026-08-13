@@ -6,7 +6,7 @@ use App\Filament\Resources\Pencens\PencenResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
-class ViewPencen extends ViewRecord
+class ViewPencens extends ViewRecord
 {
     protected static string $resource = PencenResource::class;
 
@@ -24,7 +24,6 @@ class ViewPencen extends ViewRecord
 
     public function getTitle(): string
     {
-        return ($this->record->nama);
+        return $this->record->nama;
     }
-
 }
