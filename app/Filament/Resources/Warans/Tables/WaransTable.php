@@ -18,6 +18,7 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
 class WaransTable
@@ -193,23 +194,27 @@ class WaransTable
             ])
 
             ->filters([
-                SelectFilter::make('program')
-                    ->label('Program')
-                    ->relationship('waranJawatan.aktiviti.program', 'nama_program')
-                    ->searchable()
-                    ->preload(),
+                SelectFilter::make('status_jik')
+                    ->label('Status Waran')
+                    ->options([
+                        'seimbang' => 'Seimbang',
+                        'kurang' => 'Kurang',
+                        'lebih' => 'Lebih',
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if (blank($data['value'] ?? null)) {
+                            return $query;
+                        }
 
-                SelectFilter::make('aktiviti')
-                    ->label('Aktiviti')
-                    ->relationship('waranJawatan.aktiviti', 'nama_aktiviti')
-                    ->getOptionLabelFromRecordUsing(
-                        fn($record) =>
-                        $record->no_aktivit . ' - ' . $record->nama_aktiviti
-                    )
-                    ->searchable()
-                    ->preload()
+                        $countSub = '(SELECT COUNT(*) FROM waran_jawatans WHERE waran_jawatans.waran_id = warans.id)';
 
-                    
+                        return match ($data['value']) {
+                            'seimbang' => $query->whereRaw("jik = $countSub"),
+                            'kurang' => $query->whereRaw("jik > $countSub"),
+                            'lebih' => $query->whereRaw("jik < $countSub"),
+                            default => $query,
+                        };
+                    }),
 
             ])
             ->recordActions([

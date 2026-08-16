@@ -73,7 +73,9 @@ protected string $view = 'filament.pages.dashboard';
             'totalPengisianSemasa' => $totalPengisianSemasa,
             'totalKekosongan'      => $totalKekosongan,
             'recentWarans'   => $recentWarans,
-            'waranByProgram' => $waranByProgram->sortByDesc('waran_count')->values(),
+            'waranByProgram' => $waranByProgram
+                ->sortBy(fn ($item) => (int) filter_var($item->nama_program, FILTER_SANITIZE_NUMBER_INT))
+                ->values(),
             'recentHebahans' => $recentHebahans,
         ];
     }
