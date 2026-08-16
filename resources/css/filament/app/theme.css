@@ -907,7 +907,13 @@
     border-radius: var(--sneat-radius) !important;
     box-shadow: var(--sneat-shadow-sm) !important;
     border: 1px solid var(--sneat-border) !important;
+}
+
+/* Clip only the table rows (not the header toolbar), so dropdowns like the
+   "Columns" panel aren't cut off when the table is short. */
+.fi-ta-content-ctn {
     overflow: hidden;
+    border-radius: var(--sneat-radius);
 }
 
 /* Collapse borders so cell borders share walls */

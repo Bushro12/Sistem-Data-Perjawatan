@@ -72,7 +72,7 @@
         {{-- Donut Chart --}}
         <x-filament::section heading="Status Waran">
             @php
-                $statusTotal = $totalLebih + $totalKurang + $totalSeimbang;
+                $statusTotal = $totalPengisianSemasa + $totalKekosongan;
                 $pct = fn ($n) => $statusTotal > 0 ? round(($n / $statusTotal) * 100) : 0;
             @endphp
             <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
@@ -80,15 +80,11 @@
                 <div style="display:flex; gap:16px;">
                     <div style="display:flex; align-items:center; gap:6px;">
                         <div style="width:12px; height:12px; border-radius:50%; background:#10b981;"></div>
-                        <span style="font-size:12px;">Lebih ({{ $pct($totalLebih) }}%)</span>
+                        <span style="font-size:12px;">Pengisian Semasa ({{ $pct($totalPengisianSemasa) }}%)</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:6px;">
                         <div style="width:12px; height:12px; border-radius:50%; background:#f43f5e;"></div>
-                        <span style="font-size:12px;">Kurang ({{ $pct($totalKurang) }}%)</span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <div style="width:12px; height:12px; border-radius:50%; background:#2563eb;"></div>
-                        <span style="font-size:12px;">Seimbang ({{ $pct($totalSeimbang) }}%)</span>
+                        <span style="font-size:12px;">Kekosongan ({{ $pct($totalKekosongan) }}%)</span>
                     </div>
                 </div>
             </div>
@@ -198,9 +194,9 @@
             // centered instead of per-segment labels.
             statusApexChart = new ApexCharts(statusEl, {
                 chart: { type: 'donut', height: 200, width: 200 },
-                series: [{{ $totalLebih }}, {{ $totalKurang }}, {{ $totalSeimbang }}],
-                labels: ['Lebih', 'Kurang', 'Seimbang'],
-                colors: ['#10b981', '#f43f5e', '#2563eb'],
+                series: [{{ $totalPengisianSemasa }}, {{ $totalKekosongan }}],
+                labels: ['Pengisian Semasa', 'Kekosongan'],
+                colors: ['#10b981', '#f43f5e'],
                 legend: { show: false },
                 dataLabels: { enabled: false },
                 stroke: { width: 0 },
