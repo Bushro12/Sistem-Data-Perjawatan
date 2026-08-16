@@ -41,9 +41,6 @@ protected string $view = 'filament.pages.dashboard';
         $allWarans = Waran::with(['waranJawatan'])->get();
 
         $totalWaran           = $allWarans->count();
-        $totalLebih           = $allWarans->filter(fn($w) => $w->status_jik === 'Lebih')->count();
-        $totalKurang          = $allWarans->filter(fn($w) => $w->status_jik === 'Kurang')->count();
-        $totalSeimbang        = $allWarans->filter(fn($w) => $w->status_jik === 'Seimbang')->count();
         $totalPengisianSemasa = $allWarans->sum('isi_count');
         $totalKekosongan      = $allWarans->sum('kosong_count');
 
@@ -73,9 +70,6 @@ protected string $view = 'filament.pages.dashboard';
 
         return [
             'totalWaran'           => $totalWaran,
-            'totalLebih'           => $totalLebih,
-            'totalKurang'          => $totalKurang,
-            'totalSeimbang'        => $totalSeimbang,
             'totalPengisianSemasa' => $totalPengisianSemasa,
             'totalKekosongan'      => $totalKekosongan,
             'recentWarans'   => $recentWarans,

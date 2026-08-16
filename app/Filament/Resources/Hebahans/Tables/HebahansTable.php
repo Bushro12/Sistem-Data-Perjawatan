@@ -19,18 +19,21 @@ class HebahansTable
                 TextColumn::make('no')
                     ->label('Bil')
                     ->rowIndex()
-                    ->width(1),
+                    ->width(1)
+                    ->toggleable(),
 
                 TextColumn::make('tajuk')
                     ->label('Tajuk')
                     ->sortable()
                     ->searchable()
-                    ->wrap(),
+                    ->wrap()
+                    ->toggleable(),
 
                 TextColumn::make('tarikh_hebahan')
                     ->label('Tarikh Hebahan')
                     ->date('d/m/Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('status')
                     ->label('Status')
@@ -45,7 +48,8 @@ class HebahansTable
                         'draft' => 'Draf',
                         default => $state,
                     })
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('dipaparkan_sehingga')
                     ->label('Sehingga')
