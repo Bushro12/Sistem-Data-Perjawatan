@@ -37,6 +37,7 @@ class UserForm
                             ->label('Email')
                             ->required()
                             ->email()
+                            ->helperText('Gunakan emel @moh.gov.my sahaja.')
                             ->rule('regex:/^[A-Za-z0-9._%+-]+@moh\.gov\.my$/')
                             ->validationMessages([
                                 'regex' => 'Sila guna email @moh.gov.my sahaja.',

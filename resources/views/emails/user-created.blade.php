@@ -1,14 +1,13 @@
-<h2>Akaun Barru Telah Dicipta</h2>
+<h2>Akaun Baru Telah Dicipta</h2>
 
 <p>Assalamualaikum & Salam Sejahtera {{ $user->name }},</p>
 
 <p>Akaun anda telah berjaya dicipta.</p>
 
-<p>Sila log masuk ke akaun anda menggunakan usernamae dan kata laluan</p>
+<p>Sila log masuk ke akaun anda menggunakan kata laluan berikut:</p>
 
 <p>
-    <strong>Email:</strong> {{ $user->email }}<br>
-    <strong>Password:</strong> {{ $password }}
+    <strong>Kata Laluan:</strong> {{ $password }}<br>
 </p>
 
-<p>Sila tukar kata laluan selepas log masuk.</p>
+<p><strong>Sila tukar kata laluan selepas log masuk.</strong></p>

@@ -36,7 +36,10 @@ class UsersTable
                 TextColumn::make('name')
                     ->label('Nama')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(query: function ($query, string $search) {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('nokp', 'like', '%'.str_replace('-', '', $search).'%');
+                    }),
                 TextColumn::make('email')
                     ->label('Email')
                     ->sortable()
@@ -55,7 +58,7 @@ class UsersTable
                     EditAction::make(),
                     DeleteAction::make()
                         ->label('Padam')
-                        ->modalHeading(fn($record) => "Padam {$record->name}")
+                        ->modalHeading(fn ($record) => "Padam {$record->name}")
                         ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
                         ->modalSubmitActionLabel('Ya, Padam')
                         ->modalCancelActionLabel('Batal')
@@ -68,7 +71,7 @@ class UsersTable
                                 ->danger()
                                 ->sendToDatabase(User::whereIn('role', [1, 2])->get());
                         }),
-                ])
+                ]),
 
             ])
             ->toolbarActions([
