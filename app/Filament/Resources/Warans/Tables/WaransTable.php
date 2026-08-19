@@ -2,19 +2,13 @@
 
 namespace App\Filament\Resources\Warans\Tables;
 
-use App\Filament\Resources\Warans\Pages\ViewWaran;
-use App\Filament\Resources\Warans\WaranResource;
-use App\Models\Program;
 use App\Models\User;
 use App\Models\Waran;
 use App\Models\WaranJawatan;
-use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -27,13 +21,12 @@ class WaransTable
     {
         return $table
             ->defaultPaginationPageOption(5)
-            ->recordUrl(fn($record) => route('filament.app.resources.warans.view', [
+            ->recordUrl(fn ($record) => route('filament.app.resources.warans.view', [
                 'record' => $record,
             ]))
 
             ->modifyQueryUsing(
-                fn($query) =>
-                $query->with([
+                fn ($query) => $query->with([
                     'waranJawatan.ptj',
                     'waranJawatan.aktiviti',
                 ])
@@ -122,10 +115,7 @@ class WaransTable
                 //             ->unique()
                 //             ->join('<br>');
 
-
                 //     }),
-
-
 
                 TextColumn::make('penempatan_list')
                     ->label('Penempatan')
@@ -142,8 +132,8 @@ class WaransTable
                     ->formatStateUsing(function ($state, $record) {
 
                         return $record->jenis === 'Tolak'
-                            ? '-' . $state
-                            : '+' . $state;
+                            ? '-'.$state
+                            : '+'.$state;
                     }),
 
                 TextColumn::make('isi_count')
@@ -151,7 +141,6 @@ class WaransTable
 
                 TextColumn::make('kosong_count')
                     ->label('K'),
-
 
                 TextColumn::make('status_jik')
                     ->label('Status')
@@ -190,31 +179,27 @@ class WaransTable
 
                         });
 
-                    })
+                    }),
             ])
 
             ->filters([
-                SelectFilter::make('status_jik')
-                    ->label('Status Waran')
-                    ->options([
-                        'seimbang' => 'Seimbang',
-                        'kurang' => 'Kurang',
-                        'lebih' => 'Lebih',
-                    ])
-                    ->query(function (Builder $query, array $data) {
-                        if (blank($data['value'] ?? null)) {
-                            return $query;
-                        }
+                SelectFilter::make('program')
+                    ->label('Program')
+                    ->relationship('waranJawatan.aktiviti.program', 'nama_program')
+                    ->searchable()
+                    ->preload(),
 
-                        $countSub = '(SELECT COUNT(*) FROM waran_jawatans WHERE waran_jawatans.waran_id = warans.id)';
+                SelectFilter::make('aktiviti')
+                    ->label('Aktiviti')
+                    ->relationship('waranJawatan.aktiviti', 'nama_aktiviti')
+                    ->getOptionLabelFromRecordUsing(
+                        fn($record) =>
+                        $record->no_aktivit . ' - ' . $record->nama_aktiviti
+                    )
+                    ->searchable()
+                    ->preload()
 
-                        return match ($data['value']) {
-                            'seimbang' => $query->whereRaw("jik = $countSub"),
-                            'kurang' => $query->whereRaw("jik > $countSub"),
-                            'lebih' => $query->whereRaw("jik < $countSub"),
-                            default => $query,
-                        };
-                    }),
+
 
             ])
             ->recordActions([
@@ -222,7 +207,7 @@ class WaransTable
                     EditAction::make(),
                     DeleteAction::make()
                         ->label('Padam')
-                        ->modalHeading(fn($record) => "Padam {$record->no_waran}")
+                        ->modalHeading(fn ($record) => "Padam {$record->no_waran}")
                         ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
                         ->modalSubmitActionLabel('Ya, Padam')
                         ->modalCancelActionLabel('Batal')
@@ -244,8 +229,8 @@ class WaransTable
                                 ->danger()
                                 ->sendToDatabase($superadmin);
 
-                        })
-                ])
+                        }),
+                ]),
             ]);
     }
 }

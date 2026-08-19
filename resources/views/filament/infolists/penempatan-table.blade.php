@@ -2,6 +2,11 @@
     $isKontrak = $record->is_kontrak == 1;
     $waranJawatan = $record->waranJawatan;
 
+    // Unit / Sub Unit hanya dipaparkan untuk pegawai kontrak sahaja
+    $hideUnitSubunit = $record->is_tetap == 1
+        || $record->is_kontrak_interim == 1
+        || $record->is_kontrak_isi_tetap == 1;
+
     $program = $isKontrak
         ? $record->pegawaiKontrak?->program
         : $waranJawatan?->aktiviti?->program;
@@ -105,28 +110,30 @@ $statusPinjam = ($waranJawatan && !$isKontrak && $ptjPegawaiId !== $ptjWaranId)
                 {{ $bahagian }}
             </td>
         </tr>
-        <tr>
-            <th class="border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-3 py-2 text-left font-medium text-gray-500 dark:text-gray-400">
-                <span class="inline-flex items-center gap-2">
-                    <x-filament::icon icon="heroicon-o-squares-2x2" class="w-4 h-4 text-fg-yellow" />
-                    Unit
-                </span>
-            </th>
-            <td class="border border-gray-200 dark:border-white/10 px-3 py-2">
-                {{ $unit }}
-            </td>
-        </tr>
-        <tr>
-            <th class="border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-3 py-2 text-left font-medium text-gray-500 dark:text-gray-400">
-                <span class="inline-flex items-center gap-2">
-                    <x-filament::icon icon="heroicon-o-square-2-stack" class="w-4 h-4 text-fg-brand" />
-                    Sub Unit
-                </span>
-            </th>
-            <td class="border border-gray-200 dark:border-white/10 px-3 py-2">
-                {{ $subunit }}
-            </td>
-        </tr>
+        @unless($hideUnitSubunit)
+            <tr>
+                <th class="border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-3 py-2 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <span class="inline-flex items-center gap-2">
+                        <x-filament::icon icon="heroicon-o-squares-2x2" class="w-4 h-4 text-fg-yellow" />
+                        Unit
+                    </span>
+                </th>
+                <td class="border border-gray-200 dark:border-white/10 px-3 py-2">
+                    {{ $unit }}
+                </td>
+            </tr>
+            <tr>
+                <th class="border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-3 py-2 text-left font-medium text-gray-500 dark:text-gray-400">
+                    <span class="inline-flex items-center gap-2">
+                        <x-filament::icon icon="heroicon-o-square-2-stack" class="w-4 h-4 text-fg-brand" />
+                        Sub Unit
+                    </span>
+                </th>
+                <td class="border border-gray-200 dark:border-white/10 px-3 py-2">
+                    {{ $subunit }}
+                </td>
+            </tr>
+        @endunless
         <tr>
             <th class="border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-3 py-2 text-left font-medium text-gray-500 dark:text-gray-400">
                 <span class="inline-flex items-center gap-2">

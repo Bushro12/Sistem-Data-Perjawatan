@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\WaranJawatans\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
@@ -23,16 +22,19 @@ class WaranJawatanInfolist
                                     ->label('No Waran'),
                                 TextEntry::make('butiran')
                                     ->label('Butiran'),
+                                TextEntry::make('tarikh_kuatkuasa')
+                                    ->label('Tarikh Kuatkuasa Waran')
+                                    ->date('d F Y')
+                                    ->placeholder('Tiada'),
                                 TextEntry::make('aktiviti')
                                     ->label('Aktiviti')
                                     ->formatStateUsing(
-                                        fn($record) =>
-                                        ($record->aktiviti?->no_aktivit) . ' - ' . ($record->aktiviti->nama_aktiviti)
+                                        fn ($record) => ($record->aktiviti?->no_aktivit).' - '.($record->aktiviti->nama_aktiviti)
                                     ),
                                 TextEntry::make('jawatan_gred_display')
                                     ->label('Jawatan / Gred')
                                     ->state(function ($record) {
-                                        return $record->jawatan_list . ' , GRED ' . $record->gred_list;
+                                        return $record->jawatan_list.' , GRED '.$record->gred_list;
                                     })
                                     ->html()
                                     ->wrap(),
@@ -50,43 +52,25 @@ class WaranJawatanInfolist
                                         }
                                     })
                                     ->columnSpanFull(),
-                                TextEntry::make('unit.nama_unit')
-                                    ->label('Unit')
-                                    ->state(function ($record) {
-                                        if ($record->unit_id == null) {
-                                            return 'Tiada';
-                                        } else {
-                                            return $record->unit?->nama_unit;
-                                        }
-                                    }),
-                                TextEntry::make('subunit.nama_subunit')
-                                    ->label('Subunit')
-                                    ->state(function ($record) {
-                                        if ($record->subunit_id == null) {
-                                            return 'Tiada';
-                                        } else {
-                                            return $record->subunit?->nama_subunit;
-                                        }
-                                    }),
 
                                 TextEntry::make('status')
                                     ->label('Status')
                                     ->badge()
                                     ->size('lg')
-                                    ->formatStateUsing(fn($state) => match ($state) {
+                                    ->formatStateUsing(fn ($state) => match ($state) {
                                         'removed' => 'Dibuang',
                                         'pindaan nama' => 'Pindaan Nama',
                                         'batal nama' => 'Batal Nama',
                                         default => 'Aktif',
                                     })
                                     ->color(
-                                        fn($state) => match ($state) {
+                                        fn ($state) => match ($state) {
                                             'removed' => 'danger',
                                             'pindaan nama' => 'info',
                                             'batal nama' => 'primary',
                                             default => 'success',
                                         }
-                                    )
+                                    ),
 
                             ]),
                         Tab::make('Maklumat Penyandang')
@@ -110,7 +94,7 @@ class WaranJawatanInfolist
                                             return $record->pegawai?->nokp;
                                         }
                                     })
-                                    ->visible(fn($record) => $record->pegawai_id !== null),
+                                    ->visible(fn ($record) => $record->pegawai_id !== null),
                                 // TextEntry::make('pegawai')
                                 //     ->label('Jawatan / Gred')
                                 //     ->formatStateUsing(
@@ -128,22 +112,22 @@ class WaranJawatanInfolist
 
                                         $tbk = $record->tbk?->tbk;
 
-                                        return $jawatan . ', ' . $gred .
+                                        return $jawatan.', '.$gred.
                                             ($tbk ? " (TBK{$tbk})" : '');
                                     })
                                     ->wrap()
-                                    ->visible(fn($record) => $record->pegawai_id !== null),
+                                    ->visible(fn ($record) => $record->pegawai_id !== null),
                                 TextEntry::make('ptj_asal')
                                     ->label('PTJ')
                                     ->getStateUsing(function ($record) {
-                                        if($record->pegawai_id == null) {
+                                        if ($record->pegawai_id == null) {
                                             return 'Tiada';
                                         } else {
                                             return $record->pegawai?->ptj?->nama_ptj;
                                         }
                                     })
                                     ->columnSpanFull()
-                                    ->visible(fn($record) => $record->pegawai_id !== null),
+                                    ->visible(fn ($record) => $record->pegawai_id !== null),
                                 TextEntry::make('bahagian_asal')
                                     ->label('Bahagian')
                                     ->getStateUsing(function ($record) {
@@ -154,7 +138,7 @@ class WaranJawatanInfolist
                                         }
                                     })
                                     ->columnSpanFull()
-                                    ->visible(fn($record) => $record->pegawai_id !== null),
+                                    ->visible(fn ($record) => $record->pegawai_id !== null),
                                 TextEntry::make('unit_asal')
                                     ->label('Unit')
                                     ->getStateUsing(function ($record) {
@@ -164,7 +148,7 @@ class WaranJawatanInfolist
                                             return $record->pegawai?->unit?->nama_unit;
                                         }
                                     })
-                                    ->visible(fn($record) => $record->pegawai_id !== null),
+                                    ->visible(fn ($record) => $record->pegawai_id !== null),
                                 TextEntry::make('subunit_asal')
                                     ->label('Subunit')
                                     ->getStateUsing(function ($record) {
@@ -174,14 +158,13 @@ class WaranJawatanInfolist
                                             return $record->pegawai?->subunit?->nama_subunit;
                                         }
                                     })
-                                    ->visible(fn($record) => $record->pegawai_id !== null),
+                                    ->visible(fn ($record) => $record->pegawai_id !== null),
 
                             ]),
 
                     ])
                     ->columns(2)
-                    ->columnSpanFull()
-
+                    ->columnSpanFull(),
 
             ]);
     }

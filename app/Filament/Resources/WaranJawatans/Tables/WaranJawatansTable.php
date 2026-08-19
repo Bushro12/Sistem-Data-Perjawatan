@@ -12,6 +12,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,7 +24,11 @@ class WaranJawatansTable
         return $table
             ->defaultPaginationPageOption(5)
             ->recordUrl(null)
-            ->defaultSort(fn (Builder $query) => $query->orderByRaw('pegawai_id IS NULL'))
+            ->defaultSort(fn (Builder $query) => $query
+                ->leftJoin('ptjs', 'waran_jawatans.ptj_id', '=', 'ptjs.id')
+                ->orderBy('ptjs.nama_ptj')
+                ->orderByRaw('pegawai_id IS NULL')
+                ->select('waran_jawatans.*'))
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
@@ -52,15 +57,25 @@ class WaranJawatansTable
                     }),
 
                 TextColumn::make('waran.no_waran')
-                    ->label('No Waran')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('butiran')
-                    ->label('Butiran')
+                    ->label('No Waran / Butiran')
+                    ->formatStateUsing(
+                        fn ($record) => '<strong>'.e($record->waran?->no_waran).'</strong><br>'.e($record->butiran)
+                    )
                     ->html()
+                    ->wrap()
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(query: function ($query, string $search) {
+                        $query->where(function ($q) use ($search) {
+                            $q->where('butiran', 'like', "%{$search}%")
+                                ->orWhereHas('waran', fn ($w) => $w->where('no_waran', 'like', "%{$search}%"));
+                        });
+                    }),
+
+                TextColumn::make('ptj.nama_ptj')
+                    ->label('PTJ')
+                    ->sortable()
+                    ->searchable()
+                    ->wrap(),
 
                 TextColumn::make('aktiviti')
                     ->label('Aktiviti / Jawatan')
@@ -129,7 +144,14 @@ class WaranJawatansTable
 
             ])
             ->filters([
-                TrashedFilter::make(),
+                SelectFilter::make('ptj')
+                    ->label('PTJ')
+                    ->relationship('ptj', 'nama_ptj')
+                    ->searchable()
+                    ->preload(),
+
+                TrashedFilter::make()
+                    ->visible(fn () => auth()->user()?->isSuperAdmin()),
             ])
             ->recordActions([
                 ActionGroup::make([

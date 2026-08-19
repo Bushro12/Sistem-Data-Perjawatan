@@ -28,6 +28,7 @@ class ParlimensTable
                 TextColumn::make('duns.nama_dun')
                     ->label('Dun')
                     ->listWithLineBreaks()
+                    ->searchable()
 
             ])
             ->filters([
