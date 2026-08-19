@@ -5,8 +5,8 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
-/.freebuff
-/.claude
+/.freebuff/
+/.claude/
 /.codegraph/
 /.cursor/
 /.idea
@@ -47,3 +47,4 @@ Thumbs.db
 .freebuff/desktop-v2.db
 .freebuff/desktop-v2.db-shm
 .freebuff/desktop-v2.db-wal
+.freebuff/project-id
