@@ -13,6 +13,19 @@ class EditLetakJawatan extends EditRecord
 {
     protected static string $resource = LetakJawatanResource::class;
 
+    /**
+     * Validate the form BEFORE the confirmation modal opens.
+     */
+    // public function mountAction(string $name, array $arguments = [], array $context = []): mixed
+    // {
+    //     try {
+    //         $this->form->validate();
+    //     } catch (\Illuminate\Validation\ValidationException $e) {
+    //         return null;
+    //     }
+
+    //     return parent::mountAction($name, $arguments, $context);
+    // }
 
     protected function getSaveFormAction(): Action
     {
@@ -21,8 +34,8 @@ class EditLetakJawatan extends EditRecord
             ->color('primary')
             ->requiresConfirmation()
             ->modalHeading('Pengesahan')
-            ->modalDescription('Adakah anda pasti mahu simpan perubahan ini?')
-            ->action(fn() => $this->save());
+            ->modalDescription('Adakah anda pasti mahu menyimpan maklumat ini?')
+             ->action(fn() => $this->save());
     }
 
     protected function getCancelFormAction(): Action

@@ -12,6 +12,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class LetakJawatansTable
@@ -31,8 +32,6 @@ class LetakJawatansTable
                     ->formatStateUsing(
                         fn($record) =>
                         '<strong>' . ($record->nama ?? '-') . '</strong><br>' .
-                            // ($record->nokp ?? '-') . '<br>' .
-                            // ($record->emel ?? '-') . '<br>' .
                         (
                             $record->jawatan_gred
                             ? $record->jawatan_gred->jawatan->desc_jawatan .
@@ -42,7 +41,16 @@ class LetakJawatansTable
                     )
                     ->html()
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(query: function ($query, string $search) {
+                        $query->where('nama', 'like', "%{$search}%")
+                            ->orWhere('nokp', 'like', "%{$search}%")
+                            ->orWhereHas('jawatan_gred.jawatan', function ($q) use ($search) {
+                                $q->where('desc_jawatan', 'like', "%{$search}%");
+                            })
+                            ->orWhereHas('jawatan_gred.gred', function ($q) use ($search) {
+                                $q->where('kod_gred', 'like', "%{$search}%");
+                            });
+                    }),
 
 
                 TextColumn::make('jenis_notis')
@@ -50,12 +58,14 @@ class LetakJawatansTable
                     ->formatStateUsing(
                         fn($record) =>
                         '<strong>' . ($record->jenis_notis ?? '-') . '</strong><br>' .
-                        // 'Tarikh Mula Notis: ' . Carbon::parse($record->tarikh_notis)->format('d F Y') . '<br>' .
                         'Tarikh Kuatkuasa: ' . Carbon::parse($record->tarikh_kuatkuasa)->format('d F Y')
-
                     )
                     ->html()
-                    ->searchable()
+                    ->searchable(query: function ($query, string $search) {
+                        $query->where('jenis_notis', 'like', "%{$search}%")
+                            ->orWhere('tarikh_kuatkuasa', 'like', "%{$search}%")
+                            ->orWhere('tarikh_notis', 'like', "%{$search}%");
+                    })
                     ->sortable(),
 
                 TextColumn::make('lantikan')
@@ -63,13 +73,22 @@ class LetakJawatansTable
                     ->formatStateUsing(
                         fn($record) =>
                         '<strong>' . ($record->ptj->nama_ptj) . '</strong><br>' .
-                        // 'Tarikh Lantikan: ' . Carbon::parse($record->tarikh_lantik)->format('d F Y') . '<br>' .
                         'Jenis Lantikan: ' . ($record->lantikan)
                     )
                     ->html()
+                    ->searchable(query: function ($query, string $search) {
+                        $query->where('lantikan', 'like', "%{$search}%")
+                            ->orWhereHas('ptj', function ($q) use ($search) {
+                                $q->where('nama_ptj', 'like', "%{$search}%");
+                            });
+                    })
             ])
             ->filters([
-                //
+                SelectFilter::make('ptj')
+                    ->label('PTJ')
+                    ->relationship('ptj', 'nama_ptj')
+                    ->searchable()
+                    ->preload(),
             ])
             ->recordActions([
                 ActionGroup::make([

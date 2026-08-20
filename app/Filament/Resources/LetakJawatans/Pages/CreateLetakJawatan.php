@@ -16,12 +16,12 @@ class CreateLetakJawatan extends CreateRecord
     protected function getCreateFormAction() : Action
     {
         return Action::make('create')
-        ->label('Tambah')
-        ->color('primary')
-        ->requiresConfirmation()
-        ->modalHeading('Pengesahan')
+            ->label('Tambah')
+            ->color('primary')
+            ->requiresConfirmation()
+            ->modalHeading('Pengesahan')
             ->modalDescription('Adakah anda pasti mahu tambah maklumat ini?')
-            ->action(fn() => $this->create());
+            ->action(fn() => $this->create());;
     }
 
 
