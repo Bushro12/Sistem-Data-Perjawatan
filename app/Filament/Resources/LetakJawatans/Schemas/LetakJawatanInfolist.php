@@ -69,38 +69,48 @@ class LetakJawatanInfolist
                                 Grid::make(3)
                                     ->schema([
                                         TextEntry::make('ikatan_jpa')
-                                        ->label('Ikatan JPA')
-                                        ->state(function ($record) {
-                                            if ($record->ikatan_jpa == 1) {
-                                                return 'Ada';
-                                            } else {
-                                                return 'Tiada';
-                                            }
-                                        })
-                                        ->badge()
-                                        ->size('large'),
+                                            ->label('Ikatan JPA')
+                                            ->state(function ($record) {
+                                                return $record->ikatan_jpa == 1
+                                                    ? 'Ada'
+                                                    : 'Tiada';
+                                            })
+                                            ->badge()
+                                            ->color(function ($state) {
+                                                return $state === 'Ada'
+                                                    ? 'primary'
+                                                    : 'warning';
+                                            })
+
+                                            ->size('large'),
                                         TextEntry::make('ikatan_bpl')
-                                        ->label('Ikatan BPL')
-                                        ->state(function ($record) {
-                                            if ($record->ikatan_bpl == 1) {
-                                                return 'Ada';
-                                            } else {
-                                                return 'Tiada';
-                                            }
-                                        })
-                                        ->badge()
-                                        ->size('large'),
+                                            ->label('Ikatan BPL')
+                                            ->state(function ($record) {
+                                               return $record->ikatan_bpl == 1
+                                               ? 'Ada'
+                                               : 'Tiada';
+                                            })
+                                            ->badge()
+                                            ->color(function ($state) {
+                                                return $state === 'Ada'
+                                                    ? 'primary'
+                                                    : 'warning';
+                                            })
+                                            ->size('large'),
                                         TextEntry::make('pinjaman_lppsa')
-                                        ->label('Pinjaman LPPSA (Perumahan)')
-                                        ->state(function ($record) {
-                                            if ($record->pinjaman_lppsa == 1) {
-                                                return 'Ada';
-                                            } else {
-                                                return 'Tiada';
-                                            }
-                                        })
-                                        ->badge()
-                                        ->size('large'),
+                                            ->label('Pinjaman LPPSA (Perumahan)')
+                                            ->state(function ($record) {
+                                                return $record->pinjaman_lppsa == 1
+                                                ? 'Ada'
+                                                : 'Tiada';
+                                            })
+                                            ->badge()
+                                            ->color(function ($state) {
+                                                return $state === 'Ada'
+                                                    ? 'primary'
+                                                    : 'warning';
+                                            })
+                                            ->size('large'),
                                     ])
                                     ->columnSpanFull(),
 

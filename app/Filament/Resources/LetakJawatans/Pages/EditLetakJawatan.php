@@ -15,17 +15,20 @@ class EditLetakJawatan extends EditRecord
 
     /**
      * Validate the form BEFORE the confirmation modal opens.
+     * In Filament v5, requiresConfirmation() opens the modal before
+     * any validation runs. This override intercepts mountAction() to
+     * validate first — if validation fails, the modal never appears.
      */
-    // public function mountAction(string $name, array $arguments = [], array $context = []): mixed
-    // {
-    //     try {
-    //         $this->form->validate();
-    //     } catch (\Illuminate\Validation\ValidationException $e) {
-    //         return null;
-    //     }
+    public function mountAction(string $name, array $arguments = [], array $context = []): mixed
+    {
+        try {
+            $this->form->validate();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return null;
+        }
 
-    //     return parent::mountAction($name, $arguments, $context);
-    // }
+        return parent::mountAction($name, $arguments, $context);
+    }
 
     protected function getSaveFormAction(): Action
     {
@@ -34,8 +37,13 @@ class EditLetakJawatan extends EditRecord
             ->color('primary')
             ->requiresConfirmation()
             ->modalHeading('Pengesahan')
-            ->modalDescription('Adakah anda pasti mahu menyimpan maklumat ini?')
-             ->action(fn() => $this->save());
+            ->modalDescription('Adakah anda pasti mahu menyimpan maklumat ini?');
+    }
+    public function validateBeforeCreate(): void
+    {
+        $this->form->validate();
+
+        $this->mountAction('save');
     }
 
     protected function getCancelFormAction(): Action
@@ -52,7 +60,7 @@ class EditLetakJawatan extends EditRecord
 
     public function getTitle(): string
     {
-        return  'Kemaskini Maklumat Letak Jawatan';
+        return 'Kemaskini Maklumat Letak Jawatan';
     }
 
 
@@ -63,11 +71,11 @@ class EditLetakJawatan extends EditRecord
         return [];
     }
 
-    public function getHeading(): string | Htmlable
+    public function getHeading(): string|Htmlable
     {
         return new HtmlString(
             '<button type="button" onclick="window.history.back()" class="mystaff-back-btn" aria-label="Kembali">' .
-                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' .
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' .
             '</button>' .
             '<span>' . e($this->getTitle()) . '</span>'
         );
