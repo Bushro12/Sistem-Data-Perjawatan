@@ -7,12 +7,10 @@ use App\Filament\Resources\LetakJawatans\Pages\EditLetakJawatan;
 use App\Filament\Resources\LetakJawatans\Pages\ListLetakJawatans;
 use App\Filament\Resources\LetakJawatans\Pages\ViewLetakJawatan;
 use App\Filament\Resources\LetakJawatans\Schemas\LetakJawatanForm;
-use App\Filament\Resources\LetakJawatans\Tables\LetakJawatansTable;
 use App\Filament\Resources\LetakJawatans\Schemas\LetakJawatanInfolist;
-
+use App\Filament\Resources\LetakJawatans\Tables\LetakJawatansTable;
 use App\Models\LetakJawatan;
 use BackedEnum;
-use Filament\Forms\Components\Builder;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -28,6 +26,7 @@ class LetakJawatanResource extends Resource
     protected static ?string $modelLabel = 'Letak Jawatan';
 
     protected static ?string $navigationLabel = 'Letak Jawatan';
+
     protected static ?string $pluralModelLabel = 'Letak Jawatan';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Pegawai';
@@ -61,7 +60,7 @@ class LetakJawatanResource extends Resource
         return [
             'index' => ListLetakJawatans::route('/'),
             'create' => CreateLetakJawatan::route('/create'),
-            'view' => ViewLetakJawatan::route('/{record}'),
+            // 'view' => ViewLetakJawatan::route('/{record}'),
             'edit' => EditLetakJawatan::route('/{record}/edit'),
         ];
     }
