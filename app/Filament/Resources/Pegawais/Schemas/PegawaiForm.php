@@ -492,11 +492,13 @@ class PegawaiForm
                                         DatePicker::make('tarikh_lantikan1')
                                             ->label('Tarikh Lantikan 1')
                                             ->native(false)
-                                            ->displayFormat('d F Y'),
+                                            ->displayFormat('d F Y')
+                                            ->required(),
                                         DatePicker::make('tarikh_tamat1')
                                             ->label('Tarikh Tamat 1')
                                             ->native(false)
-                                            ->displayFormat('d F Y'),
+                                            ->displayFormat('d F Y')
+                                            ->required(),
                                         DatePicker::make('tarikh_lantikan2')
                                             ->label('Tarikh Lantikan 2')
                                             ->native(false)
@@ -667,7 +669,8 @@ class PegawaiForm
                                                     ])
                                             )
                                             ->live()
-                                            ->searchable(),
+                                            ->searchable()
+                                            ->required(),
 
                                         Select::make('aktiviti_id')
                                             ->label('Aktiviti')
@@ -685,7 +688,8 @@ class PegawaiForm
                                                         $aktiviti->id => "{$aktiviti->no_aktivit} - {$aktiviti->nama_aktiviti}",
                                                     ]);
                                             })
-                                            ->searchable(),
+                                            ->searchable()
+                                            ->required(),
                                     ])
                                     ->visible(fn (Get $get) => $get('is_kontrak')),
                                 TextEntry::make('program')

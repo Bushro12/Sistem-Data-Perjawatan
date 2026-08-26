@@ -74,7 +74,7 @@ $statusPinjam = ($waranJawatan && !$isKontrak && $ptjPegawaiId !== $ptjWaranId)
                 </span>
             </th>
             <td class="border border-gray-200 dark:border-white/10 px-3 py-2">
-                {{ $program ? "{$program->nama_program} : {$program->desc_program}" : '-' }}
+                {{ $program ? "{$program->nama_program} : {$program->desc_program}" : '' }}
             </td>
         </tr>
         <tr>
@@ -85,7 +85,7 @@ $statusPinjam = ($waranJawatan && !$isKontrak && $ptjPegawaiId !== $ptjWaranId)
                 </span>
             </th>
             <td class="border border-gray-200 dark:border-white/10 px-3 py-2">
-                {{ $aktiviti ? "{$aktiviti->no_aktivit} - {$aktiviti->nama_aktiviti}" : '-' }}
+                {{ $aktiviti ? "{$aktiviti->no_aktivit} - {$aktiviti->nama_aktiviti}" : '' }}
             </td>
         </tr>
         <tr>
