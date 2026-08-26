@@ -907,7 +907,13 @@
     border-radius: var(--sneat-radius) !important;
     box-shadow: var(--sneat-shadow-sm) !important;
     border: 1px solid var(--sneat-border) !important;
+}
+
+/* Clip only the table rows (not the header toolbar), so dropdowns like the
+   "Columns" panel aren't cut off when the table is short. */
+.fi-ta-content-ctn {
     overflow: hidden;
+    border-radius: var(--sneat-radius);
 }
 
 /* Collapse borders so cell borders share walls */
@@ -1331,85 +1337,83 @@ td.fi-ta-selection-cell {
     color: var(--sneat-primary) !important;
 }
 
-/* ── Jenis Lantikan tabs (Pegawai list) — distinct colour per type.
-   Solid, fully opaque fill with white text (like a filled button),
-   not a translucent tint, so each pill reads clearly regardless of
-   what's behind it. Same solid colours in light and dark mode since
-   an opaque fill doesn't need to adapt to the page background.
+/* ── Jenis Lantikan tabs (Pegawai list) — distinct pastel colour per type.
+    Soft pastel fill with dark text for a lighter, friendlier look.
+    Same pastel colours in light and dark mode so pills stay consistent.
 
-   Every selector is prefixed with .mystaff-lantikan-filter-tabs so it
-   beats the generic .fi-tabs-item.fi-active rule (2 classes) on
-   specificity (3 classes here) rather than relying on source order —
-   without the prefix, the :hover/.fi-active state was losing to that
-   generic rule and falling back to the default teal tint. ── */
+    Every selector is prefixed with .mystaff-lantikan-filter-tabs so it
+    beats the generic .fi-tabs-item.fi-active rule (2 classes) on
+    specificity (3 classes here) rather than relying on source order —
+    without the prefix, the :hover/.fi-active state was losing to that
+    generic rule and falling back to the default teal tint. ── */
 .mystaff-lantikan-filter-tabs .fi-tabs-item-all,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-all {
-    background-color: var(--sneat-primary) !important;
-    color: #ffffff !important;
+    background-color: #ccfbf1 !important;
+    color: #115e59 !important;
 }
 
 .mystaff-lantikan-filter-tabs .fi-tabs-item-all:hover,
 .mystaff-lantikan-filter-tabs .fi-tabs-item-all.fi-active,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-all:hover,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-all.fi-active {
-    background-color: #0d9488 !important;
-    color: #ffffff !important;
+    background-color: #99f6e4 !important;
+    color: #134e4a !important;
 }
 
 .mystaff-lantikan-filter-tabs .fi-tabs-item-tetap,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-tetap {
-    background-color: #2563eb !important;
-    color: #ffffff !important;
+    background-color: #dbeafe !important;
+    color: #1e40af !important;
 }
 
 .mystaff-lantikan-filter-tabs .fi-tabs-item-tetap:hover,
 .mystaff-lantikan-filter-tabs .fi-tabs-item-tetap.fi-active,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-tetap:hover,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-tetap.fi-active {
-    background-color: #1d4ed8 !important;
-    color: #ffffff !important;
+    background-color: #bfdbfe !important;
+    color: #1e3a8a !important;
 }
 
 .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim {
-    background-color: #d97706 !important;
-    color: #ffffff !important;
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
 }
 
 .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim:hover,
 .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim.fi-active,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim:hover,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-interim.fi-active {
-    background-color: #b45309 !important;
-    color: #ffffff !important;
+    background-color: #fde68a !important;
+    color: #78350f !important;
 }
 
 .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak {
-    background-color: #9333ea !important;
-    color: #ffffff !important;
+    background-color: #ede9fe !important;
+    color: #5b21b6 !important;
 }
 
 .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak:hover,
 .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak.fi-active,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak:hover,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak.fi-active {
-    background-color: #7e22ce !important;
-    color: #ffffff !important;
+    background-color: #ddd6fe !important;
+    color: #4c1d95 !important;
 }
 
 .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap {
-    background-color: #db2777 !important;
-    color: #ffffff !important;
+    background-color: #fce7f3 !important;
+    color: #9d174d !important;
 }
 
 .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap:hover,
 .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap.fi-active,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap:hover,
 .dark .mystaff-lantikan-filter-tabs .fi-tabs-item-kontrak-isi-tetap.fi-active {
-    background-color: #be185d !important;
-    color: #ffffff !important;
+    background-color: #fbcfe8 !important;
+    color: #831843 !important;
 }
 
 /* Filament's own CSS sets colour directly on .fi-tabs-item-label (and
@@ -1461,23 +1465,23 @@ td.fi-ta-selection-cell {
     box-shadow: 0 0 0 3px #1f2937, 0 0 0 5px rgba(255, 255, 255, 0.2), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* ── Pegawai table rows — left-edge colour bar matching the jenis
-   lantikan tab colours above. inset box-shadow is used because a plain
-   border on <tr> is suppressed by border-collapse. ── */
+/* ── Pegawai table rows — left-edge colour bar matching the pastel
+    jenis lantikan tab colours above. inset box-shadow is used because a
+    plain border on <tr> is suppressed by border-collapse. ── */
 .fi-ta-row.fi-ta-row-tetap {
-    box-shadow: inset 3px 0 0 #2563eb;
+    box-shadow: inset 3px 0 0 #93c5fd;
 }
 
 .fi-ta-row.fi-ta-row-kontrak-interim {
-    box-shadow: inset 3px 0 0 #d97706;
+    box-shadow: inset 3px 0 0 #fcd34d;
 }
 
 .fi-ta-row.fi-ta-row-kontrak {
-    box-shadow: inset 3px 0 0 #9333ea;
+    box-shadow: inset 3px 0 0 #c4b5fd;
 }
 
 .fi-ta-row.fi-ta-row-kontrak-isi-tetap {
-    box-shadow: inset 3px 0 0 #db2777;
+    box-shadow: inset 3px 0 0 #f9a8d4;
 }
 
 .dark .fi-ta-row.fi-ta-row-tetap {
@@ -1489,7 +1493,7 @@ td.fi-ta-selection-cell {
 }
 
 .dark .fi-ta-row.fi-ta-row-kontrak {
-    box-shadow: inset 3px 0 0 #c084fc;
+    box-shadow: inset 3px 0 0 #a78bfa;
 }
 
 .dark .fi-ta-row.fi-ta-row-kontrak-isi-tetap {

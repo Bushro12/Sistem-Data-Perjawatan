@@ -54,7 +54,7 @@ class LetakJawatanExport implements FromCollection, WithHeadings, WithEvents, Wi
                 $item->jawatan_gred?->jawatan?->desc_jawatan, // Jawatan
                 $item->jawatan_gred?->gred?->kod_gred, // Gred
                 $item->lantikan, // Lantikan
-                $item->nokp, // No KP
+                (string) $item->nokp, // No KP
                 $item->tarikh_lantik
                 ? \Carbon\Carbon::parse($item->tarikh_lantik)->format('d.m.Y')
                 : '',
@@ -276,6 +276,15 @@ class LetakJawatanExport implements FromCollection, WithHeadings, WithEvents, Wi
                 $sheet->getColumnDimension('D')->setWidth(25);
                 $sheet->getColumnDimension('E')->setWidth(25);
                 $sheet->getColumnDimension('F')->setWidth(25);
+
+                // Format NoKP column as text to prevent Excel
+                // from converting to scientific notation
+                $highestDataRow = $sheet->getHighestRow();
+                if ($highestDataRow >= 6) {
+                    $sheet->getStyle('F6:F' . $highestDataRow)
+                        ->getNumberFormat()
+                        ->setFormatCode('@');
+                }
                 $sheet->getColumnDimension('G')->setWidth(25);
                 $sheet->getColumnDimension('H')->setWidth(25);
                 $sheet->getColumnDimension('I')->setWidth(25);

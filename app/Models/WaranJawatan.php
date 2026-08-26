@@ -6,12 +6,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
-
 class WaranJawatan extends Model
 {
-
     use SoftDeletes;
+
     protected $fillable = [
         'waran_id',
         'ptj_id',
@@ -24,10 +22,11 @@ class WaranJawatan extends Model
         'jawatan_ids',
         'gred_ids',
         'butiran',
+        'tarikh_kuatkuasa',
         'is_kup',
         'waran_tolak_id',
         'catatan_jawatan',
-        'status'
+        'status',
     ];
 
     public function waran()
@@ -54,6 +53,7 @@ class WaranJawatan extends Model
     {
         return $this->belongsTo(Subunit::class, 'subunit_id');
     }
+
     public function aktiviti()
     {
         return $this->belongsTo(Aktiviti::class, 'aktiviti_id');
@@ -91,7 +91,6 @@ class WaranJawatan extends Model
             ->pluck('kod_gred')
             ->implode('/');
     }
-
 
     public function getJawatanListAttribute()
     {
@@ -132,7 +131,4 @@ class WaranJawatan extends Model
     {
         return $this->hasOne(Tbk::class);
     }
-
-
-
 }

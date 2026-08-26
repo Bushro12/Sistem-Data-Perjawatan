@@ -2,14 +2,10 @@
 
 namespace App\Filament\Resources\Warans\Schemas;
 
-use Carbon\Carbon;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 
 class WaranInfolist
 {
@@ -31,7 +27,7 @@ class WaranInfolist
                             ->size('lg'),
                         TextEntry::make('catatan')
                             ->columnSpanFull()
-                            ->visible(fn($record) => filled($record->catatan))
+                            ->visible(fn ($record) => filled($record->catatan)),
                     ]),
 
                 // Section::make('Senarai Penempatan')
@@ -42,19 +38,22 @@ class WaranInfolist
                 //                 TextEntry::make('butiran')
                 //                     ->label('Butiran'),
 
+                //                 TextEntry::make('tarikh_kuatkuasa')
+                //                     ->label('Tarikh Kuatkuasa Waran')
+                //                     ->date('d F Y')
+                //                     ->placeholder('Tiada'),
+
                 //                 TextEntry::make('ptj.nama_ptj')
                 //                     ->label('PTJ'),
 
                 //                 TextEntry::make('pegawai.nama')
-                //                     ->label('Pegawai'),
+                //                     ->label('Pegawai')
+                //                     ->placeholder('Tiada Penyandang'),
                 //             ])
-                //             ->columns(3)
+                //             ->columns(2)
                 //     ])
 
-
-
             ]);
-
 
     }
 }
