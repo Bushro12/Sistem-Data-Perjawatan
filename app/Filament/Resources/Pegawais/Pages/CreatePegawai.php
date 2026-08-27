@@ -86,21 +86,56 @@ class CreatePegawai extends CreateRecord
             ->label('Batal');
     }
 
+    /**
+     * The bottom-bar create button is hidden — saving is done through the
+     * wizard's "Simpan" button (see PegawaiForm) which starts the
+     * validateBeforeSubmit() flow below.
+     */
     protected function getCreateFormAction(): Action
     {
-        return Action::make('create')
-            ->label('Tambah')
-            ->color('primary')
-            ->requiresConfirmation()
-            ->modalHeading('Pengesahan')
-            ->modalDescription('Adakah anda pasti mahu tambah maklumat ini?')
-            ->action(fn () => $this->create());
+        return parent::getCreateFormAction()
+            ->hidden();
     }
 
     protected function getCreateAnotherFormAction(): Action
     {
         return parent::getCreateAnotherFormAction()
             ->hidden();
+    }
+
+    /**
+     * Hidden header action that performs the actual create after the
+     * confirmation modal is confirmed.
+     */
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('confirmCreate')
+                ->label('Simpan')
+                ->color('primary')
+                ->requiresConfirmation()
+                ->modalHeading('Pengesahan')
+                ->modalDescription('Adakah anda pasti mahu tambah maklumat ini?')
+                ->modalSubmitActionLabel('Ya, Simpan')
+                ->extraAttributes([
+                    'class' => 'hidden',
+                ])
+                ->action(function () {
+                    parent::create();
+                }),
+        ];
+    }
+
+    public function validateBeforeSubmit(): void
+    {
+        $this->form->validate();
+
+        $this->mountAction('confirmCreate');
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return PegawaiResource::getUrl('index');
     }
 
     public function getBreadcrumbs(): array

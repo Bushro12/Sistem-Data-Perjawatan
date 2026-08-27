@@ -26,6 +26,7 @@ class PegawaisTable
         return $table
             // ->recordAction(null)
             ->defaultPaginationPageOption(5)
+            ->defaultSort('id', 'desc')
             ->recordUrl(null)
             ->recordClasses(fn (Pegawai $record) => static::lantikanSlug($record)
                 ? 'fi-ta-row-'.static::lantikanSlug($record)

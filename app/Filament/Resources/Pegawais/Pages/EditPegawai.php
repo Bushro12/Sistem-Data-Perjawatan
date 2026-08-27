@@ -15,21 +15,58 @@ class EditPegawai extends EditRecord
 {
     protected static string $resource = PegawaiResource::class;
 
+    /**
+     * The bottom-bar save button is hidden — saving is done through the
+     * wizard's "Simpan" button (see PegawaiForm) which starts the
+     * validateBeforeSubmit() flow below.
+     */
     protected function getSaveFormAction(): Action
     {
-        return Action::make('save')
-            ->label('Simpan')
-            ->color('primary')
-            ->requiresConfirmation()
-            ->modalHeading('Pengesahan')
-            ->modalDescription('Adakah anda pasti mahu simpan perubahan ini?')
-            ->action(fn () => $this->save());
+        return parent::getSaveFormAction()
+            ->hidden();
     }
 
     protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
             ->label('Batal');
+    }
+
+    /**
+     * Hidden header action that performs the actual save after the
+     * confirmation modal is confirmed.
+     */
+    protected function getHeaderActions(): array
+    {
+        return [
+            // DeleteAction::make(),
+
+            Action::make('confirmSave')
+                ->label('Simpan')
+                ->color('primary')
+                ->requiresConfirmation()
+                ->modalHeading('Pengesahan')
+                ->modalDescription('Adakah anda pasti mahu simpan perubahan ini?')
+                ->modalSubmitActionLabel('Ya, Simpan')
+                ->extraAttributes([
+                    'class' => 'hidden',
+                ])
+                ->action(function () {
+                    parent::save();
+                }),
+        ];
+    }
+
+    public function validateBeforeSubmit(): void
+    {
+        $this->form->validate();
+
+        $this->mountAction('confirmSave');
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return PegawaiResource::getUrl('index');
     }
 
     protected function afterSave(): void
@@ -77,13 +114,6 @@ class EditPegawai extends EditRecord
         }
 
         return $data;
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            // DeleteAction::make(),
-        ];
     }
 
     public function getTitle(): string

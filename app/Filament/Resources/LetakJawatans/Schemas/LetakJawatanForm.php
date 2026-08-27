@@ -57,6 +57,8 @@ class LetakJawatanForm
                                     $set('nokp', $pegawai?->nokp);
                                     $kontrak = $pegawai?->pegawaiKontrak;
 
+                                    // Latest contract renewal wins: the highest-numbered
+                                    // non-null tarikh lantikan (5 → 1).
                                     $tarikhKontrak = $kontrak?->tarikh_lantikan5
                                         ?? $kontrak?->tarikh_lantikan4
                                         ?? $kontrak?->tarikh_lantikan3
@@ -68,6 +70,8 @@ class LetakJawatanForm
                                         $pegawai?->is_tetap == 1 => $pegawai?->tarikh_lantikan,
 
                                         $pegawai?->is_kontrak_interim == 1 => $pegawai?->tarikh_lantikan,
+
+                                        $pegawai?->is_kontrak_isi_tetap == 1 => $tarikhKontrak,
 
                                         $pegawai?->is_kontrak == 1 => $tarikhKontrak,
 
@@ -84,6 +88,7 @@ class LetakJawatanForm
 
                                     $set('lantikan', match (true) {
                                         $pegawai?->is_tetap == 1 => 'Tetap',
+                                        $pegawai?->is_kontrak_isi_tetap == 1 => 'Kontrak Isi Tetap',
                                         $pegawai?->is_kontrak == 1 => 'Kontrak',
                                         $pegawai?->is_kontrak_interim == 1 => 'Kontrak Interim',
                                         default => '-',
