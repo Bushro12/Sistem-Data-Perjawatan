@@ -286,6 +286,80 @@
             "time": "2024-02-09T16:56:22+00:00"
         },
         {
+            "name": "caresome/filament-neobrutalism-theme",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/caresome/filament-neobrutalism-theme.git",
+                "reference": "be21a3e8ee11324f2d002eddcfd170acebb62fa4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/caresome/filament-neobrutalism-theme/zipball/be21a3e8ee11324f2d002eddcfd170acebb62fa4",
+                "reference": "be21a3e8ee11324f2d002eddcfd170acebb62fa4",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^4.0 || ^5.0",
+                "illuminate/contracts": "^11.0||^12.0||^13.0",
+                "php": "^8.2|^8.3|^8.4|^8.5",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.14",
+                "nunomaduro/collision": "^8.8",
+                "orchestra/testbench": "^10.0.0||^9.0.0",
+                "pestphp/pest": "^4.0",
+                "pestphp/pest-plugin-arch": "^4.0",
+                "pestphp/pest-plugin-laravel": "^4.0",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "rector/rector": "^2.2",
+                "spatie/laravel-ray": "^1.35"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Caresome\\FilamentNeobrutalism\\NeobrutalismeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Caresome\\FilamentNeobrutalism\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Caresome",
+                    "email": "caresome@proton.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A neobrutalism theme for FilamentPHP admin panels",
+            "homepage": "https://github.com/caresome/filament-neobrutalism-theme",
+            "keywords": [
+                "caresome",
+                "filament",
+                "filament-plugin",
+                "filament-theme",
+                "laravel",
+                "neobrutalism"
+            ],
+            "support": {
+                "issues": "https://github.com/caresome/filament-neobrutalism-theme/issues",
+                "source": "https://github.com/caresome/filament-neobrutalism-theme/tree/v2.1.0"
+            },
+            "time": "2026-04-08T00:36:44+00:00"
+        },
+        {
             "name": "chillerlan/php-qrcode",
             "version": "5.0.5",
             "source": {

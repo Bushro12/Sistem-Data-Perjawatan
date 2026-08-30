@@ -3,41 +3,85 @@
 namespace App\Filament\Resources\Pegawais\Pages;
 
 use App\Filament\Resources\Pegawais\PegawaiResource;
+use App\Models\PegawaiKontrak;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Log;
-use illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 
 class EditPegawai extends EditRecord
 {
     protected static string $resource = PegawaiResource::class;
 
+    /**
+     * The bottom-bar save button is hidden — saving is done through the
+     * wizard's "Simpan" button (see PegawaiForm) which starts the
+     * validateBeforeSubmit() flow below.
+     */
     protected function getSaveFormAction(): Action
     {
-        return Action::make('save')
-            ->label('Simpan')
-            ->color('primary')
-            ->requiresConfirmation()
-            ->modalHeading('Pengesahan')
-            ->modalDescription('Adakah anda pasti mahu simpan perubahan ini?')
-            ->action(fn() => $this->save());
+        return parent::getSaveFormAction()
+            ->hidden();
     }
-    
 
     protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
             ->label('Batal');
     }
+
+    /**
+     * Hidden header action that performs the actual save after the
+     * confirmation modal is confirmed.
+     */
+    protected function getHeaderActions(): array
+    {
+        return [
+            // DeleteAction::make(),
+
+            Action::make('confirmSave')
+                ->label('Simpan')
+                ->color('primary')
+                ->requiresConfirmation()
+                ->modalHeading('Pengesahan')
+                ->modalDescription('Adakah anda pasti mahu simpan perubahan ini?')
+                ->modalSubmitActionLabel('Ya, Simpan')
+                ->extraAttributes([
+                    'class' => 'hidden',
+                ])
+                ->action(function () {
+                    parent::save();
+                }),
+        ];
+    }
+
+    public function validateBeforeSubmit(): void
+    {
+        $this->form->validate();
+
+        $this->mountAction('confirmSave');
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return PegawaiResource::getUrl('index');
+    }
+
     protected function afterSave(): void
     {
-        if ($this->data['is_kontrak']) {
+        $isKontrak = ! empty($this->data['is_kontrak']) || ! empty($this->data['is_kontrak_isi_tetap']);
 
-            \App\Models\PegawaiKontrak::updateOrCreate(
+        if ($isKontrak) {
+            // Kontrak Isi Tetap gets program/aktiviti from its waran, not this form.
+            $hasProgramAktiviti = ! empty($this->data['is_kontrak']);
+
+            PegawaiKontrak::updateOrCreate(
                 ['pegawai_id' => $this->record->id],
                 [
+                    'program_id' => $hasProgramAktiviti ? ($this->data['program_id'] ?? null) : null,
+                    'aktiviti_id' => $hasProgramAktiviti ? ($this->data['aktiviti_id'] ?? null) : null,
                     'tarikh_lantikan1' => $this->data['tarikh_lantikan1'] ?? null,
                     'tarikh_tamat1' => $this->data['tarikh_tamat1'] ?? null,
                     'tarikh_lantikan2' => $this->data['tarikh_lantikan2'] ?? null,
@@ -51,7 +95,7 @@ class EditPegawai extends EditRecord
                 ]
             );
         } else {
-            \App\Models\PegawaiKontrak::where('pegawai_id', $this->record->id)->delete();
+            PegawaiKontrak::where('pegawai_id', $this->record->id)->delete();
         }
 
         Log::info('Pegawai updated', [
@@ -63,19 +107,13 @@ class EditPegawai extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $kontrak = \App\Models\PegawaiKontrak::where('pegawai_id', $this->record->id)->first();
+        $kontrak = PegawaiKontrak::where('pegawai_id', $this->record->id)->first();
 
         if ($kontrak) {
             $data = array_merge($data, $kontrak->toArray());
         }
 
         return $data;
-    }
-    protected function getHeaderActions(): array
-    {
-        return [
-            // DeleteAction::make(),
-        ];
     }
 
     public function getTitle(): string
@@ -88,15 +126,13 @@ class EditPegawai extends EditRecord
         return [];
     }
 
-    public function getHeading(): string | Htmlable
+    public function getHeading(): string|Htmlable
     {
         return new HtmlString(
-            '<button type="button" onclick="window.history.back()" class="mystaff-back-btn" aria-label="Kembali">' .
-                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' .
-            '</button>' .
-            '<span>' . e($this->getTitle()) . '</span>'
+            '<button type="button" onclick="window.history.back()" class="mystaff-back-btn" aria-label="Kembali">'.
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>'.
+            '</button>'.
+            '<span>'.e($this->getTitle()).'</span>'
         );
     }
-
-
 }

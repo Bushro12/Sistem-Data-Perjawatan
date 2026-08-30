@@ -46,7 +46,7 @@ class JenisPencensTable
                     // })
                     ->sortable()
                     ->searchable()
-                    ->toggleable(),
+                    // ->toggleable(),
             ])
 
             ->filters([
@@ -61,7 +61,7 @@ class JenisPencensTable
                         ->modal()
                         ->modalSubmitActionLabel('Simpan')
                         ->modalCancelActionLabel('Batal')
-                        ->color('warning'),
+                        ->color('primary'),
 
                     DeleteAction::make()
                         ->label('Padam')

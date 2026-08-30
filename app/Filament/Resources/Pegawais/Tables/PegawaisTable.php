@@ -6,19 +6,18 @@ use App\Filament\Resources\Pegawais\PegawaiResource;
 use App\Models\Pegawai;
 use App\Models\User;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ActionGroup;
-
 use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
-use Filament\Support\View\Components\BadgeComponent;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Log;
-use Pest\Arch\GroupArchExpectation;
 
 class PegawaisTable
 {
@@ -27,9 +26,10 @@ class PegawaisTable
         return $table
             // ->recordAction(null)
             ->defaultPaginationPageOption(5)
+            ->defaultSort('id', 'desc')
             ->recordUrl(null)
-            ->recordClasses(fn(Pegawai $record) => static::lantikanSlug($record)
-                ? 'fi-ta-row-' . static::lantikanSlug($record)
+            ->recordClasses(fn (Pegawai $record) => static::lantikanSlug($record)
+                ? 'fi-ta-row-'.static::lantikanSlug($record)
                 : null)
             ->columns([
                 TextColumn::make('no')
@@ -41,10 +41,10 @@ class PegawaisTable
                     ->formatStateUsing(function ($record) {
 
                         $html =
-                            '<strong>' . ($record->nama ?? '') . '</strong><br>' .
-                            '<span class="text-xs text-gray-500">' . ($record->nokp ?? '') . '</span><br>' .
-                            '<span class="text-xs text-gray-500">' . ($record->jawatan_gred ? $record->jawatan_gred->jawatan->desc_jawatan .
-                                ' (' . $record->jawatan_gred->gred->kod_gred . ')' : '');
+                            '<strong>'.($record->nama ?? '').'</strong><br>'.
+                            '<span class="text-xs text-gray-500">'.($record->nokp ?? '').'</span><br>'.
+                            '<span class="text-xs text-gray-500">'.($record->jawatan_gred ? $record->jawatan_gred->jawatan->desc_jawatan.
+                                ' ('.$record->jawatan_gred->gred->kod_gred.')' : '');
 
                         return $html;
                         // $lantikan = match (true) {
@@ -81,15 +81,15 @@ class PegawaisTable
                     ->formatStateUsing(function ($record) {
 
                         $html =
-                            '<strong>' . ($record->ptj?->nama_ptj ?? '') . '</strong><br>' .
-                            '<span class="text-xs text-gray-500">' . ($record->bahagian?->nama_bahagian ?? '') . '</span>';
+                            '<strong>'.($record->ptj?->nama_ptj ?? '').'</strong><br>'.
+                            '<span class="text-xs text-gray-500">'.($record->bahagian?->nama_bahagian ?? '').'</span>';
 
                         $waranJawatan = $record->waranJawatan;
 
                         $ptj_pegawai = $record->ptj?->id;
                         $ptj_waran = $record->waranJawatan?->ptj?->id;
 
-                        if ($waranJawatan && !$record->is_kontrak && $ptj_pegawai !== $ptj_waran) {
+                        if ($waranJawatan && ! $record->is_kontrak && $ptj_pegawai !== $ptj_waran) {
                             $html .= '<br><span class="text-xs px-2 py-1 rounded bg-warning-100 text-warning-700">
         Pinjam
     </span>';
@@ -97,8 +97,6 @@ class PegawaisTable
 
                         return $html;
                     })
-
-
 
                     ->html()
                     ->sortable(
@@ -127,7 +125,7 @@ class PegawaisTable
                             return '<strong>Jawatan tanpa waran</strong>';
                         }
 
-                        return '<strong>' . ($record->waranJawatan?->waran?->no_waran ?? '') . '</strong>';
+                        return '<strong>'.($record->waranJawatan?->waran?->no_waran ?? '').'</strong>';
                     })
                     ->html()
                     ->searchable(query: function ($query, string $search) {
@@ -226,7 +224,7 @@ class PegawaisTable
                                 });
                             }
 
-                            if (str_contains($search, 'lengkap') && !str_contains($search, 'tidak lengkap')) {
+                            if (str_contains($search, 'lengkap') && ! str_contains($search, 'tidak lengkap')) {
                                 $query->whereNotNull('ptj_id')
                                     ->whereNotNull('bahagian_id')
 
@@ -271,26 +269,80 @@ class PegawaisTable
                                                     END {$direction}
                                                 ");
                         }
-                    )
+                    ),
             ])
             ->filters([
-                //
-            ])
+                SelectFilter::make('ptj_id')
+                    ->label('PTJ')
+                    ->relationship('ptj', 'nama_ptj')
+                    ->searchable()
+                    ->preload(),
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'Lengkap' => 'Lengkap',
+                        'Tidak Lengkap' => 'Tidak Lengkap',
+                    ])
+                    ->query(function ($query, array $data) {
+                        $value = $data['value'] ?? null;
+
+                        if ($value === 'Tidak Lengkap') {
+                            $query->where(function ($q) {
+                                $q->whereNull('ptj_id')
+                                    ->orWhereNull('bahagian_id')
+                                    ->orWhere(function ($q) {
+                                        $q->whereNull('subunit_id')
+                                            ->where('ada_unit', 0);
+                                    })
+                                    ->orWhere(function ($q) {
+                                        $q->whereNull('unit_id')
+                                            ->where('ada_subunit', 0);
+                                    })
+                                    ->orWhere(function ($q) {
+                                        $q->where('is_jtw', 0)
+                                            ->where('is_kontrak', 0)
+                                            ->whereDoesntHave('waranJawatan');
+                                    });
+                            });
+                        }
+
+                        if ($value === 'Lengkap') {
+                            $query->whereNotNull('ptj_id')
+                                ->whereNotNull('bahagian_id')
+                                ->where(function ($q) {
+                                    $q->whereNotNull('subunit_id')
+                                        ->orWhere('ada_unit', 1);
+                                })
+                                ->where(function ($q) {
+                                    $q->whereNotNull('unit_id')
+                                        ->orWhere('ada_subunit', 1);
+                                })
+                                ->where(function ($q) {
+                                    $q->where('is_jtw', 1)
+                                        ->orWhere('is_kontrak', 1)
+                                        ->orWhereHas('waranJawatan');
+                                });
+                        }
+
+                        return $query;
+                    }),
+            ], layout: FiltersLayout::Modal)
+            ->filtersApplyAction(fn (Action $action) => $action->label('Cari'))
             ->recordActions([
                 ActionGroup::make([
                     ViewAction::make()
                         ->label('Papar')
                         ->modal()
-                        ->modalHeading(fn($record) => $record->nama)
-                        ->extraModalWindowAttributes(fn(Pegawai $record) => [
+                        ->modalHeading(fn ($record) => $record->nama)
+                        ->extraModalWindowAttributes(fn (Pegawai $record) => [
                             'class' => static::lantikanSlug($record)
-                                ? 'fi-modal-window-' . static::lantikanSlug($record)
+                                ? 'fi-modal-window-'.static::lantikanSlug($record)
                                 : null,
                         ])
                         ->extraModalFooterActions([
                             Action::make('edit')
                                 ->label('Edit')
-                                ->url(fn($record) => PegawaiResource::getUrl('edit', [
+                                ->url(fn ($record) => PegawaiResource::getUrl('edit', [
                                     'record' => $record,
                                 ])),
                         ]),
@@ -298,7 +350,7 @@ class PegawaisTable
                     EditAction::make(),
                     DeleteAction::make()
                         ->label('Padam')
-                        ->modalHeading(fn($record) => "Padam {$record->nama}")
+                        ->modalHeading(fn ($record) => "Padam {$record->nama}")
                         ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
                         ->modalSubmitActionLabel('Ya, Padam')
                         ->modalCancelActionLabel('Batal')
@@ -319,7 +371,7 @@ class PegawaisTable
                                 ->danger()
                                 ->sendToDatabase($recipients);
                         }),
-                ])
+                ]),
                 // EditAction::make(),
             ])
             ->toolbarActions([

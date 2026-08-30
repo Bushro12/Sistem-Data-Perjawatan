@@ -26,7 +26,7 @@ class ListPegawais extends ListRecords
     {
         return [
             CreateAction::make()
-                ->label('Tambah Pegawai'),
+                ->label('Tambah Maklumat Penyandang'),
         ];
     }
 
@@ -68,37 +68,42 @@ class ListPegawais extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make('ALL')
+            'all' => Tab::make('All')
+                ->icon('heroicon-m-squares-2x2')
+                ->badge(fn () => number_format(Pegawai::count()))
                 ->extraAttributes(['class' => 'fi-tabs-item-all']),
-            // ->badge(Pegawai::count()),
 
-            'tetap' => Tab::make('TETAP')
+            'tetap' => Tab::make('Tetap')
+                ->icon('heroicon-m-shield-check')
+                ->badge(fn () => number_format(Pegawai::where('is_tetap', 1)->count()))
                 ->extraAttributes(['class' => 'fi-tabs-item-tetap'])
                 ->modifyQueryUsing(
                     fn (Builder $query) => $query->where('is_tetap', 1)
                 ),
-            // ->badge(Pegawai::where('is_tetap', 1)->count()),
 
-            'kontrak_interim' => Tab::make('KONTRAK INTERIM')
-                ->extraAttributes(['class' => 'fi-tabs-item-kontrak-interim'])
-                ->modifyQueryUsing(
-                    fn (Builder $query) => $query->where('is_kontrak_interim', 1)
-                ),
-            // ->badge(Pegawai::where('is_kontrak_interim', 1)->count()),
-
-            'kontrak' => Tab::make('KONTRAK')
+            'kontrak' => Tab::make('Kontrak')
+                ->icon('heroicon-m-briefcase')
+                ->badge(fn () => number_format(Pegawai::where('is_kontrak', 1)->count()))
                 ->extraAttributes(['class' => 'fi-tabs-item-kontrak'])
                 ->modifyQueryUsing(
                     fn (Builder $query) => $query->where('is_kontrak', 1)
                 ),
-            // ->badge(Pegawai::where('is_kontrak', 1)->count()),
 
-            'kontrak_isi_tetap' => Tab::make('KONTRAK ISI TETAP')
-            ->extraAttributes(['class' => 'fi-tabs-item-kontrak-isi-tetap'])
-            ->modifyQueryUsing(
-                fn(Builder $query) => $query->where('is_kontrak_isi_tetap', 1)
-            )
+            'kontrak_interim' => Tab::make('Kontrak Interim')
+                ->icon('heroicon-m-clock')
+                ->badge(fn () => number_format(Pegawai::where('is_kontrak_interim', 1)->count()))
+                ->extraAttributes(['class' => 'fi-tabs-item-kontrak-interim'])
+                ->modifyQueryUsing(
+                    fn (Builder $query) => $query->where('is_kontrak_interim', 1)
+                ),
 
+            'kontrak_isi_tetap' => Tab::make('Kontrak Isi Tetap')
+                ->icon('heroicon-m-user-plus')
+                ->badge(fn () => number_format(Pegawai::where('is_kontrak_isi_tetap', 1)->count()))
+                ->extraAttributes(['class' => 'fi-tabs-item-kontrak-isi-tetap'])
+                ->modifyQueryUsing(
+                    fn (Builder $query) => $query->where('is_kontrak_isi_tetap', 1)
+                ),
 
         ];
     }
