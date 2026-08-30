@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources\Ptjs\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ExportBulkAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class PtjsTable
@@ -18,7 +19,6 @@ class PtjsTable
     {
         return $table
             ->columns([
-
                 TextColumn::make('no')
                     ->label('No')
                     ->rowIndex()
@@ -28,15 +28,15 @@ class PtjsTable
                     ->searchable()
                     ->sortable()
                     ->wrap(),
-                TextColumn::make('kod_ptj')
-                    ->label('Kod PTJ')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('pengarah')
-                    ->label('Pengarah')
-                    ->searchable()
-                    ->sortable()
-                    ->wrap(),
+                // TextColumn::make('kod_ptj')
+                //     ->label('Kod PTJ')
+                //     ->searchable()
+                //     ->sortable(),
+                // TextColumn::make('pengarah')
+                //     ->label('Pengarah')
+                //     ->searchable()
+                //     ->sortable()
+                //     ->wrap(),
                 TextColumn::make('parlimen.nama_parlimen')
                     ->label('Parlimen')
                     ->searchable()
@@ -46,16 +46,26 @@ class PtjsTable
                     ->searchable()
                     ->sortable(),
             ])
-            ->defaultSort('nama_ptj', 'asc')
+            ->defaultSort('updated_at', 'desc')
             ->filters([
-                //
-            ])
+                SelectFilter::make('parlimen_id')
+                    ->label('Parlimen')
+                    ->relationship('parlimen', 'nama_parlimen')
+                    ->searchable()
+                    ->preload(),
+                SelectFilter::make('dun_id')
+                    ->label('Dun')
+                    ->relationship('dun', 'nama_dun')
+                    ->searchable()
+                    ->preload(),
+            ], layout: FiltersLayout::Modal)
+            ->filtersApplyAction(fn (Action $action) => $action->label('Cari'))
             ->recordActions([
                 ActionGroup::make([
                     // ViewAction::make(),
                     EditAction::make(),
-                    DeleteAction::make()
-                ])
+                    DeleteAction::make(),
+                ]),
 
             ])
             ->toolbarActions([

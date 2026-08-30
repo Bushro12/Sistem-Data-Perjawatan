@@ -16,6 +16,7 @@ class CreatePtj extends CreateRecord
     {
         return 'Tambah';
     }
+
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
@@ -34,4 +35,8 @@ class CreatePtj extends CreateRecord
             ->hidden();
     }
 
+    protected function getRedirectUrl(): string
+    {
+        return PtjResource::getUrl('index');
+    }
 }

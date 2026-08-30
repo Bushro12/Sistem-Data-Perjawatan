@@ -21,13 +21,17 @@ class EditPtj extends EditRecord
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
-        ->label('Simpan');
+            ->label('Simpan');
     }
 
-     protected function getCancelFormAction(): Action
+    protected function getCancelFormAction(): Action
     {
         return parent::getCancelFormAction()
-        ->label('Batal');
+            ->label('Batal');
     }
 
+    protected function getRedirectUrl(): ?string
+    {
+        return PtjResource::getUrl('index');
+    }
 }

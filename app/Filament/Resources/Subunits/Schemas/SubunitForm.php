@@ -4,17 +4,21 @@ namespace App\Filament\Resources\Subunits\Schemas;
 
 use App\Models\Bahagian;
 use App\Models\Dun;
+use App\Models\Parlimen;
 use App\Models\Ptj;
+use App\Models\Subunit;
 use App\Models\Unit;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
-
+use Illuminate\Validation\Rules\Unique;
 
 class SubunitForm
 {
@@ -41,7 +45,7 @@ class SubunitForm
                             ->live()
                             ->searchable()
                             ->dehydrated(false)
-                            ->visible(fn($record) => $record === null)
+                            ->visible(fn ($record) => $record === null)
                             ->columnSpanFull(),
 
                         TextInput::make('ptj_id')
@@ -52,7 +56,7 @@ class SubunitForm
                                 );
                             })
                             ->readOnly()
-                            ->visible(fn($record) => $record !== null)
+                            ->visible(fn ($record) => $record !== null)
                             ->columnSpanFull(),
 
                         Select::make('bahagian_id')
@@ -74,7 +78,7 @@ class SubunitForm
                             })
                             ->live()
                             ->searchable()
-                            ->visible(fn($record) => $record === null)
+                            ->visible(fn ($record) => $record === null)
                             ->dehydrated(false),
 
                         TextInput::make('bahagian_id')
@@ -85,7 +89,7 @@ class SubunitForm
                                 );
                             })
                             ->readOnly()
-                            ->visible(fn($record) => $record !== null),
+                            ->visible(fn ($record) => $record !== null),
 
                         Select::make('unit_id')
                             ->label('Unit')
@@ -99,8 +103,8 @@ class SubunitForm
                                         ->pluck('nama_unit', 'id')
                                     : [];
                             })
-                            ->default(fn($record) => $record?->unit_id)
-                            ->visible(fn($record) => $record === null)
+                            ->default(fn ($record) => $record?->unit_id)
+                            ->visible(fn ($record) => $record === null)
 
                             ->searchable(),
 
@@ -112,41 +116,119 @@ class SubunitForm
                                 );
                             })
                             ->readOnly()
-                            ->visible(fn($record) => $record !== null)
+                            ->visible(fn ($record) => $record !== null)
                             ->dehydrated(false),
 
-                        TextInput::make('nama_subunit')
-                            ->label('Sub Unit')
-                            ->dehydrateStateUsing(fn(string $state): string => strtoupper($state))
-                            ->extraInputAttributes(['style' => 'text-transform:uppercase'])
-                            ->columnSpanFull(),
-
-                        Select::make('parlimen_id')
-                            ->label('Parlimen')
-                            ->required()
-                            ->relationship('parlimen', 'nama_parlimen')
-                            ->searchable()
-                            ->preload()
-                            ->live()
-                            ->afterStateUpdated(fn(Set $set) => $set('dun_id', null)),
-
-                        Select::make('dun_id')
-                            ->label('DUN')
-                            ->required()
-                            ->searchable()
-                            ->options(function (Get $get): array {
-                                $parlimenId = $get('parlimen_id');
-                                if (blank($parlimenId))
-                                    return [];
-                                return Dun::where('parlimen_id', $parlimenId)
-                                    ->pluck('nama_dun', 'id')
-                                    ->toArray();
+                        Repeater::make('subunits')
+                            ->label('Senarai Sub Unit')
+                            ->columnSpanFull()
+                            ->minItems(1)
+                            ->defaultItems(1)
+                            ->addActionLabel('Tambah Sub Unit')
+                            ->addAction(fn (Action $action) => $action->color('info')->icon('heroicon-m-plus'))
+                            ->columns(2)
+                            ->afterStateHydrated(function ($component, ?array $state, $record): void {
+                                if ($record && blank($state)) {
+                                    $items = Subunit::where('unit_id', $record->unit_id)
+                                        ->orderBy('nama_subunit')
+                                        ->get()
+                                        ->map(fn (Subunit $s): array => [
+                                            'id' => $s->id,
+                                            'nama_subunit' => $s->nama_subunit,
+                                            'parlimen_id' => $s->parlimen_id,
+                                            'dun_id' => $s->dun_id,
+                                        ])
+                                        ->toArray();
+                                    $component->state($items);
+                                }
                             })
-                            ->disabled(fn(Get $get) => blank($get('parlimen_id')))
-                            ->helperText('Sila pilih Parlimen dahulu'),
+                            ->schema([
+                                Hidden::make('id'),
+                                TextInput::make('nama_subunit')
+                                    ->label('Sub Unit')
+                                    ->required()
+                                    ->distinct()
+                                    ->unique(
+                                        table: 'subunits',
+                                        column: 'nama_subunit',
+                                        ignorable: fn (Get $get) => filled($get('id')) ? Subunit::find($get('id')) : null,
+                                        modifyRuleUsing: function (Unique $rule, Get $get, Component $component): Unique {
+                                            $unitId = $get('../../unit_id');
+
+                                            if (blank($unitId)) {
+                                                $record = $component->getRecord();
+
+                                                if ($record) {
+                                                    $unitId = $record->unit_id;
+                                                }
+                                            }
+
+                                            if (blank($unitId)) {
+                                                $id = $get('id');
+                                                if (filled($id)) {
+                                                    $unitId = Subunit::find($id)?->unit_id;
+                                                }
+                                            }
+
+                                            if (filled($unitId)) {
+                                                $rule->where('unit_id', $unitId);
+                                            }
+
+                                            return $rule;
+                                        }
+                                    )
+                                    ->validationMessages([
+                                        'distinct' => 'Nama sub unit tidak boleh duplikat dalam senarai ini.',
+                                        'unique' => 'Nama sub unit telah wujud untuk PTJ, Bahagian dan Unit ini.',
+                                    ])
+                                    ->dehydrateStateUsing(fn (?string $state): string => $state ? strtoupper($state) : '')
+                                    ->extraInputAttributes(['style' => 'text-transform:uppercase'])
+                                    ->columnSpanFull(),
+                                Select::make('parlimen_id')
+                                    ->label('Parlimen')
+                                    ->required()
+                                    ->options(fn (): array => Parlimen::query()->orderBy('nama_parlimen')->pluck('nama_parlimen', 'id')->toArray())
+                                    ->searchable()
+                                    ->preload()
+                                    ->live()
+                                    ->afterStateUpdated(fn (Set $set) => $set('dun_id', null)),
+                                Select::make('dun_id')
+                                    ->label('DUN')
+                                    ->required()
+                                    ->searchable()
+                                    ->preload()
+                                    ->options(function (Get $get): array {
+                                        $parlimenId = $get('parlimen_id');
+                                        if (blank($parlimenId)) {
+                                            return [];
+                                        }
+
+                                        return Dun::where('parlimen_id', $parlimenId)
+                                            ->pluck('nama_dun', 'id')
+                                            ->toArray();
+                                    })
+                                    ->disabled(fn (Get $get): bool => blank($get('parlimen_id')))
+                                    ->helperText('Sila pilih Parlimen dahulu'),
+                            ])
+                            ->itemLabel(fn (array $state): ?string => filled($state['nama_subunit'] ?? null) ? strtoupper($state['nama_subunit']) : 'Sub unit baharu')
+                            ->collapsed(false)
+                            ->deleteAction(function (Action $action): Action {
+                                return $action
+                                    ->requiresConfirmation()
+                                    ->modalHeading(function (array $arguments, Repeater $component): string {
+                                        $items = $component->getRawState();
+                                        $item = $items[$arguments['item']] ?? [];
+                                        $nama = trim((string) ($item['nama_subunit'] ?? ''));
+
+                                        return $nama !== '' ? "Padam {$nama}?" : 'Padam sub unit ini?';
+                                    })
+                                    ->modalDescription('Adakah anda pasti mahu memadam sub unit ini? Tindakan ini tidak boleh dibatalkan.')
+                                    ->modalSubmitActionLabel('Ya, Padam')
+                                    ->modalCancelActionLabel('Batal');
+                            }),
                     ])
                     ->columns(2)
-                    ->columnSpanFull()
+                    ->columnSpanFull(),
 
             ]);
     }
