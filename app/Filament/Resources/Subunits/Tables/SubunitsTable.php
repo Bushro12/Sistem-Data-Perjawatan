@@ -84,16 +84,17 @@ class SubunitsTable
             ])
             ->paginationPageOptions([5])
             ->defaultPaginationPageOption(5)
-            ->defaultSort(function (Builder $query): Builder {
-                return $query
-                    ->leftJoin('units', 'subunits.unit_id', '=', 'units.id')
-                    ->leftJoin('bahagians', 'units.bahagian_id', '=', 'bahagians.id')
-                    ->leftJoin('ptjs', 'bahagians.ptj_id', '=', 'ptjs.id')
-                    ->orderBy('ptjs.nama_ptj')
-                    ->orderBy('bahagians.nama_bahagian')
-                    ->orderBy('units.nama_unit')
-                    ->select('subunits.*');
-            })
+            // ->defaultSort(function (Builder $query): Builder {
+            //     return $query
+            //         ->leftJoin('units', 'subunits.unit_id', '=', 'units.id')
+            //         ->leftJoin('bahagians', 'units.bahagian_id', '=', 'bahagians.id')
+            //         ->leftJoin('ptjs', 'bahagians.ptj_id', '=', 'ptjs.id')
+            //         ->orderBy('ptjs.nama_ptj')
+            //         ->orderBy('bahagians.nama_bahagian')
+            //         ->orderBy('units.nama_unit')
+            //         ->select('subunits.*');
+            // })
+            ->defaultSort('updated_at', 'desc')
             ->modifyQueryUsing(function (Builder $query): Builder {
                 return $query->whereIn('subunits.id', function ($q): void {
                     $q->selectRaw('MIN(id)')->from('subunits')->groupBy('unit_id');

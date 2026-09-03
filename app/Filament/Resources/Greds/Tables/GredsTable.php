@@ -30,6 +30,7 @@ class GredsTable
                     ->sortable()
                     ->searchable(),
             ])
+            ->defaultSort('updated_at', 'desc')
             ->filters([
                 //
             ])

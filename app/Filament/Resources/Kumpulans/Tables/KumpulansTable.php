@@ -23,8 +23,9 @@ class KumpulansTable
                 TextColumn::make('nama_kumpulan')
                     ->label('Kumpulan')
                     ->sortable()
-                    ->searchable()
+                    ->searchable(),
             ])
+            ->defaultSort('updated_at', 'desc')
             ->filters([
                 //
             ])
@@ -39,17 +40,19 @@ class KumpulansTable
 
                     DeleteAction::make()
                         ->label('Padam')
-                        ->modalHeading(fn($record) => "Padam {$record->nama_kumpulan}")
+                        ->modalHeading(fn ($record) => "Padam {$record->nama_kumpulan}")
                         ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
                         ->modalSubmitActionLabel('Ya, Padam')
                         ->modalCancelActionLabel('Batal')
+                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
 
-                ])
+                ]),
 
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()?->isSuperAdmin() ?? false),
                 ]),
             ]);
     }

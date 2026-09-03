@@ -211,7 +211,8 @@ class SubunitForm
                                     ->helperText('Sila pilih Parlimen dahulu'),
                             ])
                             ->itemLabel(fn (array $state): ?string => filled($state['nama_subunit'] ?? null) ? strtoupper($state['nama_subunit']) : 'Sub unit baharu')
-                            ->collapsed(false)
+                            ->collapsed()
+                            ->collapsible()
                             ->deleteAction(function (Action $action): Action {
                                 return $action
                                     ->requiresConfirmation()
