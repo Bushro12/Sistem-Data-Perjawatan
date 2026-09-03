@@ -9,8 +9,10 @@ use App\Models\Jawatan_Gred;
 use App\Models\OpsyenPencen;
 use App\Models\Pegawai;
 use App\Models\Program;
+use App\Models\Ptj;
 use App\Models\Subunit;
 use App\Models\Unit;
+use App\Services\PrestasiService;
 use Carbon\Carbon;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
@@ -18,6 +20,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
@@ -40,28 +43,59 @@ class PegawaiForm
                 Wizard::make([
                     Step::make('Maklumat Pegawai')
                         ->schema([
-                            TextInput::make('nama')
-                                ->label('Nama')
-                                ->columnSpanFull()
-                                ->required()
-                                ->disabled(fn (?Pegawai $record): bool => $record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)
-                                ->dehydrateStateUsing(fn (string $state): string => strtoupper($state))
-                                ->extraInputAttributes(['style' => 'text-transform:uppercase']),
-
                             TextInput::make('nokp')
                                 ->label('No Kad Pengenalan')
                                 ->required()
                                 ->disabled(fn (?Pegawai $record): bool => $record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)
-                                ->reactive()
-                                // ->unique(ignoreRecord: true, column: 'nokp')
-                                ->afterStateUpdated(function ($state, callable $set) {
+                                ->maxLength(12)
+                                ->placeholder('Contoh: 780102027168')
+                                // ->helperText('Masukkan 12 digit No. KP - nama & jantina akan diisi automatik via API (jantina -> nama) jika ditemui.')
+                                ->live(debounce: 500)
+                                ->rules([
+                                    fn (?Pegawai $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($record): void {
+                                        $normalized = str_replace('-', '', trim((string) $value));
 
-                                    if (! $state || strlen($state) < 6) {
+                                        if (blank($normalized)) {
+                                            return;
+                                        }
+
+                                        $exists = Pegawai::withoutGlobalScopes()
+                                            ->where('nokp', $normalized)
+                                            ->when($record, fn ($q) => $q->where('id', '!=', $record->getKey()))
+                                            ->exists();
+
+                                        if ($exists) {
+                                            $fail('Pegawai dengan No. Kad Pengenalan ini telah wujud dalam sistem.');
+                                        }
+                                    },
+                                ])
+                                ->afterStateUpdated(function (Get $get, Set $set, ?Pegawai $record, ?string $state) {
+                                    if (blank($state)) {
                                         return;
                                     }
 
                                     // remove dash if user types it
-                                    $noKp = str_replace('-', '', $state);
+                                    $noKp = str_replace('-', '', trim((string) $state));
+
+                                    // Immediate existence check for create (show message if pegawai already exists)
+                                    if (preg_match('/^\d{12}$/', $noKp)) {
+                                        $exists = Pegawai::withoutGlobalScopes()
+                                            ->where('nokp', $noKp)
+                                            ->when($record, fn ($q) => $q->where('id', '!=', $record->getKey()))
+                                            ->exists();
+
+                                        if ($exists) {
+                                            Notification::make()
+                                                ->title('Pegawai Telah Wujud')
+                                                ->body('Pegawai dengan No. Kad Pengenalan ini telah wujud dalam sistem.')
+                                                ->danger()
+                                                ->send();
+                                        }
+                                    }
+
+                                    if (strlen($noKp) < 6) {
+                                        return;
+                                    }
 
                                     $year = substr($noKp, 0, 2);
                                     $month = substr($noKp, 2, 2);
@@ -76,21 +110,160 @@ class PegawaiForm
                                         // set to tarikh_lahir field (UI only)
                                         $set('tarikh_lahir', $dob->format('Y-m-d'));
                                     } catch (\Exception $e) {
-                                        // invalid IC → ignore
+                                        // invalid IC -> ignore
+                                    }
+
+                                    // Auto-fetch nama & jantina via API when 12-digit nokp entered (jantina -> nama)
+                                    if (! preg_match('/^\d{12}$/', $noKp)) {
+                                        return;
+                                    }
+
+                                    $result = PrestasiService::fetchByNokp($noKp);
+
+                                    if ($result['found']) {
+                                        if (filled($result['data']['nama'])) {
+                                            $set('nama', strtoupper(ltrim((string) $result['data']['nama'], "'")));
+                                        }
+
+                                        if (filled($result['data']['jantinaNama'])) {
+                                            $jantina = $result['data']['jantinaNama'];
+
+                                            if (in_array($jantina, ['Lelaki', 'Perempuan'], true)) {
+                                                $set('jantina', $jantina);
+                                            }
+                                        }
+
+                                        // Auto-fill jawatan, gred, ptj, bahagian, unit via API
+                                        $ids = PrestasiService::resolvePegawaiFormIds($result['data']);
+
+                                        if ($ids['ptj_id']) {
+                                            $set('ptj_id', $ids['ptj_id']);
+                                        }
+
+                                        if ($ids['bahagian_id']) {
+                                            $set('bahagian_id', $ids['bahagian_id']);
+                                        }
+
+                                        if ($ids['unit_id']) {
+                                            $set('unit_id', $ids['unit_id']);
+
+                                            // Ensure "Tiada Unit" checkbox is unchecked when unit is found
+                                            $set('ada_unit', false);
+                                        }
+
+                                        if ($ids['jawatan_id']) {
+                                            $set('jawatan_id', $ids['jawatan_id']);
+                                        }
+
+                                        if ($ids['gred_id']) {
+                                            $set('gred_id', $ids['gred_id']);
+                                        }
+
+                                        if ($ids['jawatan_gred_id']) {
+                                            $set('jawatan_gred_id', $ids['jawatan_gred_id']);
+                                        }
+
+                                        // Auto-fill khidmat (Tetap/Kontrak/Kontrak Interim) via API khidmat.kod/nama
+                                        $khidmatRaw = $result['data']['khidmatKod'] ?? $result['data']['khidmatNama'] ?? null;
+
+                                        if (filled($khidmatRaw)) {
+                                            $khidmat = strtoupper(trim((string) $khidmatRaw));
+                                            $khidmat = preg_replace('/\s+/', ' ', $khidmat);
+
+                                            if ($khidmat === 'TETAP') {
+                                                $set('is_tetap', true);
+                                                $set('is_kontrak', false);
+                                                $set('is_kontrak_interim', false);
+                                                $set('is_kontrak_isi_tetap', false);
+                                            } elseif ($khidmat === 'KONTRAK') {
+                                                $set('is_kontrak', true);
+                                                $set('is_tetap', false);
+                                                $set('is_kontrak_interim', false);
+                                                $set('is_kontrak_isi_tetap', false);
+                                            } elseif ($khidmat === 'KONTRAK INTERIM') {
+                                                $set('is_kontrak_interim', true);
+                                                $set('is_tetap', false);
+                                                $set('is_kontrak', false);
+                                                $set('is_kontrak_isi_tetap', false);
+                                            }
+                                        }
+
+                                        // Conditional Tarikh & Opsyen based on khidmat
+                                        $khidmatForDates = strtoupper(trim((string) ($result['data']['khidmatKod'] ?? $result['data']['khidmatNama'] ?? '')));
+                                        $khidmatForDates = preg_replace('/\s+/', ' ', $khidmatForDates);
+                                        $tarikhLantikan = $result['data']['tarikhLantikan'] ?? null;
+                                        $tarikhSahJawatan = $result['data']['tarikhSahJawatan'] ?? null;
+                                        $opsyenPencenId = $result['data']['opsyenPencenId'] ?? null;
+
+                                        if ($khidmatForDates === 'KONTRAK') {
+                                            if (filled($tarikhLantikan)) {
+                                                $set('tarikh_lantikan1', $tarikhLantikan);
+                                                $set('pegawaiKontrak.tarikh_lantikan1', $tarikhLantikan);
+                                            }
+                                        } elseif (in_array($khidmatForDates, ['TETAP', 'KONTRAK INTERIM'], true)) {
+                                            if (filled($tarikhLantikan)) {
+                                                $set('tarikh_lantikan', $tarikhLantikan);
+                                            }
+
+                                            if (filled($tarikhSahJawatan)) {
+                                                $set('tarikh_sah_jawatan', $tarikhSahJawatan);
+                                            }
+
+                                            if (filled($opsyenPencenId)) {
+                                                $set('opsyen_pencen_id', $opsyenPencenId);
+
+                                                // Mirror existing opsyen_pencen_id afterStateUpdated: calculate tarikh_pencen from DOB + opsyen
+                                                try {
+                                                    if (strlen($noKp) >= 6) {
+                                                        $year2 = substr($noKp, 0, 2);
+                                                        $month2 = substr($noKp, 2, 2);
+                                                        $day2 = substr($noKp, 4, 2);
+                                                        $fullYear2 = $year2 > date('y') ? '19'.$year2 : '20'.$year2;
+                                                        $tarikhLahir2 = Carbon::createFromFormat('Y-m-d', "$fullYear2-$month2-$day2");
+                                                        $opsyen = OpsyenPencen::find($opsyenPencenId);
+
+                                                        if ($opsyen) {
+                                                            $tarikhPencen = $tarikhLahir2->copy()->addYears((int) $opsyen->opsyen);
+                                                            $set('tarikh_pencen', $tarikhPencen->format('Y-m-d'));
+                                                        }
+                                                    }
+                                                } catch (\Exception $e) {
+                                                    // ignore
+                                                }
+                                            }
+                                        }
+                                    } elseif ($result['error']) {
+                                        Notification::make()
+                                            ->title('API Pegawai')
+                                            ->body($result['error'])
+                                            ->warning()
+                                            ->send();
                                     }
                                 }),
-
                             Select::make('jantina')
                                 ->label('Jantina')
                                 ->required()
+                                // ->helperText('Akan diisi automatik via API: jantina -> nama (Lelaki/Perempuan).')
                                 ->disabled(fn (?Pegawai $record): bool => $record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)
                                 ->options([
                                     'Lelaki' => 'Lelaki',
                                     'Perempuan' => 'Perempuan',
                                 ]),
+
+                            TextInput::make('nama')
+                                ->label('Nama')
+                                ->columnSpanFull()
+                                ->required()
+                                // ->placeholder('Akan diisi automatik selepas No. KP dimasukkan (via API)')
+                                // ->helperText('Nama akan diambil dari API luaran berdasarkan No. KP (jantina -> nama turut diisi). Boleh diedit manual jika perlu.')
+                                ->disabled(fn (?Pegawai $record): bool => $record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)
+                                ->dehydrateStateUsing(fn (string $state): string => strtoupper($state))
+                                ->extraInputAttributes(['style' => 'text-transform:uppercase']),
+
                             Select::make('jawatan_id')
                                 ->label('Jawatan')
                                 ->required()
+                                // ->helperText('Akan diisi automatik via API: jawatan -> nama')
                                 ->disabled(fn (?Pegawai $record): bool => $record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)
                                 ->options(
                                     Jawatan::query()
@@ -122,6 +295,7 @@ class PegawaiForm
                             Select::make('gred_id')
                                 ->label('Gred')
                                 ->required()
+                                // ->helperText('Akan diisi automatik via API: gred -> kod')
                                 ->options(function (Get $get) {
 
                                     $jawatanId = $get('jawatan_id');
@@ -191,6 +365,7 @@ class PegawaiForm
                                     }
                                 )
                                 ->required()
+                                // ->helperText('Akan diisi automatik via API: ptj -> nama')
                                 ->disabled(fn (?Pegawai $record): bool => $record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)
                                 ->searchable()
                                 ->preload()
@@ -228,6 +403,7 @@ class PegawaiForm
                                 })
                                 ->searchable()
                                 ->required()
+                                // ->helperText('Akan diisi automatik via API: bahagian -> nama')
                                 ->disabled(fn (?Pegawai $record): bool => $record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)
                                 ->preload()
                                 ->visible(function (?Pegawai $record): bool {
@@ -252,6 +428,7 @@ class PegawaiForm
                                 ->schema([
                                     Select::make('unit_id')
                                         ->label('Unit')
+                                        // ->helperText('Akan diisi automatik via API: unit -> nama')
                                         ->options(function (Get $get) {
                                             $bahagianId = $get('bahagian_id');
 
@@ -264,14 +441,42 @@ class PegawaiForm
                                         })
                                         ->searchable()
                                         ->preload()
+                                        ->live()
                                         ->disabled(fn (Get $get, ?Pegawai $record): bool => $get('ada_unit') || ($record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false))
                                         ->dehydrated(fn (Get $get) => ! $get('ada_unit'))
                                         ->nullable()
+                                        ->required(fn (Get $get, ?Pegawai $record): bool => ! $get('ada_unit') && ! ($record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false))
+                                        ->validationMessages(['required' => 'Sila pilih Unit atau tandakan Tiada Unit.'])
+                                        ->afterStateUpdated(function ($state, Set $set): void {
+                                            if (filled($state)) {
+                                                $set('ada_unit', false);
+                                            }
+                                        })
                                         ->columnSpan(4),
 
                                     Checkbox::make('ada_unit')
                                         ->label('Tiada Unit')
                                         ->live()
+                                        ->afterStateUpdated(function (bool $state, Set $set): void {
+                                            if ($state) {
+                                                $set('unit_id', null);
+                                            }
+                                        })
+                                        ->rules([
+                                            fn (Get $get, ?Pegawai $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($get, $record): void {
+                                                if (($record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)) {
+                                                    return;
+                                                }
+
+                                                if (blank($get('unit_id')) && ! $value) {
+                                                    $fail('Sila pilih Unit atau tandakan Tiada Unit.');
+                                                }
+
+                                                if (filled($get('unit_id')) && $value) {
+                                                    $fail('Sila pilih salah satu sahaja: Unit atau Tiada Unit.');
+                                                }
+                                            },
+                                        ])
                                         ->disabled(fn (?Pegawai $record): bool => $record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)
                                         ->columnSpan(1),
 
@@ -311,11 +516,38 @@ class PegawaiForm
                                         ->disabled(fn (Get $get, ?Pegawai $record): bool => $get('ada_subunit') || ($record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false))
                                         ->dehydrated(fn (Get $get) => ! $get('ada_subunit'))
                                         ->nullable()
+                                        ->required(fn (Get $get, ?Pegawai $record): bool => ! $get('ada_subunit') && ! ($record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false))
+                                        ->validationMessages(['required' => 'Sila pilih Subunit atau tandakan Tiada Subunit.'])
+                                        ->afterStateUpdated(function ($state, Set $set): void {
+                                            if (filled($state)) {
+                                                $set('ada_subunit', false);
+                                            }
+                                        })
                                         ->columnSpan(4),
 
                                     Checkbox::make('ada_subunit')
                                         ->label('Tiada Subunit')
                                         ->live()
+                                        ->afterStateUpdated(function (bool $state, Set $set): void {
+                                            if ($state) {
+                                                $set('subunit_id', null);
+                                            }
+                                        })
+                                        ->rules([
+                                            fn (Get $get, ?Pegawai $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($get, $record): void {
+                                                if (($record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)) {
+                                                    return;
+                                                }
+
+                                                if (blank($get('subunit_id')) && ! $value) {
+                                                    $fail('Sila pilih Subunit atau tandakan Tiada Subunit.');
+                                                }
+
+                                                if (filled($get('subunit_id')) && $value) {
+                                                    $fail('Sila pilih salah satu sahaja: Subunit atau Tiada Subunit.');
+                                                }
+                                            },
+                                        ])
                                         ->disabled(fn (?Pegawai $record): bool => $record?->waranJawatan()->withoutGlobalScopes()->exists() ?? false)
                                         ->columnSpan(1),
                                 ])
@@ -569,6 +801,7 @@ class PegawaiForm
                         ->schema([
                             Grid::make(2)
                                 ->columnSpanFull()
+                                ->visible(fn (Get $get): bool => (bool) ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak') || $get('is_kontrak_isi_tetap')))
                                 ->schema([
                                     DatePicker::make('tarikh_sandang')
                                         ->label('Tarikh Sandang')
@@ -579,6 +812,26 @@ class PegawaiForm
 
                                     TextEntry::make('tahun_khidmat_penempatan_semasa')
                                         ->label('Tahun Khidmat Penempatan Semasa')
+                                        ->visible(fn (Get $get): bool => (bool) ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap')))
+                                        ->getStateUsing(function ($record, Get $get) {
+                                            $tarikhSandang = $get('tarikh_sandang') ?: $record?->tarikh_sandang;
+
+                                            if (blank($tarikhSandang)) {
+                                                return '-';
+                                            }
+
+                                            try {
+                                                $sandang = Carbon::parse($tarikhSandang);
+                                            } catch (\Exception $e) {
+                                                return '-';
+                                            }
+
+                                            return Carbon::now()->year - $sandang->year;
+                                        }),
+
+                                    TextEntry::make('tahun_perkhidmatan_semasa')
+                                        ->label('Tahun Perkhidmatan Semasa')
+                                        ->visible(fn (Get $get): bool => (bool) $get('is_kontrak'))
                                         ->getStateUsing(function ($record, Get $get) {
                                             $tarikhSandang = $get('tarikh_sandang') ?: $record?->tarikh_sandang;
 
@@ -605,7 +858,13 @@ class PegawaiForm
 
                                     return $record->waranJawatan?->waran?->no_waran;
                                 })
-                                ->visible(fn (Get $get): bool => ! $get('is_kontrak')),
+                                ->visible(function (Get $get, ?Pegawai $record): bool {
+                                    if (! $record && ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap'))) {
+                                        return false;
+                                    }
+
+                                    return ! $get('is_kontrak');
+                                }),
 
                             TextEntry::make('butiran')
                                 ->label('Butiran')
@@ -618,37 +877,94 @@ class PegawaiForm
 
                                     return $butiran;
                                 })
-                                ->visible(fn (Get $get): bool => ! $get('is_kontrak')),
+                                ->visible(function (Get $get, ?Pegawai $record): bool {
+                                    if (! $record && ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap'))) {
+                                        return false;
+                                    }
+
+                                    return ! $get('is_kontrak');
+                                }),
                             TextEntry::make('ptj')
                                 ->label('PTJ')
-                                ->getStateUsing(function ($record) {
+                                ->getStateUsing(function (?Pegawai $record, Get $get) {
                                     if (! $record) {
-                                        return null;
-                                    } elseif (! $record->is_kontrak) {
+                                        // Create: when is_kontrak, use PTJ chosen in Maklumat Pegawai
+                                        if ($get('is_kontrak')) {
+                                            $ptjId = $get('ptj_id');
+
+                                            if (blank($ptjId)) {
+                                                return '-';
+                                            }
+
+                                            return Ptj::find($ptjId)?->nama_ptj ?? '-';
+                                        }
+
+                                        $ptjId = $get('ptj_id');
+
+                                        if (filled($ptjId)) {
+                                            return Ptj::find($ptjId)?->nama_ptj ?? '-';
+                                        }
+
+                                        return '-';
+                                    }
+
+                                    if (! $record->is_kontrak) {
                                         $waranJawatan = $record->waranJawatan;
                                         $ptj = $waranJawatan->ptj?->nama_ptj ?? '';
                                     } else {
                                         $ptj = $record->ptj?->nama_ptj;
                                     }
 
-                                    return $ptj;
+                                    return $ptj ?? '-';
                                 })
-                                // ->visible(fn(Get $get): bool => !$get('is_kontrak'))
+                                ->visible(function (Get $get, ?Pegawai $record): bool {
+                                    if (! $record && ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap'))) {
+                                        return false;
+                                    }
+
+                                    return true;
+                                })
                                 ->columnSpanFull(),
 
                             TextEntry::make('bahagian')
                                 ->label('Bahagian')
-                                ->getStateUsing(function ($record) {
+                                ->getStateUsing(function (?Pegawai $record, Get $get) {
                                     if (! $record) {
-                                        return null;
-                                    } elseif (! $record->is_kontrak) {
+                                        // Create: when is_kontrak, use Bahagian chosen in Maklumat Pegawai
+                                        if ($get('is_kontrak')) {
+                                            $bahagianId = $get('bahagian_id');
+
+                                            if (blank($bahagianId)) {
+                                                return '-';
+                                            }
+
+                                            return Bahagian::find($bahagianId)?->nama_bahagian ?? '-';
+                                        }
+
+                                        $bahagianId = $get('bahagian_id');
+
+                                        if (filled($bahagianId)) {
+                                            return Bahagian::find($bahagianId)?->nama_bahagian ?? '-';
+                                        }
+
+                                        return '-';
+                                    }
+
+                                    if (! $record->is_kontrak) {
                                         $waranJawatan = $record->waranJawatan;
                                         $bahagian = $waranJawatan->bahagian?->nama_bahagian ?? '';
                                     } else {
                                         $bahagian = $record->bahagian?->nama_bahagian ?? '';
                                     }
 
-                                    return $bahagian;
+                                    return $bahagian ?? '-';
+                                })
+                                ->visible(function (Get $get, ?Pegawai $record): bool {
+                                    if (! $record && ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap'))) {
+                                        return false;
+                                    }
+
+                                    return true;
                                 })
                                 ->columnSpanFull(),
 
@@ -666,7 +982,13 @@ class PegawaiForm
 
                                     return $unit;
                                 })
-                                ->visible(fn (Get $get) => auth()->user()->role == 3),
+                                ->visible(function (Get $get, ?Pegawai $record): bool {
+                                    if (! $record && ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap'))) {
+                                        return false;
+                                    }
+
+                                    return auth()->user()->role == 3;
+                                }),
 
                             TextEntry::make('subunit')
                                 ->label('Subunit')
@@ -682,11 +1004,16 @@ class PegawaiForm
 
                                     return $subunit;
                                 })
-                                ->visible(fn (Get $get) => auth()->user()->role == 3),
+                                ->visible(function (Get $get, ?Pegawai $record): bool {
+                                    if (! $record && ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap'))) {
+                                        return false;
+                                    }
+
+                                    return auth()->user()->role == 3;
+                                }),
                             Group::make()
                                 ->columns(2)
                                 ->columnSpanFull()
-                                ->relationship('pegawaiKontrak')
                                 ->schema([
                                     Select::make('program_id')
                                         ->label('Program')
@@ -701,6 +1028,7 @@ class PegawaiForm
                                         ->live()
                                         ->searchable()
                                         ->required(),
+                                    // ->helperText('Akan diisi automatik via API jika ditemui; boleh dipilih manual.'),
 
                                     Select::make('aktiviti_id')
                                         ->label('Aktiviti')
@@ -720,12 +1048,13 @@ class PegawaiForm
                                         })
                                         ->searchable()
                                         ->required(),
+                                    // ->helperText('Akan diisi automatik via API jika ditemui; boleh dipilih manual.'),
                                 ])
                                 ->visible(fn (Get $get) => $get('is_kontrak')),
                             TextEntry::make('program')
                                 ->label('program')
                                 ->getStateUsing(function ($record) {
-                                    // No record on the create page — nothing to show yet.
+                                    // No record on the create page - nothing to show yet.
                                     if (! $record) {
                                         return null;
                                     }
@@ -736,12 +1065,18 @@ class PegawaiForm
                                         ? "{$program->nama_program} : {$program->desc_program}"
                                         : '-';
                                 })
-                                ->visible(fn (Get $get) => $get('is_kontrak_interim') || $get('is_tetap')),
+                                ->visible(function (Get $get, ?Pegawai $record): bool {
+                                    if (! $record && ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap'))) {
+                                        return false;
+                                    }
+
+                                    return $get('is_kontrak_interim') || $get('is_tetap') || $get('is_kontrak_isi_tetap');
+                                }),
 
                             TextEntry::make('aktiviti')
                                 ->label('Aktiviti')
                                 ->getStateUsing(function ($record) {
-                                    // No record on the create page — nothing to show yet.
+                                    // No record on the create page - nothing to show yet.
                                     if (! $record) {
                                         return null;
                                     }
@@ -752,12 +1087,18 @@ class PegawaiForm
                                         ? "{$aktiviti->no_aktivit} - {$aktiviti->nama_aktiviti}"
                                         : '-';
                                 })
-                                ->visible(fn (Get $get) => $get('is_kontrak_interim') || $get('is_tetap')),
+                                ->visible(function (Get $get, ?Pegawai $record): bool {
+                                    if (! $record && ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap'))) {
+                                        return false;
+                                    }
+
+                                    return $get('is_kontrak_interim') || $get('is_tetap') || $get('is_kontrak_isi_tetap');
+                                }),
 
                             TextEntry::make('lain-lain')
                                 ->label('Lain-lain')
                                 ->getStateUsing(function ($record) {
-                                    // No record on the create page — nothing to show yet.
+                                    // No record on the create page - nothing to show yet.
                                     if (! $record) {
                                         return null;
                                     }
@@ -776,6 +1117,13 @@ class PegawaiForm
                                     return (! $isKontrak && $ptjPegawaiId !== $ptjWaranId)
                                         ? 'Pinjam'
                                         : 'Tiada';
+                                })
+                                ->visible(function (Get $get, ?Pegawai $record): bool {
+                                    if (! $record && ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap'))) {
+                                        return false;
+                                    }
+
+                                    return true;
                                 })
                                 ->badge()
                                 ->color(fn ($state) => match ($state) {
