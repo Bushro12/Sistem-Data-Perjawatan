@@ -2,8 +2,8 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\Pegawai;
 use App\Models\Setting;
+use App\Services\PrestasiService;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
@@ -39,11 +39,34 @@ class Api extends Page
 
     public ?string $apiError = null;
 
+    public ?string $jantinaNama = null;
+
+    public ?string $ptjNama = null;
+
+    public ?string $bahagianNama = null;
+
+    public ?string $unitNama = null;
+
+    public ?string $jawatanNama = null;
+
+    public ?string $gredKod = null;
+
+    /** @var array<int, array{id: mixed, kod: ?string, nama: ?string}>|null */
+    public ?array $ptjs = null;
+
+    public ?string $ptjError = null;
+
     public function updatedNokp(?string $value): void
     {
         $value = trim((string) $value);
 
         $this->namaPegawai = null;
+        $this->jantinaNama = null;
+        $this->ptjNama = null;
+        $this->bahagianNama = null;
+        $this->unitNama = null;
+        $this->jawatanNama = null;
+        $this->gredKod = null;
         $this->apiError = null;
 
         if ($value === '') {
@@ -57,54 +80,43 @@ class Api extends Page
         $this->fetchNamaFromApi($value);
     }
 
-    protected function fetchNamaFromApi(string $nokp): void
+    /**
+     * Fetch all PTJ via the external API.
+     *
+     * The external API does not expose a dedicated `/ptj` endpoint — PTJ
+     * data is embedded inside `/pegawai` records (`ptj: {id, kod, nama}`).
+     * This method paginates through `/pegawai` and deduplicates by PTJ id.
+     */
+    public function fetchAllPtj(): void
     {
-        $apiErrorBeforeFallback = null;
+        $this->ptjs = null;
+        $this->ptjError = null;
 
         try {
-            $apiKey = Setting::get('prestasi_v2_api_key', config('services.prestasi_v2.api_key'));
-
-            if (blank($apiKey)) {
-                $credentialsPath = base_path('api/credentials.text');
-
-                if (is_file($credentialsPath)) {
-                    $apiKey = trim((string) file_get_contents($credentialsPath));
-                }
-            }
+            $apiKey = $this->resolveApiKey();
 
             if (blank($apiKey)) {
                 throw new \RuntimeException('Kunci API tidak dikonfigur. Sila tetapkan di Kawalan → API Key.');
             }
 
-            $baseUrl = Setting::get('prestasi_v2_base_url', config('services.prestasi_v2.base_url', 'https://training.kdh.moh.gov.my/api/v1'));
-            $baseUrl = rtrim((string) $baseUrl, '/');
+            $baseUrl = $this->resolveBaseUrl();
 
-            // Read from ALL pages (not only first page) — scan entire dataset for exact no_kp match
+            /** @var array<int, array{id: mixed, kod: ?string, nama: ?string}> $ptjMap */
+            $ptjMap = [];
             $totalPages = null;
 
-            for ($page = 1; $page <= ($totalPages ?? 195); $page++) {
+            for ($page = 1; $page <= ($totalPages ?? 200); $page++) {
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer '.$apiKey,
                     'X-API-Key' => $apiKey,
                     'Accept' => 'application/json',
                 ])->timeout(15)->get($baseUrl.'/pegawai', [
-                    'no_kp' => $nokp,
                     'per_page' => 100,
                     'page' => $page,
                 ]);
 
                 if (! $response->successful()) {
-                    $status = $response->status();
-
-                    if (in_array($status, [401, 403], true)) {
-                        $this->apiError = 'Kunci API tidak sah atau tiada kebenaran (HTTP '.$status.').';
-                    } elseif ($status === 429) {
-                        $this->apiError = 'Had kadar permintaan API dicapai. Sila cuba sebentar lagi.';
-                    } else {
-                        $this->apiError = 'Gagal menghubungi API (HTTP '.$status.').';
-                    }
-
-                    $apiErrorBeforeFallback = $this->apiError;
+                    $this->ptjError = $this->mapApiError($response->status());
 
                     break;
                 }
@@ -125,33 +137,29 @@ class Api extends Page
                     break;
                 }
 
-                // Single object case
-                if (isset($items['nama_pegawai']) || isset($items['nama'])) {
-                    $nama = $items['nama_pegawai'] ?? $items['nama'] ?? null;
-                    $kp = $items['no_kp'] ?? $items['kp_pegawai'] ?? $items['nokp'] ?? null;
-
-                    if ($kp !== null && trim((string) $kp) === $nokp && $nama !== null) {
-                        $this->namaPegawai = ltrim((string) $nama, "'");
-
-                        return;
-                    }
-                }
-
                 foreach ($items as $item) {
                     if (! is_array($item)) {
                         continue;
                     }
 
-                    $kp = $item['no_kp'] ?? $item['kp_pegawai'] ?? $item['nokp'] ?? $item['ic'] ?? null;
+                    $ptj = $item['ptj'] ?? null;
 
-                    if ($kp !== null && trim((string) $kp) === $nokp) {
-                        $nama = $item['nama_pegawai'] ?? $item['nama'] ?? null;
+                    if (! is_array($ptj)) {
+                        continue;
+                    }
 
-                        if ($nama !== null) {
-                            $this->namaPegawai = ltrim((string) $nama, "'");
+                    $id = $ptj['id'] ?? null;
 
-                            return;
-                        }
+                    if ($id === null) {
+                        continue;
+                    }
+
+                    if (! isset($ptjMap[$id])) {
+                        $ptjMap[$id] = [
+                            'id' => $id,
+                            'kod' => isset($ptj['kod']) ? (string) $ptj['kod'] : (isset($ptj['kod_ptj']) ? (string) $ptj['kod_ptj'] : null),
+                            'nama' => $ptj['nama'] ?? $ptj['nama_ptj'] ?? null,
+                        ];
                     }
                 }
 
@@ -164,36 +172,76 @@ class Api extends Page
                 }
             }
 
-            $apiErrorBeforeFallback = $this->apiError;
+            if (! empty($ptjMap)) {
+                $ptjs = array_values($ptjMap);
+                usort($ptjs, fn (array $a, array $b): int => strcmp((string) ($a['nama'] ?? ''), (string) ($b['nama'] ?? '')));
+                $this->ptjs = $ptjs;
+                $this->ptjError = null;
+            } elseif ($this->ptjError === null) {
+                $this->ptjError = 'Tiada PTJ dijumpai melalui API.';
+            }
         } catch (\Throwable $e) {
-            $this->apiError = 'Ralat API: '.$e->getMessage();
-            $apiErrorBeforeFallback = $this->apiError;
+            $this->ptjError = 'Ralat PTJ: '.$e->getMessage();
+        }
+    }
+
+    protected function resolveApiKey(): ?string
+    {
+        $apiKey = Setting::get('prestasi_v2_api_key', config('services.prestasi_v2.api_key'));
+
+        if (blank($apiKey)) {
+            $credentialsPath = base_path('api/credentials.text');
+
+            if (is_file($credentialsPath)) {
+                $apiKey = trim((string) file_get_contents($credentialsPath));
+            }
         }
 
-        // Fallback to local DB (bypass PTJ global scope) — handles cases like 790330025227 / 941015025636 that exist locally but not in remote API first pages
-        $localNama = Pegawai::withoutGlobalScopes()->where('nokp', $nokp)->value('nama');
+        return $apiKey ?: null;
+    }
 
-        if ($localNama) {
-            $this->namaPegawai = $localNama;
+    protected function resolveBaseUrl(): string
+    {
+        $baseUrl = Setting::get('prestasi_v2_base_url', config('services.prestasi_v2.base_url', 'https://training.kdh.moh.gov.my/api/v1'));
+
+        return rtrim((string) $baseUrl, '/');
+    }
+
+    protected function mapApiError(int $status): string
+    {
+        return match (true) {
+            in_array($status, [401, 403], true) => 'Kunci API tidak sah atau tiada kebenaran (HTTP '.$status.').',
+            $status === 429 => 'Had kadar permintaan API dicapai. Sila cuba sebentar lagi.',
+            default => 'Gagal menghubungi API (HTTP '.$status.').',
+        };
+    }
+
+    protected function fetchNamaFromApi(string $nokp): void
+    {
+        $result = PrestasiService::fetchByNokp($nokp);
+
+        if ($result['found']) {
+            $data = $result['data'];
+            $this->namaPegawai = $data['nama'];
+            $this->jantinaNama = $data['jantinaNama'];
+            $this->ptjNama = $data['ptjNama'];
+            $this->bahagianNama = $data['bahagianNama'];
+            $this->unitNama = $data['unitNama'];
+            $this->jawatanNama = $data['jawatanNama'];
+            $this->gredKod = $data['gredKod'];
             $this->apiError = null;
 
             return;
         }
 
-        // Also check withTrashed and alternative formatting
-        $localNama = Pegawai::withTrashed()->where('nokp', $nokp)->value('nama');
-
-        if ($localNama) {
-            $this->namaPegawai = $localNama;
-            $this->apiError = null;
-
-            return;
-        }
-
-        if ($apiErrorBeforeFallback !== null) {
-            $this->apiError = $apiErrorBeforeFallback;
-        } elseif ($this->apiError === null) {
-            $this->apiError = 'Tiada rekod pegawai dijumpai untuk No. KP tersebut.';
-        }
+        // Not found — clear fields and surface error
+        $this->namaPegawai = null;
+        $this->jantinaNama = null;
+        $this->ptjNama = null;
+        $this->bahagianNama = null;
+        $this->unitNama = null;
+        $this->jawatanNama = null;
+        $this->gredKod = null;
+        $this->apiError = $result['error'];
     }
 }
