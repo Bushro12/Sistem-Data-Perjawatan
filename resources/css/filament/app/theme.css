@@ -8,7 +8,7 @@
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 
-/* ===== e-SDaP Login Page - Teal Theme ===== */
+/* ===== e-SDaP Login Page - Bright Pastel Theme ===== */
 
 @font-face {
     font-family: 'HYWenHei';
@@ -27,7 +27,8 @@
 .fi-simple-layout:has(.esdap-login-wrapper) {
     min-height: 100dvh;
     display: block;
-    background: #000000;
+    background: #ffffff;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 22%, #ccfbf1 48%, #99f6e4 72%, #ecfdf5 88%, #ffffff 100%);
 }
 
 .fi-simple-main-ctn:has(.esdap-login-wrapper) {
@@ -38,45 +39,53 @@
     max-width: none !important;
     width: 100%;
     margin: 0 !important;
-    padding: 14px !important;
-    background: #000000 !important;
+    padding: 20px !important;
+    background: transparent !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     box-sizing: border-box;
 }
 
 .esdap-login-wrapper {
-    min-height: calc(100dvh - 28px);
+    min-height: calc(100dvh - 40px);
     width: 100%;
     display: flex;
-    background: #081715;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
     box-sizing: border-box;
 }
 
 .esdap-login-card {
     display: flex;
     width: 100%;
-    min-height: 100%;
-    background: #0e2622;
+    max-width: 1020px;
+    min-height: 560px;
+    background: #ffffff;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.12), 0 8px 20px -8px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.9);
 }
 
 .esdap-login-left {
     flex: 1 1 0%;
     min-width: 0;
-    padding: 52px 64px;
+    padding: 48px 56px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-right: 2px solid #000000;
+    background: #ffffff;
+    border-right: 1px solid #f1f5f9;
 }
 
 .esdap-login-header {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 40px;
-    color: #d8f3ec;
-    font-weight: 600;
+    margin-bottom: 36px;
+    color: #0f766e;
+    font-weight: 700;
     font-size: 15px;
 }
 
@@ -88,22 +97,24 @@
     border-radius: 50%;
     padding: 4px;
     box-sizing: content-box;
+    box-shadow: 0 2px 10px rgba(20, 184, 166, 0.18);
+    border: 1px solid #ccfbf1;
 }
 
 .esdap-login-tagline {
-    color: #5eada0;
+    color: #14b8a6;
     font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
+    font-weight: 800;
+    letter-spacing: 2.2px;
     margin-bottom: 10px;
 }
 
 .esdap-login-title {
-    color: #f0fdfa;
+    color: #134e4a;
     font-size: 36px;
-    font-weight: 700;
+    font-weight: 800;
     line-height: 1.2;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     letter-spacing: -0.02em;
 }
 
@@ -112,10 +123,10 @@
 }
 
 .esdap-login-sub {
-    color: #8fb9b0;
+    color: #64748b;
     font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 36px;
+    line-height: 1.6;
+    margin-bottom: 32px;
     max-width: 360px;
 }
 
@@ -125,39 +136,41 @@
 
 .esdap-form-area .fi-fo-field-wrp-label,
 .esdap-form-area label {
-    color: #8fb9b0 !important;
+    color: #475569 !important;
     font-size: 12.5px !important;
     font-weight: 600 !important;
     letter-spacing: 0.02em;
 }
 
 .esdap-form-area .fi-input-wrp {
-    background: rgba(255, 255, 255, 0.04) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: #f8fafc !important;
+    border: 1.5px solid #e2e8f0 !important;
     border-radius: 14px !important;
     transition: all 0.2s ease;
 }
 
 .esdap-form-area .fi-input-wrp:hover {
-    border-color: rgba(255, 255, 255, 0.16) !important;
+    border-color: #cbd5e1 !important;
+    background: #ffffff !important;
 }
 
 .esdap-form-area .fi-input-wrp:focus-within {
-    border-color: #14b8a6 !important;
-    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.22) !important;
+    background: #ffffff !important;
+    border-color: #5eead4 !important;
+    box-shadow: 0 0 0 3.5px rgba(94, 234, 212, 0.35) !important;
 }
 
 .esdap-form-area input {
-    color: #f0fdfa !important;
+    color: #1e293b !important;
     background: transparent !important;
 }
 
 .esdap-form-area input::placeholder {
-    color: #4f7d74 !important;
+    color: #94a3b8 !important;
 }
 
 .esdap-form-area .fi-fo-checkbox label {
-    color: #8fb9b0 !important;
+    color: #64748b !important;
     font-weight: 500 !important;
 }
 
@@ -166,17 +179,20 @@
     -webkit-appearance: none !important;
     width: 18px !important;
     height: 18px !important;
-    border-radius: 4px !important;
-    background-color: rgba(255, 255, 255, 0.06) !important;
+    border-radius: 5px !important;
+    background-color: #ffffff !important;
     background-image: none !important;
     box-shadow: none !important;
-    outline: 1px solid rgba(20, 184, 166, 0.55) !important;
-    outline-offset: 1px;
+    outline: 1.5px solid #cbd5e1 !important;
+    outline-offset: 0;
+    border: none !important;
     cursor: pointer;
+    transition: all 0.15s ease;
 }
 
 .esdap-form-area input[type="checkbox"].fi-checkbox-input:hover {
-    outline-color: #2dd4bf !important;
+    outline-color: #5eead4 !important;
+    background-color: #f0fdfa !important;
 }
 
 .esdap-form-area input[type="checkbox"].fi-checkbox-input:checked {
@@ -189,33 +205,34 @@
 }
 
 .esdap-form-area input[type="checkbox"].fi-checkbox-input:focus {
-    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.25) !important;
+    box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.35) !important;
 }
 
 .esdap-form-area .fi-btn {
-    background: linear-gradient(135deg, #14b8a6, #0d9488) !important;
+    background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 50%, #0d9488 100%) !important;
     border-radius: 999px !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     font-size: 14px !important;
     padding-top: 12px !important;
     padding-bottom: 12px !important;
     border: none !important;
-    box-shadow: 0 8px 20px -6px rgba(20, 184, 166, 0.55);
+    box-shadow: 0 10px 22px -6px rgba(20, 184, 166, 0.45), 0 4px 8px -4px rgba(20, 184, 166, 0.3);
     transition: all 0.2s ease;
 }
 
 .esdap-form-area .fi-btn:hover {
-    background: linear-gradient(135deg, #0d9488, #0b7a6f) !important;
-    box-shadow: 0 10px 26px -6px rgba(20, 184, 166, 0.65);
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%) !important;
+    box-shadow: 0 14px 28px -6px rgba(20, 184, 166, 0.55), 0 6px 12px -4px rgba(20, 184, 166, 0.35);
     transform: translateY(-1px);
 }
 
 .esdap-form-area a {
-    color: #5eada0 !important;
+    color: #0d9488 !important;
+    font-weight: 600 !important;
 }
 
 .esdap-form-area a:hover {
-    color: #7ec3b6 !important;
+    color: #0f766e !important;
 }
 
 .esdap-login-right {
@@ -224,28 +241,28 @@
     position: relative;
     display: none;
     overflow: hidden;
-    background: linear-gradient(155deg, #134e48 0%, #0a2b27 55%, #071e1b 100%);
+    background: linear-gradient(155deg, #ecfdf5 0%, #ccfbf1 28%, #99f6e4 52%, #5eead4 74%, #a7f3d0 88%, #ffffff 100%);
 }
 
 .esdap-right-glow {
     position: absolute;
     border-radius: 50%;
-    filter: blur(60px);
+    filter: blur(48px);
     pointer-events: none;
 }
 
 .esdap-right-glow-1 {
-    width: 340px;
-    height: 340px;
-    background: rgba(20, 184, 166, 0.35);
-    top: -80px;
-    right: -80px;
+    width: 380px;
+    height: 380px;
+    background: rgba(255, 255, 255, 0.65);
+    top: -90px;
+    right: -90px;
 }
 
 .esdap-right-glow-2 {
-    width: 280px;
-    height: 280px;
-    background: rgba(20, 184, 166, 0.18);
+    width: 300px;
+    height: 300px;
+    background: rgba(167, 243, 208, 0.55);
     bottom: -60px;
     left: -60px;
 }
@@ -257,7 +274,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 24px;
+    gap: 22px;
     padding: 48px;
     text-align: center;
 }
@@ -274,7 +291,8 @@
     justify-content: center;
     padding: 28px;
     box-sizing: border-box;
-    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 20px 40px -12px rgba(20, 184, 166, 0.25), 0 8px 16px -8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.9);
 }
 
 .esdap-right-logo {
@@ -284,18 +302,151 @@
 }
 
 .esdap-right-tagline {
-    color: #aee0d6;
+    color: #134e4a;
     font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
     text-transform: uppercase;
-    max-width: 260px;
+    max-width: 270px;
+    line-height: 1.5;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 @media (min-width: 1024px) {
     .esdap-login-right {
         display: block;
     }
+}
+
+@media (max-width: 640px) {
+    .fi-simple-main:has(.esdap-login-wrapper) {
+        padding: 12px !important;
+    }
+    .esdap-login-wrapper {
+        padding: 0;
+        min-height: calc(100dvh - 24px);
+    }
+    .esdap-login-card {
+        border-radius: 20px;
+        min-height: auto;
+    }
+    .esdap-login-left {
+        padding: 28px 20px;
+    }
+    .esdap-login-title {
+        font-size: 28px;
+    }
+}
+
+.esdap-auth-alt {
+    margin-top: 20px;
+    font-size: 13px;
+    text-align: left;
+}
+
+.esdap-auth-alt a {
+    color: #0d9488 !important;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.esdap-auth-alt a:hover {
+    color: #0f766e !important;
+    text-decoration: underline;
+}
+
+/* ===== Forgot / Reset Password - generic fallback (e.g. /app/password-reset/reset?token=...) =====
+   Any Filament simple auth page that does NOT use .esdap-login-wrapper still gets the same
+   bright pastel gradient + white rounded card, so reset-password matches login/forgot. */
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) {
+    min-height: 100dvh;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 20px !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 22%, #ccfbf1 48%, #99f6e4 72%, #ecfdf5 88%, #ffffff 100%) !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-simple-main-ctn {
+    width: 100%;
+    max-width: 480px;
+    padding: 0 !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-simple-main {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto !important;
+    padding: 36px 32px !important;
+    background: #ffffff !important;
+    border-radius: 28px !important;
+    box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.12), 0 8px 20px -8px rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-simple-header-heading {
+    color: #134e4a !important;
+    font-family: 'HYWenHei', 'Inter', sans-serif;
+    font-weight: 800 !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-simple-header-subheading,
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) p {
+    color: #64748b !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-input-wrp {
+    background: #f8fafc !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 14px !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-input-wrp:hover {
+    border-color: #cbd5e1 !important;
+    background: #ffffff !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-input-wrp:focus-within {
+    background: #ffffff !important;
+    border-color: #5eead4 !important;
+    box-shadow: 0 0 0 3.5px rgba(94, 234, 212, 0.35) !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) input {
+    color: #1e293b !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) input::placeholder {
+    color: #94a3b8 !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) label,
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-fo-field-wrp-label {
+    color: #475569 !important;
+    font-weight: 600 !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-btn {
+    background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 50%, #0d9488 100%) !important;
+    border-radius: 999px !important;
+    font-weight: 700 !important;
+    border: none !important;
+    box-shadow: 0 10px 22px -6px rgba(20, 184, 166, 0.45), 0 4px 8px -4px rgba(20, 184, 166, 0.3) !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-btn:hover {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%) !important;
+    box-shadow: 0 14px 28px -6px rgba(20, 184, 166, 0.55) !important;
+    transform: translateY(-1px);
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) a {
+    color: #0d9488 !important;
+    font-weight: 600 !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) a:hover {
+    color: #0f766e !important;
 }
 
 /* ===== Sneat Panel Theme (Teal Variant) ===== */

@@ -38,8 +38,15 @@ trait VerifiesTurnstile
     {
         Notification::make()
             ->title('Pengesahan Turnstile gagal')
-            ->body('Sila sahkan anda bukan robot sebelum meneruskan.')
+            ->body('Sila sahkan anda bukan robot sebelum meneruskan. Widget akan dimuat semula automatik.')
             ->danger()
             ->send();
+
+        $this->dispatch('cf-turnstile-reset');
+        // Fallback browser event for wire:ignore context (Livewire v4)
+        try {
+            $this->js('window.dispatchEvent(new CustomEvent("cf-turnstile-reset"))');
+        } catch (\Throwable $e) {
+        }
     }
 }

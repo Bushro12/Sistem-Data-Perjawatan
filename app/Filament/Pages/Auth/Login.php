@@ -56,6 +56,16 @@ class Login extends BaseLogin
 
     protected function throwFailureValidationException(): never
     {
+        // Token is single-use - reset widget so user can retry without page refresh
+        if (filled(config('services.turnstile.site_key'))) {
+            $this->data['cfTurnstileResponse'] = null;
+            $this->dispatch('cf-turnstile-reset');
+            try {
+                $this->js('window.dispatchEvent(new CustomEvent("cf-turnstile-reset"))');
+            } catch (\Throwable $e) {
+            }
+        }
+
         throw ValidationException::withMessages([
             'data.nokp' => 'No. Kad Pengenalan atau kata laluan tidak sah.',
         ]);

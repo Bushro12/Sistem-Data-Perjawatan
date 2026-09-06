@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
+use Illuminate\Contracts\Support\Htmlable;
 
 class RequestPasswordReset extends BaseRequestPasswordReset
 {
@@ -81,5 +82,34 @@ class RequestPasswordReset extends BaseRequestPasswordReset
             ->send();
 
         $this->form->fill();
+
+        // Token single-use — reset widget for next attempt without refresh
+        if (filled(config('services.turnstile.site_key'))) {
+            $this->dispatch('cf-turnstile-reset');
+            try {
+                $this->js('window.dispatchEvent(new CustomEvent("cf-turnstile-reset"))');
+            } catch (\Throwable $e) {
+            }
+        }
+    }
+
+    public function getView(): string
+    {
+        return 'filament.pages.auth.request-password-reset';
+    }
+
+    public function getHeading(): string|Htmlable
+    {
+        return '';
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return null;
+    }
+
+    public function hasLogo(): bool
+    {
+        return false;
     }
 }
