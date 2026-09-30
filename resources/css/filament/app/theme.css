@@ -447,6 +447,25 @@
     transform: translateY(-1px);
 }
 
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-btn.mystaff-btn-modal-cancel {
+    background: #dc2626 !important;
+    border: 1.5px solid #b91c1c !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 18px -6px rgba(220, 38, 38, 0.45) !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-btn.mystaff-btn-modal-cancel:hover {
+    background: #b91c1c !important;
+    border-color: #991b1b !important;
+    color: #ffffff !important;
+    box-shadow: 0 12px 24px -6px rgba(220, 38, 38, 0.55) !important;
+}
+
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-btn.mystaff-btn-modal-confirm,
+.fi-simple-layout:not(:has(.esdap-login-wrapper)) .fi-btn.mystaff-btn-modal-confirm * {
+    color: #ffffff !important;
+}
+
 .fi-simple-layout:not(:has(.esdap-login-wrapper)) a {
     color: #0d9488 !important;
     font-weight: 600 !important;
@@ -526,11 +545,11 @@
     gap: 0.75rem !important;
 }
 
-/* Simpan - solid teal (primary) - more prominent */
+/* Simpan - solid teal (primary) */
 .mystaff-btn-simpan.fi-btn,
 .fi-btn.mystaff-btn-simpan,
-.mystaff-profile-page .fi-ac-actions > *:first-child .fi-btn,
-.fi-simple-main:has(.mystaff-profile-page) .fi-ac > *:first-child .fi-btn {
+.mystaff-profile-page .fi-ac-actions > *:first-child .fi-btn:not(.mystaff-btn-kembali),
+.fi-simple-main:has(.mystaff-profile-page) .fi-ac > *:first-child .fi-btn:not(.mystaff-btn-kembali) {
     background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%) !important;
     border-color: #0f766e !important;
     color: #ffffff !important;
@@ -544,52 +563,58 @@
 
 .mystaff-btn-simpan.fi-btn:hover,
 .fi-btn.mystaff-btn-simpan:hover,
-.mystaff-profile-page .fi-ac-actions > *:first-child .fi-btn:hover {
+.mystaff-profile-page .fi-ac-actions > *:first-child .fi-btn:not(.mystaff-btn-kembali):hover {
     background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%) !important;
     border-color: #115e59 !important;
     box-shadow: 0 12px 24px -6px rgba(20, 184, 166, 0.55), 0 5px 10px -4px rgba(15, 118, 110, 0.35) !important;
     transform: translateY(-1px);
 }
 
-/* Kembali - soft violet (secondary) - harmonious with teal Simpan, distinct but low-contrast */
+/* Kembali - slate, distinct from Simpan */
+.fi-simple-main:has(.mystaff-profile-page) .fi-btn.mystaff-btn-kembali,
+.mystaff-profile-page .fi-btn.mystaff-btn-kembali,
 .mystaff-btn-kembali.fi-btn,
 .fi-btn.mystaff-btn-kembali,
-.mystaff-profile-page .fi-ac-actions > *:last-child .fi-btn,
-.fi-simple-main:has(.mystaff-profile-page) .fi-ac > *:last-child .fi-btn {
-    background: #f5f3ff !important;
-    border: 1.5px solid #c4b5fd !important;
-    color: #5b21b6 !important;
-    box-shadow: 0 2px 8px -2px rgba(139, 92, 246, 0.15) !important;
+.mystaff-profile-page .fi-ac-actions > *:last-child .fi-btn.mystaff-btn-kembali,
+.fi-simple-main:has(.mystaff-profile-page) .fi-ac .fi-btn.mystaff-btn-kembali {
+    background: #f1f5f9 !important;
+    border: 1.5px solid #94a3b8 !important;
+    color: #334155 !important;
+    box-shadow: none !important;
     font-weight: 600 !important;
     border-radius: 999px !important;
     padding-top: 0.625rem !important;
     padding-bottom: 0.625rem !important;
 }
 
+.fi-simple-main:has(.mystaff-profile-page) .fi-btn.mystaff-btn-kembali:hover,
+.mystaff-profile-page .fi-btn.mystaff-btn-kembali:hover,
 .mystaff-btn-kembali.fi-btn:hover,
 .fi-btn.mystaff-btn-kembali:hover,
-.mystaff-profile-page .fi-ac-actions > *:last-child .fi-btn:hover,
-.fi-simple-main:has(.mystaff-profile-page) .fi-ac > *:last-child .fi-btn:hover {
-    background: #ede9fe !important;
-    border-color: #8b5cf6 !important;
-    color: #4c1d95 !important;
-    box-shadow: 0 4px 12px -2px rgba(139, 92, 246, 0.25) !important;
+.mystaff-profile-page .fi-ac-actions > *:last-child .fi-btn.mystaff-btn-kembali:hover,
+.fi-simple-main:has(.mystaff-profile-page) .fi-ac .fi-btn.mystaff-btn-kembali:hover {
+    background: #e2e8f0 !important;
+    border-color: #64748b !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
     transform: translateY(-1px);
 }
 
+.dark .fi-simple-main:has(.mystaff-profile-page) .fi-btn.mystaff-btn-kembali,
 .dark .mystaff-btn-kembali.fi-btn,
 .dark .fi-btn.mystaff-btn-kembali,
-.dark .mystaff-profile-page .fi-ac-actions > *:last-child .fi-btn {
-    background: #2e1065 !important;
-    border-color: #7c3aed !important;
-    color: #ddd6fe !important;
+.dark .mystaff-profile-page .fi-ac-actions > *:last-child .fi-btn.mystaff-btn-kembali {
+    background: #334155 !important;
+    border-color: #64748b !important;
+    color: #e2e8f0 !important;
 }
 
+.dark .fi-simple-main:has(.mystaff-profile-page) .fi-btn.mystaff-btn-kembali:hover,
 .dark .mystaff-btn-kembali.fi-btn:hover,
 .dark .fi-btn.mystaff-btn-kembali:hover {
-    background: #4c1d95 !important;
-    border-color: #8b5cf6 !important;
-    color: #ede9fe !important;
+    background: #475569 !important;
+    border-color: #94a3b8 !important;
+    color: #f8fafc !important;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━ SIDEBAR ━━━━━━━━━━━━━━━━━━━━ */

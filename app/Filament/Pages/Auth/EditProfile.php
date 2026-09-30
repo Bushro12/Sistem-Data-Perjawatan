@@ -38,6 +38,11 @@ class EditProfile extends BaseEditProfile
             ->requiresConfirmation()
             ->modalHeading('Pengesahan')
             ->modalDescription('Adakah anda pasti mahu simpan perubahan ini?')
+            ->modalCancelAction(fn (Action $action): Action => $action
+                ->color('danger')
+                ->extraAttributes(['class' => 'mystaff-btn-modal-cancel']))
+            ->modalSubmitAction(fn (Action $action): Action => $action
+                ->extraAttributes(['class' => 'mystaff-btn-modal-confirm']))
             ->action(fn () => $this->save());
     }
 
