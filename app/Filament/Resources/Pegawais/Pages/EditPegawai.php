@@ -10,6 +10,7 @@ use Filament\Resources\Pages\EditRecord;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
+use Filament\Notifications\Notification;
 
 class EditPegawai extends EditRecord
 {
@@ -46,7 +47,7 @@ class EditPegawai extends EditRecord
                 ->color('primary')
                 ->requiresConfirmation()
                 ->modalHeading('Pengesahan')
-                ->modalDescription('Adakah anda pasti mahu simpan perubahan ini?')
+                ->modalDescription('Adakah anda pasti mahu mengemaskini maklumat ini?')
                 ->modalSubmitActionLabel('Ya, Simpan')
                 ->extraAttributes([
                     'class' => 'hidden',
@@ -134,5 +135,9 @@ class EditPegawai extends EditRecord
             '</button>'.
             '<span>'.e($this->getTitle()).'</span>'
         );
+    }
+        protected function getSavedNotificationTitle(): ?string
+    {
+        return 'Maklumat pegawai berjaya dikemaskini.';
     }
 }
