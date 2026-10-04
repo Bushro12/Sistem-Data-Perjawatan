@@ -68,7 +68,7 @@ class ListPegawais extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make('All')
+            'all' => Tab::make('Semua')
                 ->icon('heroicon-m-squares-2x2')
                 ->badge(fn () => number_format(Pegawai::count()))
                 ->extraAttributes(['class' => 'fi-tabs-item-all']),
