@@ -196,12 +196,6 @@ class WaranJawatansTable
                     ->searchable()
                     ->preload(),
 
-                SelectFilter::make('ptj')
-                    ->label('PTJ')
-                    ->relationship('ptj', 'nama_ptj')
-                    ->searchable()
-                    ->preload(),
-
                 SelectFilter::make('aktiviti')
                     ->label('Aktiviti')
                     ->relationship('aktiviti', 'nama_aktiviti')
@@ -210,6 +204,14 @@ class WaranJawatansTable
                     )
                     ->searchable()
                     ->preload(),
+
+                SelectFilter::make('ptj')
+                    ->label('PTJ')
+                    ->relationship('ptj', 'nama_ptj')
+                    ->searchable()
+                    ->preload(),
+
+                
             ], layout: FiltersLayout::Modal)
             ->filtersApplyAction(fn (Action $action) => $action->label('Cari'))
             ->recordActions([

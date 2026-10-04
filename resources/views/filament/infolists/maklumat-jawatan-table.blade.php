@@ -41,35 +41,22 @@
     $rows[] = ['icon' => 'heroicon-o-square-2-stack', 'iconClass' => 'text-fg-brand', 'label' => 'KD / KKIA / Wad / Klinik', 'value' => $record->subunit?->nama_subunit ?: 'Tiada'];
 @endphp
 
-{{-- <div class="space-y-4"> --}}
-    {{-- <div class="flex flex-wrap items-start justify-between gap-3 rounded-xl border border-gray-200 bg-gradient-to-r from-gray-50 to-white px-4 py-3 dark:border-white/10 dark:from-white/5 dark:to-transparent">
-        <div class="min-w-0">
-            <p class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Jawatan Waran</p>
-            <p class="mt-1 text-base font-semibold text-gray-950 dark:text-white">{{ $jawatanGred }}</p>
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $record->ptj?->nama_ptj ?: 'Tiada PTJ' }}</p>
-        </div>
-        <span class="fi-badge inline-flex items-center rounded-md px-2.5 py-1 text-sm font-medium" style="{{ $statusStyle }}">
-            {{ $statusLabel }}
-        </span>
-    </div> --}}
-
-    <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-white/10">
-        <table class="w-full border-collapse text-sm">
-            <tbody>
-                @foreach($rows as $index => $row)
-                    <tr class="{{ $index % 2 === 0 ? 'bg-white dark:bg-transparent' : 'bg-gray-50/70 dark:bg-white/[0.02]' }}">
-                        <th class="w-1/3 border-b border-gray-200 px-3 py-2.5 text-left font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
-                            <span class="inline-flex items-center gap-2">
-                                <x-filament::icon :icon="$row['icon']" @class(['w-4 h-4', $row['iconClass']]) />
-                                {{ $row['label'] }}
-                            </span>
-                        </th>
-                        <td class="border-b border-gray-200 px-3 py-2.5 text-gray-950 dark:border-white/10 dark:text-white">
-                            {{ $row['value'] }}
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-{{-- </div> --}}
+<div class="overflow-hidden rounded-xl border border-gray-200 dark:border-white/10">
+    <table class="w-full border-collapse text-sm">
+        <tbody>
+            @foreach($rows as $index => $row)
+                <tr class="{{ $index % 2 === 0 ? 'bg-white dark:bg-transparent' : 'bg-gray-50/70 dark:bg-white/[0.02]' }}">
+                    <th class="w-1/3 border border-gray-200 px-3 py-2 text-left font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
+                        <span class="inline-flex items-center gap-2">
+                            <x-filament::icon :icon="$row['icon']" @class(['w-4 h-4', $row['iconClass']]) />
+                            {{ $row['label'] }}
+                        </span>
+                    </th>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-950 dark:border-white/10 dark:text-white">
+                        {{ $row['value'] }}
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>

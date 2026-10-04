@@ -2026,6 +2026,11 @@ td.fi-ta-selection-cell {
     letter-spacing: 0.06em !important;
 }
 
+.pegawai-penempatan-normal-case .fi-in-entry-label {
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
+
 /* Value column — readable, main text color */
 .fi-in-entry-content-col {
     padding-top: 0.125rem !important;
