@@ -900,12 +900,13 @@ class WaranJawatansRelationManager extends RelationManager
                         ->modalSubmitActionLabel('Ya, Padam')
                         ->modalCancelActionLabel('Batal')
                         ->visible(
-                            fn ($record) => $this->getPageClass() !== ViewWaran::class
-                            && $this->getOwnerRecord()->jenis === 'Tambah'
-                            && $record->status === 'active'
-
+                            fn (WaranJawatan $record): bool => $this->canPadamWaranJawatan($record)
                         )
-                        ->action(function ($record) {
+                        ->action(function (WaranJawatan $record): void {
+                            if (! $this->canPadamWaranJawatan($record)) {
+                                return;
+                            }
+
                             if ($record->hasAssignedPegawai()) {
                                 BlockedPegawaiDelete::notify();
 
@@ -997,5 +998,15 @@ class WaranJawatansRelationManager extends RelationManager
 
             ]);
 
+    }
+
+    protected function canPadamWaranJawatan(WaranJawatan $record): bool
+    {
+        $user = auth()->user();
+
+        return $this->getPageClass() !== ViewWaran::class
+            && $this->getOwnerRecord()->jenis === 'Tambah'
+            && in_array($record->status, ['active', 'pindaan nama', 'batal nama'], true)
+            && ($user?->isSuperadmin() || $user?->isAdmin());
     }
 }
