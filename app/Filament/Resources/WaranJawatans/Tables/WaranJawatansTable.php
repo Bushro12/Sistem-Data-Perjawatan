@@ -210,6 +210,13 @@ class WaranJawatansTable
                     )
                     ->searchable()
                     ->preload(),
+
+                SelectFilter::make('ptj')
+                    ->label('PTJ')
+                    ->relationship('ptj', 'nama_ptj')
+                    ->searchable()
+                    ->preload(),
+
             ], layout: FiltersLayout::Modal)
             ->filtersApplyAction(fn (Action $action) => $action->label('Cari'))
             ->recordActions([
@@ -249,11 +256,14 @@ class WaranJawatansTable
                 ]),
 
             ])
+            ->selectable(fn (): bool => (bool) auth()->user()?->isSuperAdmin())
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->authorize(fn (): bool => (bool) auth()->user()?->isSuperAdmin())
                         ->before(fn (Collection $records): mixed => static::notifyBlockedPegawai($records)),
-                ]),
+                ])
+                    ->visible(fn (): bool => (bool) auth()->user()?->isSuperAdmin()),
             ]);
     }
 }
