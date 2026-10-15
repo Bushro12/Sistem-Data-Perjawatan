@@ -802,6 +802,7 @@ class PegawaiForm
 
                                     TextEntry::make('tahun_khidmat_penempatan_semasa')
                                         ->label('Tahun Khidmat Penempatan Semasa')
+                                        ->extraAttributes(['class' => 'pegawai-penempatan-normal-case'])
                                         ->visible(fn (Get $get): bool => (bool) ($get('is_tetap') || $get('is_kontrak_interim') || $get('is_kontrak_isi_tetap')))
                                         ->getStateUsing(function ($record, Get $get) {
                                             $tarikhSandang = $get('tarikh_sandang') ?: $record?->tarikh_sandang;
@@ -821,6 +822,7 @@ class PegawaiForm
 
                                     TextEntry::make('tahun_perkhidmatan_semasa')
                                         ->label('Tahun Perkhidmatan Semasa')
+                                        ->extraAttributes(['class' => 'pegawai-penempatan-normal-case'])
                                         ->visible(fn (Get $get): bool => (bool) $get('is_kontrak'))
                                         ->getStateUsing(function ($record, Get $get) {
                                             $tarikhSandang = $get('tarikh_sandang') ?: $record?->tarikh_sandang;
@@ -841,6 +843,7 @@ class PegawaiForm
 
                             TextEntry::make('no_waran')
                                 ->label('No Waran')
+                                ->extraAttributes(['class' => 'pegawai-penempatan-normal-case'])
                                 ->getStateUsing(function ($record) {
                                     if (! $record) {
                                         return null;
@@ -858,6 +861,7 @@ class PegawaiForm
 
                             TextEntry::make('butiran')
                                 ->label('Butiran')
+                                ->extraAttributes(['class' => 'pegawai-penempatan-normal-case'])
                                 ->getStateUsing(function ($record) {
                                     if (! $record) {
                                         return null;
@@ -876,6 +880,7 @@ class PegawaiForm
                                 }),
                             TextEntry::make('ptj')
                                 ->label('PTJ')
+                                ->extraAttributes(['class' => 'pegawai-penempatan-normal-case'])
                                 ->getStateUsing(function (?Pegawai $record, Get $get) {
                                     if (! $record) {
                                         // Create: when is_kontrak, use PTJ chosen in Maklumat Pegawai
@@ -918,6 +923,7 @@ class PegawaiForm
 
                             TextEntry::make('unit')
                                 ->label('Unit')
+                                ->extraAttributes(['class' => 'pegawai-penempatan-normal-case'])
                                 ->getStateUsing(function ($record) {
                                     if (! $record) {
                                         return null;
@@ -940,6 +946,7 @@ class PegawaiForm
 
                             TextEntry::make('subunit')
                                 ->label('Subunit')
+                                ->extraAttributes(['class' => 'pegawai-penempatan-normal-case'])
                                 ->getStateUsing(function ($record) {
                                     if (! $record) {
                                         return null;
@@ -979,6 +986,7 @@ class PegawaiForm
                                 ->columnSpanFull(),
                             TextEntry::make('aktiviti')
                                 ->label('Aktiviti')
+                                ->extraAttributes(['class' => 'pegawai-penempatan-normal-case'])
                                 ->getStateUsing(function ($record) {
                                     // No record on the create page - nothing to show yet.
                                     if (! $record) {
@@ -1001,6 +1009,7 @@ class PegawaiForm
 
                             TextEntry::make('lain-lain')
                                 ->label('Lain-lain')
+                                ->extraAttributes(['class' => 'pegawai-penempatan-normal-case'])
                                 ->getStateUsing(function ($record) {
                                     // No record on the create page - nothing to show yet.
                                     if (! $record) {

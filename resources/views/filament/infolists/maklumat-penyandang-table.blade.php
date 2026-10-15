@@ -21,47 +21,47 @@
         <table class="w-full border-collapse text-sm">
             <tbody>
                 <tr class="bg-white dark:bg-transparent">
-                    <th class="w-1/3 border-b border-gray-200 px-3 py-2.5 text-left font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
+                    <th class="w-1/3 border border-gray-200 px-3 py-2.5 text-left font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
                         <span class="inline-flex items-center gap-2">
                             <x-filament::icon icon="heroicon-o-user" class="w-4 h-4 text-fg-brand" />
                             Nama Pegawai
                         </span>
                     </th>
-                    <td class="border-b border-gray-200 px-3 py-2.5 font-semibold text-gray-950 dark:border-white/10 dark:text-white">
+                    <td class="border border-gray-200 px-3 py-2.5 font-semibold text-gray-950 dark:border-white/10 dark:text-white">
                         {{ $pegawai->nama }}
                     </td>
                 </tr>
                 <tr class="bg-gray-50/70 dark:bg-white/[0.02]">
-                    <th class="border-b border-gray-200 px-3 py-2.5 text-left font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
+                    <th class="border border-gray-200 px-3 py-2.5 text-left font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
                         <span class="inline-flex items-center gap-2">
                             <x-filament::icon icon="heroicon-o-identification" class="w-4 h-4 text-fg-indigo" />
                             No Kad Pengenalan
                         </span>
                     </th>
-                    <td class="border-b border-gray-200 px-3 py-2.5 text-gray-950 dark:border-white/10 dark:text-white">
+                    <td class="border border-gray-200 px-3 py-2.5 text-gray-950 dark:border-white/10 dark:text-white">
                         {{ $pegawai->nokp }}
                     </td>
                 </tr>
                 <tr class="bg-white dark:bg-transparent">
-                    <th class="border-b border-gray-200 px-3 py-2.5 text-left font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
+                    <th class="border border-gray-200 px-3 py-2.5 text-left font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
                         <span class="inline-flex items-center gap-2">
                             <x-filament::icon icon="heroicon-o-briefcase" class="w-4 h-4 text-fg-purple" />
                             Jawatan / Gred
                         </span>
                     </th>
-                    <td class="border-b border-gray-200 px-3 py-2.5 text-gray-950 dark:border-white/10 dark:text-white">
+                    <td class="border border-gray-200 px-3 py-2.5 text-gray-950 dark:border-white/10 dark:text-white">
                         {{ $jawatanGred ?: '-' }}
                     </td>
                 </tr>
                 @if($showPtjPegawai)
                     <tr class="bg-gray-50/70 dark:bg-white/[0.02]">
-                        <th class="border-b border-gray-200 px-3 py-2.5 text-left font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
+                        <th class="border border-gray-200 px-3 py-2.5 text-left font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
                             <span class="inline-flex items-center gap-2">
                                 <x-filament::icon icon="heroicon-o-building-office-2" class="w-4 h-4 text-fg-cyan" />
                                 PTJ Pegawai
                             </span>
                         </th>
-                        <td class="border-b border-gray-200 px-3 py-2.5 text-gray-950 dark:border-white/10 dark:text-white">
+                        <td class="border border-gray-200 px-3 py-2.5 text-gray-950 dark:border-white/10 dark:text-white">
                             {{ $pegawai->ptj?->nama_ptj ?: 'Tiada' }}
                         </td>
                     </tr>
