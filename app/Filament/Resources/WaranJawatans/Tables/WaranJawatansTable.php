@@ -251,11 +251,14 @@ class WaranJawatansTable
                 ]),
 
             ])
+            ->selectable(fn (): bool => (bool) auth()->user()?->isSuperAdmin())
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->authorize(fn (): bool => (bool) auth()->user()?->isSuperAdmin())
                         ->before(fn (Collection $records): mixed => static::notifyBlockedPegawai($records)),
-                ]),
+                ])
+                    ->visible(fn (): bool => (bool) auth()->user()?->isSuperAdmin()),
             ]);
     }
 }
