@@ -151,6 +151,24 @@ class WaranJawatansTable
                             $jawatan .= ' ('.e($record->butiran).')';
                         }
 
+                        $penyandangIndicators = [];
+
+                        if ($record->pegawai?->is_kup) {
+                            $penyandangIndicators[] = 'KUP';
+                        }
+
+                        if ($record->pegawai?->is_kupj) {
+                            $penyandangIndicators[] = 'KUPJ';
+                        }
+
+                        if (filled($record->tbk?->tbk)) {
+                            $penyandangIndicators[] = 'TBK'.$record->tbk->tbk;
+                        }
+
+                        if ($penyandangIndicators !== []) {
+                            $jawatan .= ', '.e(implode(', ', $penyandangIndicators));
+                        }
+
                         return '<div class="font-medium">'.$ptj.'</div>'
                             .'<div class="'.$muted.'">'.$aktiviti.'</div>'
                             .'<div class="'.$muted.'">'.$jawatan.'</div>';

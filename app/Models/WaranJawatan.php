@@ -95,8 +95,18 @@ class WaranJawatan extends Model
 
     public function getJawatanListAttribute()
     {
-        return Jawatan::whereIn('id', $this->jawatan_ids ?? [])
-            ->pluck('desc_jawatan')
+        $jawatanIds = $this->jawatan_ids ?? [];
+
+        if ($jawatanIds === []) {
+            return '';
+        }
+
+        $jawatanById = Jawatan::whereIn('id', $jawatanIds)
+            ->pluck('desc_jawatan', 'id');
+
+        return collect($jawatanIds)
+            ->map(fn ($id) => $jawatanById->get((int) $id))
+            ->filter()
             ->implode(', ');
     }
 

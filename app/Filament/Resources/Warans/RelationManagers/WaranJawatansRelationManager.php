@@ -558,7 +558,44 @@ class WaranJawatansRelationManager extends RelationManager
                 TextColumn::make('jawatan_gred_display')
                     ->label('Jawatan / Gred')
                     ->state(function ($record) {
-                        return $record->jawatan_list.'<br>'.$record->gred_list;
+                        $pegawaiGred = $record->pegawai?->jawatan_gred?->gred?->kod_gred;
+                        $waranGredIds = $record->gred_ids ?? [];
+                        $waranGredsById = $waranGredIds === []
+                            ? collect()
+                            : Gred::query()
+                                ->whereIn('id', $waranGredIds)
+                                ->pluck('kod_gred', 'id');
+                        $waranGreds = collect($waranGredIds)
+                            ->map(fn ($id) => $waranGredsById->get((int) $id))
+                            ->filter(fn ($gred): bool => filled($gred)
+                                && (! filled($pegawaiGred) || strcasecmp($gred, $pegawaiGred) !== 0))
+                            ->implode('/');
+
+                        $pegawaiPosition = collect([
+                            $record->pegawai?->jawatan_gred?->jawatan?->desc_jawatan,
+                            $pegawaiGred,
+                        ])->filter()->implode(' ');
+
+                        $waranPosition = collect([
+                            $record->jawatan_list,
+                            $waranGreds,
+                        ])->filter()->implode(' ');
+
+                        $positions = [];
+
+                        if ($pegawaiPosition !== '') {
+                            $positions[] = e($pegawaiPosition);
+                        }
+
+                        if ($record->is_kup || $record->pegawai?->is_kup) {
+                            $positions[] = 'KUP';
+                        }
+
+                        if ($waranPosition !== '') {
+                            $positions[] = e($waranPosition);
+                        }
+
+                        return implode(' ', $positions) ?: '-';
                     })
                     ->html()
                     ->wrap()

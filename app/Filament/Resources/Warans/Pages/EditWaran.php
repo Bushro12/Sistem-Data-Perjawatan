@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
+use Filament\Notifications\Notification;
 
 class EditWaran extends EditRecord
 {
@@ -133,10 +134,23 @@ class EditWaran extends EditRecord
         ];
     }
 
+    public function mount(int|string $record): void
+{
+    parent::mount($record);
+
+    if (! (auth()->user()?->isSuperadmin() || auth()->user()?->isAdmin())) {
+        Notification::make()
+            ->title('PTJ tidak mempunyai akses untuk mengemaskini maklumat waran')
+            ->warning()
+            ->send();
+    }
+}
+
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
-            ->label('Kemaskini Waran');
+            ->label('Kemaskini Waran')
+            ->visible(fn () => auth()->user()?->isSuperadmin() || auth()->user()?->isAdmin());
     }
 
     public function hasCombinedRelationManagerTabsWithContent(): bool
