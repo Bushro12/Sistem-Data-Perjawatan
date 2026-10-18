@@ -5,6 +5,8 @@ namespace App\Filament\Resources\WaranJawatans\Tables;
 use App\Filament\Resources\WaranJawatans\Schemas\WaranJawatanInfolist;
 use App\Filament\Resources\WaranJawatans\WaranJawatanResource;
 use App\Filament\Support\BlockedPegawaiDelete;
+use App\Models\Ptj;
+use App\Models\Waran;
 use App\Models\WaranJawatan;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -33,11 +35,20 @@ class WaranJawatansTable
         return $table
             ->defaultPaginationPageOption(5)
             ->recordUrl(null)
-            ->defaultSort(fn (Builder $query): Builder => $query
-                ->leftJoin('warans as waran_sort', 'waran_jawatans.waran_id', '=', 'waran_sort.id')
-                ->orderBy('waran_sort.no_waran')
-                ->orderBy('waran_jawatans.butiran')
-                ->select('waran_jawatans.*'))
+            ->defaultSort(function (Builder $query): Builder {
+                if (filled($query->getQuery()->orders)) {
+                    return $query;
+                }
+
+                return $query
+                    ->orderBy(
+                        Waran::query()
+                            ->select('no_waran')
+                            ->whereColumn('warans.id', 'waran_jawatans.waran_id')
+                            ->limit(1)
+                    )
+                    ->orderBy('waran_jawatans.butiran');
+            })
             ->columns([
                 TextColumn::make('no')
                     ->label('Bil')
@@ -110,11 +121,15 @@ class WaranJawatansTable
                     ->html()
                     ->wrap()
                     ->sortable(query: function (Builder $query, string $direction): Builder {
-                        return $query
-                            ->leftJoin('warans as waran_sort', 'waran_jawatans.waran_id', '=', 'waran_sort.id')
-                            ->orderBy('waran_sort.no_waran', $direction)
-                            ->orderBy('waran_jawatans.butiran', $direction)
-                            ->select('waran_jawatans.*');
+                        $direction = $direction === 'desc' ? 'desc' : 'asc';
+
+                        return $query->orderBy(
+                            Waran::query()
+                                ->select('no_waran')
+                                ->whereColumn('warans.id', 'waran_jawatans.waran_id')
+                                ->limit(1),
+                            $direction,
+                        );
                     })
                     ->searchable(query: function ($query, string $search) {
                         $query->where(function ($q) use ($search) {
@@ -156,14 +171,17 @@ class WaranJawatansTable
                     })
                     ->html()
                     ->wrap()
-                    ->sortable(
-                        query: function ($query, string $direction): void {
-                            $query
-                                ->leftJoin('ptjs as ptj_sort', 'waran_jawatans.ptj_id', '=', 'ptj_sort.id')
-                                ->orderBy('ptj_sort.nama_ptj', $direction)
-                                ->select('waran_jawatans.*');
-                        }
-                    )
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        $direction = $direction === 'desc' ? 'desc' : 'asc';
+
+                        return $query->orderBy(
+                            Ptj::query()
+                                ->select('nama_ptj')
+                                ->whereColumn('ptjs.id', 'waran_jawatans.ptj_id')
+                                ->limit(1),
+                            $direction,
+                        );
+                    })
                     ->searchable(query: function ($query, string $search): void {
                         $query->where(function ($q) use ($search): void {
                             $q->whereHas('ptj', fn ($ptj) => $ptj->where('nama_ptj', 'like', "%{$search}%"))
@@ -211,7 +229,6 @@ class WaranJawatansTable
                     ->searchable()
                     ->preload(),
 
-                
             ], layout: FiltersLayout::Modal)
             ->filtersApplyAction(fn (Action $action) => $action->label('Cari'))
             ->recordActions([

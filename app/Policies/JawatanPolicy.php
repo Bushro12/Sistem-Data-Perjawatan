@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Jawatan;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class JawatanPolicy
 {
@@ -45,7 +44,7 @@ class JawatanPolicy
      */
     public function delete(User $user, Jawatan $jawatan): bool
     {
-        return $user->isSuperAdmin();
+        return $user->isSuperAdmin() || $user->isAdmin();
     }
 
     /**

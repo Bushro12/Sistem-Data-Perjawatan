@@ -7,7 +7,6 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -22,11 +21,11 @@ class GredsTable
                     ->rowIndex()
                     ->width(1),
                 TextColumn::make('kod_gred')
-                    ->label('Kod')
+                    ->label('Gred')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('desc_gred')
-                    ->label('Gred')
+                    ->label('Catatan')
                     ->sortable()
                     ->searchable(),
             ])
@@ -45,12 +44,12 @@ class GredsTable
 
                     DeleteAction::make()
                         ->label('Padam')
-                        ->modalHeading(fn($record) => "Padam {$record->kod_gred}")
+                        ->modalHeading(fn ($record) => "Padam {$record->kod_gred}")
                         ->modalDescription('Adakah anda pasti mahu memadam rekod ini? Tindakan ini tidak boleh dibatalkan.')
                         ->modalSubmitActionLabel('Ya, Padam')
-                        ->modalCancelActionLabel('Batal')
+                        ->modalCancelActionLabel('Batal'),
 
-                ])
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

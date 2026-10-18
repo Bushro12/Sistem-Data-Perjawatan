@@ -107,7 +107,7 @@ class WaranJawatansRelationManager extends RelationManager
                                     ->columns(1)
                                     ->disabled(
                                         fn () => ! auth()->user()?->isSuperadmin()
-                                        && ! auth()->user()?->isAdmin()
+                                            && ! auth()->user()?->isAdmin()
                                     ),
 
                                 TextInput::make('butiran')
@@ -115,7 +115,7 @@ class WaranJawatansRelationManager extends RelationManager
                                     ->maxLength(255)
                                     ->readonly(
                                         fn () => ! auth()->user()?->isSuperadmin()
-                                        && ! auth()->user()?->isAdmin()
+                                            && ! auth()->user()?->isAdmin()
                                     ),
 
                                 Select::make('jawatan_ids')
@@ -131,7 +131,7 @@ class WaranJawatansRelationManager extends RelationManager
                                     ->live()
                                     ->disabled(
                                         fn () => ! auth()->user()?->isSuperadmin()
-                                        && ! auth()->user()?->isAdmin()
+                                            && ! auth()->user()?->isAdmin()
                                     ),
                                 Select::make('gred_ids')
                                     ->label('Gred')
@@ -214,7 +214,7 @@ class WaranJawatansRelationManager extends RelationManager
                                     ->columnSpanFull()
                                     ->disabled(
                                         fn () => ! auth()->user()?->isSuperadmin()
-                                        && ! auth()->user()?->isAdmin()
+                                            && ! auth()->user()?->isAdmin()
                                     )
                                     ->afterStateUpdated(function (Set $set): void {
                                         $set('unit_id', null);
@@ -255,7 +255,7 @@ class WaranJawatansRelationManager extends RelationManager
                                     ->columnSpanFull()
                                     ->disabled(
                                         fn () => ! auth()->user()?->isSuperadmin()
-                                        && ! auth()->user()?->isAdmin()
+                                            && ! auth()->user()?->isAdmin()
                                     )
                                     ->afterStateUpdated(fn (Set $set) => $set('subunit_id', null)),
 
@@ -306,7 +306,7 @@ class WaranJawatansRelationManager extends RelationManager
                                     ->displayFormat('d F Y')
                                     ->disabled(
                                         fn () => ! auth()->user()?->isSuperadmin()
-                                        && ! auth()->user()?->isAdmin()
+                                            && ! auth()->user()?->isAdmin()
                                     ),
 
                             ]),
@@ -493,12 +493,22 @@ class WaranJawatansRelationManager extends RelationManager
 
                 if ($waran->jenis !== 'Tolak') {
 
-                    return $query
+                    $sortColumn = $this->getTableSortColumn();
+
+                    $query = $query
                         ->where('waran_id', $waran->id)
                         ->listed()
-                        ->where('status', '!=', 'deleted')
-                        ->orderByRaw("status = 'removed' ASC")
-                        ->orderBy('id', 'asc');
+                        ->where('status', '!=', 'deleted');
+
+                    if ($sortColumn !== 'status') {
+                        $query->orderByRaw("status = 'removed' ASC");
+                    }
+
+                    if (blank($sortColumn)) {
+                        $query->orderBy('id', 'asc');
+                    }
+
+                    return $query;
                 }
 
                 if ($this->viewMode === 'inactive') {
@@ -527,6 +537,7 @@ class WaranJawatansRelationManager extends RelationManager
                 TextColumn::make('butiran')
                     ->label('Butiran')
                     ->searchable()
+                    ->sortable()
                     ->color(
                         fn ($record) => $record->status === 'removed' ? 'gray' : 'default'
                     ),
@@ -542,6 +553,13 @@ class WaranJawatansRelationManager extends RelationManager
                             $aktiviti->where('no_aktivit', 'like', "%{$search}%")
                                 ->orWhere('nama_aktiviti', 'like', "%{$search}%");
                         });
+                    })
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query->orderBy(
+                            Aktiviti::select('no_aktivit')
+                                ->whereColumn('aktivitis.id', 'waran_jawatans.aktiviti_id'),
+                            $direction
+                        );
                     })
                     ->color(
                         fn ($record) => $record->status === 'removed' ? 'gray' : 'default'
@@ -576,12 +594,39 @@ class WaranJawatansRelationManager extends RelationManager
                             }
                         });
                     })
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        $direction = $direction === 'desc' ? 'desc' : 'asc';
+                        $driver = $query->getConnection()->getDriverName();
+                        $firstJawatanId = $driver === 'sqlite'
+                            ? "CAST(json_extract(waran_jawatans.jawatan_ids, '$[0]') AS INTEGER)"
+                            : "CAST(JSON_UNQUOTE(JSON_EXTRACT(waran_jawatans.jawatan_ids, '$[0]')) AS UNSIGNED)";
+                        $firstGredId = $driver === 'sqlite'
+                            ? "CAST(json_extract(waran_jawatans.gred_ids, '$[0]') AS INTEGER)"
+                            : "CAST(JSON_UNQUOTE(JSON_EXTRACT(waran_jawatans.gred_ids, '$[0]')) AS UNSIGNED)";
+
+                        return $query
+                            ->orderBy(
+                                Jawatan::query()
+                                    ->select('desc_jawatan')
+                                    ->whereRaw("jawatans.id = {$firstJawatanId}")
+                                    ->limit(1),
+                                $direction,
+                            )
+                            ->orderBy(
+                                Gred::query()
+                                    ->select('kod_gred')
+                                    ->whereRaw("greds.id = {$firstGredId}")
+                                    ->limit(1),
+                                $direction,
+                            );
+                    })
                     ->color(
                         fn ($record) => $record->status === 'removed' ? 'gray' : 'default'
                     ),
 
                 TextColumn::make('ptj.nama_ptj')
                     ->searchable()
+                    ->sortable()
                     ->color(
                         fn ($record) => $record->status === 'removed' ? 'gray' : 'default'
                     )
@@ -597,6 +642,18 @@ class WaranJawatansRelationManager extends RelationManager
                 TextColumn::make('status')
                     ->badge()
                     ->size('lg')
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        $direction = $direction === 'desc' ? 'desc' : 'asc';
+
+                        return $query->orderByRaw(
+                            "CASE waran_jawatans.status
+                                WHEN 'removed' THEN 'Dibuang'
+                                WHEN 'pindaan nama' THEN 'Pindaan Nama'
+                                WHEN 'batal nama' THEN 'Batal Nama'
+                                ELSE 'Aktif'
+                            END {$direction}"
+                        );
+                    })
                     ->formatStateUsing(fn ($state) => match ($state) {
                         'removed' => 'Dibuang',
                         'pindaan nama' => 'Pindaan Nama',
@@ -667,7 +724,7 @@ class WaranJawatansRelationManager extends RelationManager
                     ->createAnother(false)
                     ->visible(
                         fn () => $this->getOwnerRecord()?->jenis === 'Tambah'
-                        && (auth()->user()?->isSuperadmin() || auth()->user()?->isAdmin())
+                            && (auth()->user()?->isSuperadmin() || auth()->user()?->isAdmin())
                     )
                     ->after(function ($record) {
                         Log::info('Penempatan Waran Added', [
@@ -774,16 +831,16 @@ class WaranJawatansRelationManager extends RelationManager
                                 ),
 
                             Action::make('duplicate')
-                                ->label('Duplicate')
+                                ->label('Salin')
                                 ->icon('heroicon-o-document-duplicate')
                                 ->color('warning')
                                 ->visible(fn (WaranJawatan $record): bool => $this->getPageClass() !== ViewWaran::class
                                     && $this->getOwnerRecord()->jenis === 'Tambah'
                                     && ! $record->hasAssignedPegawai())
                                 ->requiresConfirmation()
-                                ->modalHeading('Duplicate Jawatan')
+                                ->modalHeading('Salin Jawatan')
                                 ->modalDescription('Adakah anda pasti mahu salin rekod jawatan ini? Rekod baharu akan ditambah tanpa penyandang.')
-                                ->modalSubmitActionLabel('Ya, Duplicate')
+                                ->modalSubmitActionLabel('Ya, Salin')
                                 ->modalCancelActionLabel('Batal')
                                 ->action(function (WaranJawatan $record): void {
                                     if ($record->hasAssignedPegawai()) {
@@ -798,7 +855,7 @@ class WaranJawatansRelationManager extends RelationManager
                                     ]);
                                     $duplicate->save();
 
-                                    Log::info('Penempatan Waran Duplicated', [
+                                    Log::info('Penempatan Waran Disalin', [
                                         'source_waran_jawatan_id' => $record->id,
                                         'duplicate_waran_jawatan_id' => $duplicate->id,
                                         'user_id' => auth()->id(),
@@ -940,7 +997,7 @@ class WaranJawatansRelationManager extends RelationManager
                         ->color('success')
                         ->visible(
                             fn () => $this->getPageClass() !== ViewWaran::class
-                            && $this->getOwnerRecord()->jenis === 'Tambah'
+                                && $this->getOwnerRecord()->jenis === 'Tambah'
                         )
                         ->form([
                             Select::make('status')
@@ -994,7 +1051,8 @@ class WaranJawatansRelationManager extends RelationManager
                                 ])
                                 ->sendToDatabase($recipients);
                         }),
-                ]),
+                ])
+                    ->tooltip('Tindakan'),
 
             ]);
 
