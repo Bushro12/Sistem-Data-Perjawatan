@@ -51,7 +51,8 @@ class WaransTable
                 // Waran Info
                 TextColumn::make('no_waran')
                     ->label('Maklumat Waran')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
 
                 // TextColumn::make('butiran_list')
                 //     ->label('Butiran')
@@ -87,6 +88,7 @@ class WaransTable
                     // })
                     ->html()
                     ->wrap()
+                    // ->sortable()
                     ->searchable(query: function ($query, $search) {
                         $query->whereHas('waranJawatan.aktiviti', function ($q) use ($search) {
                             $q->where('nama_aktiviti', 'like', "%{$search}%")
@@ -332,7 +334,9 @@ class WaransTable
                                 ->sendToDatabase($superadmin);
 
                         }),
-                ]),
+
+                ])
+                    ->tooltip('Tindakan'),
             ]);
     }
 }

@@ -17,19 +17,20 @@ class JawatanForm
         return $schema
             ->columns(3)
             ->components([
-                TextInput::make('kod_jawatan')
-                    ->label('Kod Jawatan')
-                    ->required()
-                    ->columnSpan(1)
-                    ->dehydrateStateUsing(fn(string $state): string => strtoupper($state))
-                    ->extraInputAttributes(['style' => 'text-transform:uppercase']),
                 TextInput::make('desc_jawatan')
                     ->label('Jawatan')
                     ->required()
                     ->columnSpan(2)
-                    ->dehydrateStateUsing(fn(string $state): string => strtoupper($state))
+                    ->dehydrateStateUsing(fn (string $state): string => strtoupper($state))
                     ->extraInputAttributes(['style' => 'text-transform:uppercase'])
                     ->unique(),
+                TextInput::make('kod_jawatan')
+                    ->label('Kod Jawatan (Jika Ada)')
+                    // ->required()
+                    ->columnSpan(1)
+                    ->dehydrateStateUsing(fn (?string $state): ?string => $state !== null ? strtoupper($state) : null)
+                    ->extraInputAttributes(['style' => 'text-transform:uppercase']),
+
                 Select::make('gred_id')
                     ->label('Gred')
                     ->multiple()
@@ -59,12 +60,12 @@ class JawatanForm
                         2 => 'info',
                         3 => 'tertiary',
                         4 => 'primary',
-                        5 => 'secondary'
+                        5 => 'secondary',
                     ])
                     ->inline()
                     ->afterStateHydrated(function ($component, $record) {
 
-                        if (!$record) {
+                        if (! $record) {
                             return;
                         }
 
