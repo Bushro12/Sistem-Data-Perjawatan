@@ -26,7 +26,8 @@ class WaranForm
                                 fn() =>
                                 ! auth()->user()?->isSuperadmin()
                                     && ! auth()->user()?->isAdmin()
-                            ),
+                            )
+                            ->dehydrated(fn () => auth()->user()?->isSuperadmin() || auth()->user()?->isAdmin()),
 
                         TextInput::make('jik')
                             ->label('Jumlah Jawatan')
@@ -36,7 +37,8 @@ class WaranForm
                                 fn() =>
                                 ! auth()->user()?->isSuperadmin()
                                     && ! auth()->user()?->isAdmin()
-                            ),
+                            )
+                            ->dehydrated(fn () => auth()->user()?->isSuperadmin() || auth()->user()?->isAdmin()),
 
                         Textarea::make('catatan')
                             ->label('Catatan')
@@ -45,7 +47,8 @@ class WaranForm
                                 fn() =>
                                 ! auth()->user()?->isSuperadmin()
                                     && ! auth()->user()?->isAdmin()
-                            ),
+                            )
+                            ->dehydrated(fn () => auth()->user()?->isSuperadmin() || auth()->user()?->isAdmin()),
                         Radio::make('jenis')
                             ->label('Jenis Waran')
                             ->options([
@@ -60,6 +63,7 @@ class WaranForm
                                 fn(string $operation) =>
                                 $operation === 'edit'
                             )
+                            ->dehydrated(false)
                     ])
                     ->columns(2)
                     ->columnSpanFull()

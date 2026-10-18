@@ -28,7 +28,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
  *   Last     : blank row, then JUMLAH KESELURUHAN grand total
  *
  * Columns come from distinct gred_ids sets on waran_jawatan rows that include
- * the selected jawatan. A single-gred waran (N4) becomes one column; a
+ * ected jawatan. A single-gred waran (N4) becomes one column; a
  * multi-gred waran (N1/N2/N3) becomes one column labelled N1/N2/N3.
  *
  * J (perjawatan)  = waran_jawatans counted in the column matching their

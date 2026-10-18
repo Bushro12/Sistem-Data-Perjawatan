@@ -53,7 +53,7 @@ class WaranJawatanForm
                                         }
 
                                         // Role 3 cannot edit when is_kup is true
-                                        if ($user->role == 3 && $get('is_kup')) {
+                                        if ($user->role == 3 && ($record?->is_kup || $get('is_kup'))) {
                                             return true;
                                         }
 
@@ -66,7 +66,10 @@ class WaranJawatanForm
 
                                         return $pegawai?->ptj_id != $user->ptj_id;
                                     })
-                                    ->dehydrated()
+                                    ->dehydrated(fn ($record, Get $get): bool => ! (
+                                        auth()->user()?->role == 3
+                                        && ($record?->is_kup || $get('is_kup'))
+                                    ))
 
                                     ->afterStateUpdated(function ($state, Get $get, Set $set) {
 
@@ -101,6 +104,8 @@ class WaranJawatanForm
 
                                 Checkbox::make('is_kup')
                                     ->label('Khas Untuk Penyandang (KUP)')
+                                    ->disabled(fn () => auth()->user()?->role == 3)
+                                    ->dehydrated(fn () => auth()->user()?->role != 3)
                                     ->columnSpanFull(),
 
                                 Hidden::make('tbk'),
@@ -205,7 +210,10 @@ class WaranJawatanForm
 
                                 Select::make('ptj_id')
                                     ->label('PTJ')
-                                    ->options(fn (Get $get): array => Aktiviti::ptjSelectOptionsFor($get('aktiviti_id')))
+                                    ->options(fn (Get $get): array => Aktiviti::ptjSelectOptionsFor(
+                                        $get('aktiviti_id'),
+                                        $get('ptj_id'),
+                                    ))
                                     ->searchable()
                                     ->preload()
                                     ->live()

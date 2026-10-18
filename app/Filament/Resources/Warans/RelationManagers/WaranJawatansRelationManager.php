@@ -159,7 +159,10 @@ class WaranJawatansRelationManager extends RelationManager
 
                                 Select::make('ptj_id')
                                     ->label('PTJ')
-                                    ->options(fn (Get $get): array => Aktiviti::ptjSelectOptionsFor($get('aktiviti_id')))
+                                    ->options(fn (Get $get): array => Aktiviti::ptjSelectOptionsFor(
+                                        $get('aktiviti_id'),
+                                        $get('ptj_id'),
+                                    ))
                                     ->searchable()
                                     ->preload()
                                     ->live()
@@ -291,6 +294,10 @@ class WaranJawatansRelationManager extends RelationManager
                                     ->required()
                                     ->label('Status')
                                     ->default('active')
+                                    // ->disabled(
+                                    //     fn () => ! auth()->user()?->isSuperadmin()
+                                    //     && ! auth()->user()?->isAdmin()
+                                    // )
                                     ->options([
                                         'active' => 'Aktif',
                                         'pindaan nama' => 'Pindaan Nama',
@@ -398,7 +405,7 @@ class WaranJawatansRelationManager extends RelationManager
                                         }
 
                                         // Role 3 cannot edit when is_kup is true
-                                        if ($user->role == 3 && $get('is_kup')) {
+                                        if ($user->role == 3 && ($record?->is_kup || $get('is_kup'))) {
                                             return true;
                                         }
 
@@ -411,7 +418,10 @@ class WaranJawatansRelationManager extends RelationManager
 
                                         return $pegawai?->ptj_id != $user->ptj_id;
                                     })
-                                    ->dehydrated()
+                                    ->dehydrated(fn ($record, Get $get): bool => ! (
+                                        auth()->user()?->role == 3
+                                        && ($record?->is_kup || $get('is_kup'))
+                                    ))
 
                                     ->afterStateUpdated(function ($state, Get $get, Set $set) {
 
@@ -446,9 +456,7 @@ class WaranJawatansRelationManager extends RelationManager
 
                                 Checkbox::make('is_kup')
                                     ->label('Khas Untuk Penyandang (KUP)')
-                                    ->disabled(
-                                        fn (?WaranJawatan $record) => $record !== null && auth()->user()?->role == 3
-                                    )
+                                    ->disabled(fn () => auth()->user()?->role == 3)
                                     ->dehydrated(fn () => auth()->user()?->role != 3),
 
                                 Textarea::make('catatan_jawatan')
@@ -712,7 +720,8 @@ class WaranJawatansRelationManager extends RelationManager
                 EditAction::make()
                     ->label('Kemaskini')
                     ->modalHeading(fn (WaranJawatan $record): string => 'Kemaskini Butiran '.($record->butiran ?? ''))
-                    ->visible(fn ($record) => $record->status !== 'removed'),
+                    ->visible(fn (WaranJawatan $record): bool => $record->status !== 'removed'
+                        && ! (auth()->user()?->role == 3 && $record->is_kup)),
                 DissociateAction::make(),
                 DeleteAction::make()
                     ->before(function (DeleteAction $action, WaranJawatan $record): void {
@@ -761,7 +770,8 @@ class WaranJawatansRelationManager extends RelationManager
                             EditAction::make()
                                 ->label('Kemaskini')
                                 ->modalHeading(fn (WaranJawatan $record): string => 'Kemaskini Butiran '.($record->butiran ?? ''))
-                                ->visible(fn () => $this->getOwnerRecord()->jenis === 'Tambah')
+                                ->visible(fn (WaranJawatan $record): bool => $this->getOwnerRecord()->jenis === 'Tambah'
+                                    && ! (auth()->user()?->role == 3 && $record->is_kup))
                                 ->modalCancelActionLabel('Batal')
                                 ->modalSubmitAction(
                                     fn ($action) => $action
@@ -777,7 +787,8 @@ class WaranJawatansRelationManager extends RelationManager
                                 ->label('Duplicate')
                                 ->icon('heroicon-o-document-duplicate')
                                 ->color('warning')
-                                ->visible(fn (WaranJawatan $record): bool => $this->getPageClass() !== ViewWaran::class
+                                ->visible(fn (WaranJawatan $record): bool => ! auth()->user()?->isUser()
+                                    && $this->getPageClass() !== ViewWaran::class
                                     && $this->getOwnerRecord()->jenis === 'Tambah'
                                     && ! $record->hasAssignedPegawai())
                                 ->requiresConfirmation()
@@ -879,6 +890,9 @@ class WaranJawatansRelationManager extends RelationManager
 
                     EditAction::make()
                         ->label('Kemaskini')
+                        ->visible(fn (WaranJawatan $record): bool => ! (
+                            auth()->user()?->role == 3 && $record->is_kup
+                        ))
                         ->modalHeading(fn (WaranJawatan $record): string => 'Kemaskini Butiran '.($record->butiran ?? ''))
                         ->modalCancelActionLabel('Batal')
                         ->modalSubmitAction(

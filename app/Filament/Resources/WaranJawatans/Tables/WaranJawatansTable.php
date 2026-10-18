@@ -12,6 +12,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
@@ -233,17 +234,31 @@ class WaranJawatansTable
                         ->extraModalFooterActions([
                             Action::make('edit')
                                 ->label('Kemaskini')
+                                ->visible(fn (WaranJawatan $record): bool => WaranJawatanResource::canEdit($record))
                                 ->url(fn ($record) => WaranJawatanResource::getUrl('edit', [
                                     'record' => $record,
                                 ])),
                         ]),
-                    EditAction::make(),
+                    EditAction::make()
+                        ->visible(fn (WaranJawatan $record): bool => WaranJawatanResource::canEdit($record)),
                     Action::make('removePegawai')
                         ->label('Buang Pegawai')
                         ->icon('heroicon-o-user-minus')
                         ->color('danger')
+                        ->visible(fn (WaranJawatan $record): bool => ! (
+                            auth()->user()?->role == 3 && $record->is_kup
+                        ))
                         ->requiresConfirmation()
                         ->action(function ($record) {
+                            if (auth()->user()?->role == 3 && $record->is_kup) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Nama penyandang KUP tidak boleh diubah.')
+                                    ->send();
+
+                                return;
+                            }
+
                             $record->update([
                                 'pegawai_id' => null,
                             ]);
