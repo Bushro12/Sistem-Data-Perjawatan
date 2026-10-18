@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Hebahans\Pages;
 
 use App\Filament\Resources\Hebahans\HebahanResource;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Contracts\Support\Htmlable;
@@ -12,12 +13,12 @@ class EditHebahan extends EditRecord
 {
     protected static string $resource = HebahanResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            DeleteAction::make(),
-        ];
-    }
+    // protected function getHeaderActions(): array
+    // {
+    //     return [
+    //         DeleteAction::make(),
+    //     ];
+    // }
 
     public function getBreadcrumbs(): array
     {
@@ -34,6 +35,24 @@ class EditHebahan extends EditRecord
             '</button>'.
             '<span>'.e($this->getTitle()).'</span>'
         );
+    }
+
+    protected function getCancelFormAction(): Action
+    {
+        return parent::getCancelFormAction()
+            ->label('Batal');
+    }
+
+    protected function getSaveFormAction(): Action
+    {
+        return parent::getSaveFormAction()
+            ->label('Simpan');
+    }
+
+    protected function getDeleteFormAction(): Action
+    {
+        return parent::getDeleteFormAction()
+            ->label('Padam');
     }
 
     protected function getRedirectUrl(): ?string
