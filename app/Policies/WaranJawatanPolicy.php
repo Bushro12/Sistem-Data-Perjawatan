@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\WaranJawatan;
-use Illuminate\Auth\Access\Response;
 
 class WaranJawatanPolicy
 {
@@ -13,7 +12,7 @@ class WaranJawatanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isUser();
     }
 
     /**
@@ -21,7 +20,7 @@ class WaranJawatanPolicy
      */
     public function view(User $user, WaranJawatan $waranJawatan): bool
     {
-        return true;
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isUser();
     }
 
     /**

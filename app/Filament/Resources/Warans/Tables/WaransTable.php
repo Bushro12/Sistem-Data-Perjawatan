@@ -53,15 +53,15 @@ class WaransTable
                     ->label('Maklumat Waran')
                     ->searchable(),
 
-                TextColumn::make('butiran_list')
-                    ->label('Butiran')
-                    ->html()
-                    ->searchable(query: function ($query, $search) {
-                        $query->whereHas('waranJawatan', function ($q) use ($search) {
-                            $q->where('butiran', 'like', "%{$search}%");
-                        });
+                // TextColumn::make('butiran_list')
+                //     ->label('Butiran')
+                //     ->html()
+                //     ->searchable(query: function ($query, $search) {
+                //         $query->whereHas('waranJawatan', function ($q) use ($search) {
+                //             $q->where('butiran', 'like', "%{$search}%");
+                //         });
 
-                    }),
+                //     }),
                 // Aktiviti (unique, no repeat)
                 TextColumn::make('aktiviti_list')
                     ->label('Aktiviti')
