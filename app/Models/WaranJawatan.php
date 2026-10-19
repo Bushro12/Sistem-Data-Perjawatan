@@ -110,6 +110,56 @@ class WaranJawatan extends Model
             ->implode(', ');
     }
 
+    public function getJawatanGredDisplayAttribute(): string
+    {
+        $pegawaiJawatan = $this->pegawai?->jawatan_gred?->jawatan?->desc_jawatan;
+        $pegawaiGred = $this->pegawai?->jawatan_gred?->gred?->kod_gred;
+        $waranJawatanIds = $this->jawatan_ids ?? [];
+        $waranJawatansById = $waranJawatanIds === []
+            ? collect()
+            : Jawatan::query()
+                ->whereIn('id', $waranJawatanIds)
+                ->pluck('desc_jawatan', 'id');
+        $waranJawatans = collect($waranJawatanIds)
+            ->map(fn ($id) => $waranJawatansById->get((int) $id))
+            ->filter(fn ($jawatan): bool => filled($jawatan)
+                && (! filled($pegawaiJawatan) || strcasecmp(trim($jawatan), trim($pegawaiJawatan)) !== 0))
+            ->implode(', ');
+        $waranGredIds = $this->gred_ids ?? [];
+        $waranGredsById = $waranGredIds === []
+            ? collect()
+            : Gred::query()
+                ->whereIn('id', $waranGredIds)
+                ->pluck('kod_gred', 'id');
+        $waranGreds = collect($waranGredIds)
+            ->map(fn ($id) => $waranGredsById->get((int) $id))
+            ->filter(fn ($gred): bool => filled($gred)
+                && (! filled($pegawaiGred) || strcasecmp($gred, $pegawaiGred) !== 0))
+            ->implode('/');
+
+        $pegawaiPosition = collect([
+            $pegawaiJawatan,
+            $pegawaiGred,
+        ])->filter()->implode(' ');
+
+        $waranPosition = collect([
+            $waranJawatans,
+            $waranGreds,
+        ])->filter()->implode(' ');
+
+        $position = $pegawaiPosition;
+
+        if ($this->is_kup || $this->pegawai?->is_kup) {
+            $position .= ($position === '' ? '' : ' ').'KUP';
+        }
+
+        if ($waranPosition !== '') {
+            $position .= ($position === '' ? '' : ', ').$waranPosition;
+        }
+
+        return $position ?: '-';
+    }
+
     protected static function booted()
     {
         static::addGlobalScope('ptj_access', function (Builder $query) {
