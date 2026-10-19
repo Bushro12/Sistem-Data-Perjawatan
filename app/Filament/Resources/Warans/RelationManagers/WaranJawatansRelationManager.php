@@ -46,7 +46,6 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -703,46 +702,7 @@ class WaranJawatansRelationManager extends RelationManager
                             ->toArray();
                     })
                     ->searchable()
-                    ->visible(fn () => $this->getPageClass() !== ViewWaran::class),
-
-                Filter::make('jawatan_gred')
-                    ->label('Jawatan / Gred')
-                    ->schema([
-                        Select::make('jawatan_id')
-                            ->label('Jawatan')
-                            ->options(fn (): array => Jawatan::query()
-                                ->orderBy('desc_jawatan')
-                                ->pluck('desc_jawatan', 'id')
-                                ->toArray())
-                            ->searchable()
-                            ->preload(),
-                        Select::make('gred_id')
-                            ->label('Gred')
-                            ->options(fn (): array => Gred::query()
-                                ->orderBy('kod_gred')
-                                ->pluck('kod_gred', 'id')
-                                ->toArray())
-                            ->searchable()
-                            ->preload(),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                filled($data['jawatan_id'] ?? null),
-                                fn (Builder $query): Builder => $query->whereJsonContains(
-                                    'jawatan_ids',
-                                    (int) $data['jawatan_id'],
-                                ),
-                            )
-                            ->when(
-                                filled($data['gred_id'] ?? null),
-                                fn (Builder $query): Builder => $query->whereJsonContains(
-                                    'gred_ids',
-                                    (int) $data['gred_id'],
-                                ),
-                            );
-                    })
-                    ->visible(fn () => $this->getPageClass() !== ViewWaran::class),
+                    ->visible(fn () => $this->getPageClass() !== ViewWaran::class && $this->getOwnerRecord()->jenis === 'Tolak'),
 
                 SelectFilter::make('butiran')
                     ->label('Butiran')
