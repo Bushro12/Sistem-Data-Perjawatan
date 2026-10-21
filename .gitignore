@@ -29,6 +29,9 @@ AGENTS.md
 /storage/pail
 /vendor
 /tests
+!/tests/
+!/tests/Feature/
+!/tests/Feature/WaranJawatanJawatanListOrderTest.php
 /tests/Browser/Screenshots
 /tests/Browser/ExampleTest.php
 /tests/Browser/LoginTest.php

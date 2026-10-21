@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Gred;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class GredPolicy
 {
@@ -45,7 +44,7 @@ class GredPolicy
      */
     public function delete(User $user, Gred $gred): bool
     {
-        return $user->isSuperAdmin();
+        return $user->isSuperAdmin() || $user->isAdmin();
     }
 
     /**

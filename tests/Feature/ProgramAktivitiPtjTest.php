@@ -107,6 +107,11 @@ it('lists only ptjs assigned to an aktiviti', function () {
 
     expect(Aktiviti::ptjSelectOptionsFor($aktiviti->id))
         ->toBe([$assigned->id => 'PTJ ASSIGNED'])
+        ->and(Aktiviti::ptjSelectOptionsFor($aktiviti->id, $other->id))
+        ->toBe([
+            $assigned->id => 'PTJ ASSIGNED',
+            $other->id => 'PTJ OTHER',
+        ])
         ->and(Aktiviti::ptjSelectOptionsFor(null))->toBe([])
         ->and(array_key_exists($other->id, Aktiviti::ptjSelectOptionsFor($aktiviti->id)))->toBeFalse();
 });

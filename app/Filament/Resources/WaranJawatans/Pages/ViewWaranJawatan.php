@@ -15,7 +15,8 @@ class ViewWaranJawatan extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            EditAction::make()
+                ->visible(fn (): bool => WaranJawatanResource::canEdit($this->record)),
         ];
     }
 

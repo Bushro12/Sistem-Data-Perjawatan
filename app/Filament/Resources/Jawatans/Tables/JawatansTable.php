@@ -28,10 +28,10 @@ class JawatansTable
                     ->sortable()
                     ->searchable()
                     ->wrap(),
-                TextColumn::make('kod_jawatan')
-                    ->label('Kod Jawatan')
-                    ->sortable()
-                    ->searchable(),
+                // TextColumn::make('kod_jawatan')
+                //     ->label('Kod Jawatan')
+                //     ->sortable()
+                //     ->searchable(),
                 // ->badge(),
                 // TextColumn::make('greds.kod_gred')
                 //     ->label('Gred')

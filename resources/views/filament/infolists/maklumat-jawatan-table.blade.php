@@ -17,11 +17,7 @@
         ? trim(($record->aktiviti->no_aktivit ?? '').' - '.($record->aktiviti->nama_aktiviti ?? ''), ' -')
         : '-';
 
-    $jawatanGred = collect([
-        filled($record->jawatan_list) ? $record->jawatan_list : null,
-        filled($record->gred_list) ? 'GRED '.$record->gred_list : null,
-    ])->filter()->implode(' , ') ?: '-';
-
+    $jawatanGred = $record->jawatan_gred_display;
     $showBahagian = (bool) $record->ptj?->usesBahagianHierarchy();
 
     $rows = [

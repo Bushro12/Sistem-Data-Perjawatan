@@ -43,13 +43,21 @@ class Aktiviti extends Model
     /**
      * @return array<int, string>
      */
-    public static function ptjSelectOptionsFor(mixed $aktivitiId): array
+    public static function ptjSelectOptionsFor(mixed $aktivitiId, mixed $selectedPtjId = null): array
     {
-        if (blank($aktivitiId)) {
-            return [];
+        $options = blank($aktivitiId)
+            ? []
+            : (static::query()->find((int) $aktivitiId)?->ptjSelectOptions() ?? []);
+
+        if (filled($selectedPtjId) && ! array_key_exists($selectedPtjId, $options)) {
+            $ptj = Ptj::query()->find($selectedPtjId);
+
+            if ($ptj) {
+                $options[$ptj->id] = $ptj->nama_ptj;
+            }
         }
 
-        return static::query()->find((int) $aktivitiId)?->ptjSelectOptions() ?? [];
+        return $options;
     }
 
     public function butiran(): HasMany

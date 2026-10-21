@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class WaranJawatanResource extends Resource
@@ -88,5 +89,14 @@ class WaranJawatanResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        if ($record instanceof WaranJawatan && auth()->user()?->role == 3 && $record->is_kup) {
+            return false;
+        }
+
+        return parent::canEdit($record);
     }
 }

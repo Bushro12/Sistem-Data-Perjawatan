@@ -115,9 +115,10 @@ class PegawaisTable
                     ->formatStateUsing(function ($record) {
 
                         $html =
-                            '<strong>'.($record->ptj?->nama_ptj ?? '').'</strong><br>'.
-                            '<span class="text-xs text-gray-500">'.($record->jawatan_gred ? $record->jawatan_gred->jawatan->desc_jawatan.
-                            ' ('.$record->jawatan_gred->gred->kod_gred.')' : '');
+                            '<strong>'.e($record->ptj?->nama_ptj ?? '').'</strong><br>'.
+                            '<span class="block whitespace-normal break-words text-xs text-gray-500">'.e($record->jawatan_gred
+                                ? $record->jawatan_gred->jawatan->desc_jawatan.' ('.$record->jawatan_gred->gred->kod_gred.')'
+                                : '').'</span>';
                         // '<span class="text-xs text-gray-500">'.($record->ptj?->programs?->pluck('nama_program')->filter()->implode(', ') ?? '').'</span>';
 
                         $waranJawatan = $record->waranJawatan;
@@ -135,6 +136,7 @@ class PegawaisTable
                     })
 
                     ->html()
+                    ->wrap()
                     ->sortable(
                         query: function ($query, string $direction) {
                             $query
