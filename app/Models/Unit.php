@@ -8,8 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\BelongsToPtj;
+
 class Unit extends Model
 {
+    use BelongsToPtj; // 2. Include the trait inside the class
     use SoftDeletes;
 
     protected $fillable = [

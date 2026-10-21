@@ -11,25 +11,37 @@ class SubunitPolicy
     /**
      * Determine whether the user can view any models.
      */
+
     public function viewAny(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin();
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isUser();
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Subunit $subunit): bool
+
+/**
+     * View list or individual unit: isUser() can only view inside their PTJ.
+     */ 
+
+    public function view(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin();
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isUser();
     }
+
+
+    // /**
+    //  * Determine whether the user can view the model.
+    //  */
+    // public function view(User $user, Subunit $subunit): bool
+    // {
+    //     return $user->isSuperAdmin() || $user->isAdmin();
+    // }
 
     /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin();
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isUser();
     }
 
     /**
@@ -37,7 +49,7 @@ class SubunitPolicy
      */
     public function update(User $user, Subunit $subunit): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin();
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isUser();
     }
 
     /**

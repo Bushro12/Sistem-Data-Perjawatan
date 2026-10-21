@@ -56,7 +56,6 @@ class SubunitsTable
                         }
 
                         $html .= '<div class="'.$muted.'">UNIT: '.e($unit?->nama_unit ?? '-').'</div>';
-                        // $html .= '<div class="'.$muted.'">PROGRAM: '.e($programs).'</div>';
 
                         return $html;
                     })
@@ -177,17 +176,19 @@ class SubunitsTable
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
                             ->when(
-                                $data['program_id'] ?? null,
-                                fn (Builder $q, $programId): Builder => $q->whereHas('unit.ptj.programs', fn (Builder $p): Builder => $p->whereKey($programId))
-                            )
-                            ->when(
-                                $data['ptj_id'] ?? null,
-                                fn (Builder $q, $ptjId): Builder => $q->whereHas('unit', fn (Builder $u): Builder => $u->where('ptj_id', $ptjId))
-                            )
-                            ->when(
-                                $data['unit_id'] ?? null,
-                                fn (Builder $q, $unitId): Builder => $q->where('unit_id', $unitId)
-                            );
+                    $data['program_id'] ?? null,
+                    fn (Builder $q, $programId): Builder => $q->whereRelation('unit.ptj.programs', 'programs.id', $programId)
+                )
+                ->when(
+                    $data['ptj_id'] ?? null,
+                    fn (Builder $q, $ptjId): Builder => $q->whereIn('subunits.unit_id', function ($u) use ($ptjId) {
+                        $u->select('id')->from('units')->where('ptj_id', $ptjId);
+                    })
+                )
+                ->when(
+                    $data['unit_id'] ?? null,
+                    fn (Builder $q, $unitId): Builder => $q->where('subunits.unit_id', $unitId)
+                );
                     })
                     ->indicateUsing(function (array $data): array {
                         $indicators = [];

@@ -13,6 +13,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class SubunitResource extends Resource
 {
     protected static ?string $model = Subunit::class;
@@ -56,4 +58,19 @@ class SubunitResource extends Resource
             'edit' => EditSubunit::route('/{record}/edit'),
         ];
     }
+
+//     public static function getEloquentQuery(): Builder
+// {
+//     return parent::getEloquentQuery() 
+//         ->whereIn('id', ...)
+//         ->whereHas('unit', fn ($q) => $q->where('ptj_id', 2)); // Fix here
+// }
+
+// use Illuminate\Database\Eloquent\Builder;
+
+public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery();
+}
+
 }

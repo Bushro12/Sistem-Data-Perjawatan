@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Models;
-
+use App\Traits\BelongsToPtj; // 1. Import the namespace
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Subunit extends Model
 {
+    use BelongsToPtj; // 2. Include the trait inside the class
     protected $fillable = [
         'unit_id',
         'dun_id',
@@ -56,4 +57,17 @@ class Subunit extends Model
             ->values()
             ->all();
     }
+
+    use BelongsToPtj;
+
+    public function ptjRelation(): ?string
+    {
+        return 'unit';
+    }
+
+    // public function unit()
+    // {
+    //     return $this->belongsTo(Unit::class);
+    // }
+
 }
